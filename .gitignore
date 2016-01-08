@@ -1,5 +1,5 @@
 $ cat .gitignore
 
-# ignore stim directories
-**/graphsAndSession/
-**/rats/
+# ignore .mat files output by models...
+**/graphsAndSession/**/*.mat
+**/rats
