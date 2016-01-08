@@ -1,0 +1,8 @@
+
+Group Lesion
+Experiment:, list1, 
+Stim Pair 1:,Sample: , [ 0.950 0.667, 0.667 0.950, 0.050 0.667, 0.050 0.050 ],Novel: , [ 0.950 0.050, 0.050 0.950, 0.333 0.050, 0.667 0.667 ] 
+
+Stim Pair, Stimulus, Peak Act seg1, Peak Act seg2, Peak Act seg3, Peak Act seg4, Mean Peak Act, Total Act seg1, Total Act seg2, Total Act seg3, Total Act seg4, Mean Total Act, Selectivity, Win Co-ords 1, Win Co-ords 2, Win Co-ords 3, Win Co-ords 4
+ 1, Sample, 78.928117, 77.228748, 77.232329, 75.493086, 77.220570, 76856.364502, 77489.516652, 77512.880572, 58605.117424, 72615.969788, 0.001077, 0.592090, [122 13], [91 22], [24 2], [132 63]
+ 1, Novel, 16.406567, 16.983267, 23.955022, 24.822711, 20.541892, 58177.698929, 58406.357280, 77370.007609, 112123.856406, 76519.480056, 0.000276, , [114 15], [95 31], [102 116], [157 48]

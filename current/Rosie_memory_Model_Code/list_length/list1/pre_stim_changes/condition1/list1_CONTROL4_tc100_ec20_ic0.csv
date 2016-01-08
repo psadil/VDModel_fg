@@ -1,0 +1,14 @@
+
+Group Intact
+Experiment:, list1, 
+
+Stim Condition:, 1, 
+ Stim Pair 1:,Sample: , [ 0.667 0.333, 0.050 0.667, 0.333 0.950, 0.333 0.667 ],Novel: , [ 0.667 0.950, 0.333 0.050, 0.050 0.950, 0.050 0.333 ] 
+
+Stim Pair, Stimulus, Peak Act seg1, Peak Act seg2, Peak Act seg3, Peak Act seg4, Mean Peak Act, Total Act seg1, Total Act seg2, Total Act seg3, Total Act seg4, Mean Total Act, Selectivity, Win Co-ords 1, Win Co-ords 2, Win Co-ords 3, Win Co-ords 4
+ 1, Sample, 79.832103, 78.003051, 78.302492, 81.930699, 79.517086, 109817.643772, 77199.296416, 77463.692418, 112163.521518, 94161.038531, 0.000870, 0.517417, [152 129], [142 163], [114 18], [161 39]
+ 1, Novel, 19.404544, 21.708604, 15.946955, 23.189936, 20.062510, 76429.258576, 77288.509700, 58659.709786, 77379.908497, 72439.346640, 0.000277, , [35 58], [34 198], [188 35], [196 48]
+
+Stimulus Pair, Stimulus, Peak Act, Total Act, Selectivity, Win Co-ords
+ 1, Sample, 79.316288, 86741.901949, 0.000914, 0.597780, [87 8]
+ 1, Novel, 15.823481, 68741.918712, 0.000230,, [137 47]

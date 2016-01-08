@@ -1,0 +1,25 @@
+
+Experiment:, list1
+Stimuli for List Length 1:
+Stim Pair 1:
+Sample: , [ 0.950 0.667, 0.667 0.950, 0.050 0.667, 0.050 0.050 ],Novel: , [ 0.950 0.050, 0.050 0.950, 0.333 0.050, 0.667 0.667 ] 
+NUM_ROWS = 200, A: 0.200  B: 0.400
+PEAK_SIZE: 1, (9 winners if 1, 13 winners if 2)
+Total training conditions: 1 ,Steps: ,100,
+Total encoding conditions: 1 ,Steps: ,20,
+No interference.
+Num input dims conditions: 3
+
+
+ ,Repeat:  1
+ ,Rat ,Dscore Intact,,Dscore Lesion,,Dscore PRh of Control,,Dscore Caud of Control 
+ ,1,0.6131,,0.5957,,0.6370,,0.5892
+ ,2,0.6235,,0.6018,,0.6526,,0.5944
+ ,3,0.6216,,0.5919,,0.6461,,0.5972
+ ,4,0.6100,,0.6135,,0.6473,,0.5727
+ ,5,0.6357,,0.5921,,0.6670,,0.6044
+ ,6,0.6313,,0.6102,,0.6550,,0.6075
+ ,Average,0.6225,,0.6009,,0.6508,,0.5942
+ ,SEM, 0.0045,,0.0042,,0.0045,,0.0056
+
+
