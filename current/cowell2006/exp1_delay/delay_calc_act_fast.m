@@ -1,11 +1,8 @@
-function [f_out, act_out] = VD_calc_act_fast(win_row, win_col, dist_mat, layer, p)
+function [f_out, act_out] = delay_calc_act_fast(win_row, win_col, dist_mat, layer, p)
 
-% This function is called from VD_present_stimulus.m. Calculates the activation on the grid and the f matrix determining
+% This function is called from delay_present_stimulus.m. Calculates the activation on the grid and the f matrix determining
 % amount of learning that will accrue to each unit.
 % Calculate city-block distance from winner in grid, with wraparound
-
-% 11/1/14 ps altered how f_out is calculated, made it a bit more
-% programmatic with use of for loop
 
 
 %% find distance of each unit from winner (using grid_matrix, which stores the position of each unit in the grid) 

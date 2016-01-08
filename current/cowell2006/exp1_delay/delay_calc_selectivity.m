@@ -1,11 +1,9 @@
-function [f_out, act_out, selectivity, p, act_peak, act_total] = VD_calc_selectivity_fast(win_row, win_col, dist_mat,p, nInpDims)
+function [f_out, act_out, selectivity, p, act_peak, act_total] = delay_calc_selectivity(win_row, win_col, dist_mat,p, nInpDims)
 
 %% Function called from VD_present_stimulus.m. Calculates grid_dist matrix, then
 %% calculates all units' activities and selectivity of activation peak.
 
 %%% Calculate city-block distance from winner in grid, with wraparound 
-sizeOfPeak = p.sizeOfPeak;
-
 
 %%find distance of each unit from winner (using gridMat, which stores the position of each unit in the grid) 
 %%create a matrix with a slice for each of the two potential minimum distances for rows and cols
@@ -19,37 +17,18 @@ min_col_dist_mat = min(col_dist_mat,[],3);
 %%Sum the two minimum distances to get the city_block distance
 grid_dist = min_row_dist_mat + min_col_dist_mat;
 
-%%% Calculate Gaussian movement-strength function for each node
-% p.etaShrinking = p.etaExp*(p.fixations_total)^(-p.A_encoding);
-
-% -------------------------------------------------------------------------
-%  CRAZY NEW MOD:
-% no longer is distance from the winner being calculated in torus-space, as
-% per
-% f_1dim = p.etaExp*exp(-(grid_dist/p.G_exp).^2);
-% instead, distance from winner will be calculated in weight space...
-
-% NEVERMIND...this shouldn't be done because then the kohonen network would
-% lose it's topographic organization (neurons close to each other would no
-% longer represent 'similar' images...
-% -------------------------------------------------------------------------
-
-% COMMENT WHEN RUNNING FOR REAL!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-% grid_dist = (grid_dist < 2) .* grid_dist;
 
 f_1dim = p.etaExp .* exp(-(grid_dist/p.G_exp).^2);
 f_1dim = f_1dim .* (grid_dist < p.filtPeak);
 
-% MAYBE BRING THIS BACK!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-% f_out = repmat(f_1dim,[1,1,nInpDims]);
 
 f_out=zeros(p.numRows,p.numRows,nInpDims);
 for dim=1:nInpDims
     f_out(:,:,dim) = f_1dim;
 end
 
-act_out = log(ones(p.nRows,p.nRows) ./ dist_mat);   % create this ln thing that deals with distance of nodes away from original stimulus vector 
-%                                                   (not winning node, because this is used for 'recognition' ratio ((S_samp-S_nov)/(S_samp+S_nov)))
+act_out = log(ones(p.nRows,p.nRows) ./ dist_mat);    
+                                                   
 % surf(act_out)
 % max(max(act_out))
 % close all
@@ -58,14 +37,12 @@ act_out = log(ones(p.nRows,p.nRows) ./ dist_mat);   % create this ln thing that 
 % act_out = p.a + ((p.k - p.a)./ ((p.c + p.q * exp(-p.b*act_out)).^(1/p.v)));
 
 
-act_out = 1./(1+exp(-p.k_expt*act_out)); %squashing function 
- 
+act_out = 1./(1+exp(-p.k_expt*act_out)); %squashing function   (why squash?)
+% 
 % surf(act_out)
 % max(act_out)
 % close all
 
-%may make sense to go back to version where we 'cap' the distance (because then the dynamic range of
-%outputs starts at 0 rather than 0.5)
 
 % surf(act_out);
 
@@ -102,7 +79,7 @@ winners(23,:) = [win_row win_col-3];
 winners(24,:) = [win_row+3 win_col];
 winners(25,:) = [win_row-3 win_col];
 
-for win_unit = 1:sizeOfPeak %% however many winners in peak
+for win_unit = 1:p.sizeOfPeak %% however many winners in peak
     if winners(win_unit,1) > p.nRows,
         winners(win_unit,1) = winners(win_unit,1) - p.nRows;
     elseif winners(win_unit,1) <= 0,
@@ -115,12 +92,9 @@ for win_unit = 1:sizeOfPeak %% however many winners in peak
     end
 end
 
-% if any(isnan(act_out))
-%    act_out(isnan(act_out))=0; 
-% end
 
 act_peak = 0;
-for unit = 1:sizeOfPeak
+for unit = 1:p.sizeOfPeak
     act_peak = act_peak + act_out(winners(unit,1), winners(unit,2));
 end
 
@@ -129,7 +103,6 @@ end
 act_total = sum(sum(act_out));
 selectivity = act_peak/act_total;
     
-% % if isnan(selectivity)
-% %    2; 
-% end
+
+
 % p.totalAct(trial,layer) = act_total;

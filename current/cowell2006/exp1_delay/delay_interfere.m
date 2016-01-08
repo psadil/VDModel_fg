@@ -8,7 +8,7 @@ for layer = 1:max(p.numLayers)
     for grid = 1:p.nGrids(layer),
         for cycle=1:delayCycles,
                         
-            [inp_mat] = delay_gen_limited_input(p.numInputDims(layer),p); %generate an input vector
+            inp_mat = delay_gen_limited_input(p.numInputDims(layer),p); %generate an input vector
             
             %--------------------------------------------------------------
             % Find winning node
@@ -19,7 +19,7 @@ for layer = 1:max(p.numLayers)
             %--------------------------------------------------------------
             % Calculate each unit's distance from winner, for use in
             % updating
-            [f, ~] = VD_calc_act_fast(win_row, win_col, dist_mat,layer,p);
+            [f, ~] = delay_calc_act_fast(win_row, win_col, dist_mat,layer,p);
                         
             %%% Update Weights
             w = w + f.*(inp_mat-w);

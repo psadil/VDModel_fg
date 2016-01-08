@@ -1,14 +1,8 @@
 function [W, initial_selec, p, pktot, act_out, initial_acts,initial_weights] = delay_present_stimulus(stim, W, p, trial,pktot)
 
-% Function called by VD_present_stimulus.m. Presents the network with the two stimuli on this trial.
-% Choose whichever layer demonstrates higher selectivity
-
-% present chosen features of stimulus to all layers. pick the layer with
-% the highest selectivity, and output that selectivity
-
 inp_mat = repmat(reshape(stim,[1 1 length(stim)]), [p.nRows p.nRows 1]);
 
-act_out = zeros(p.layer,p.nRows,p.nRows,p.maxNumGrids); % 5 grids (only 1 stimulus)
+act_out = zeros(p.layer,p.nRows,p.nRows,p.maxNumGrids); 
 initial_acts = zeros(p.layer,p.nRows,p.nRows,p.maxNumGrids);
 selec = zeros(p.numLayers,max(p.numGrids));
 initial_selec = zeros(p.numLayers,max(p.numGrids));
@@ -47,7 +41,7 @@ for layer=1:p.layer
             %--------------------------------------------------------------
             %Calculate each unit's distance from winner and activation
             %--------------------------------------------------------------
-            [f, acts, selectivity, p, act_peak, act_total] = VD_calc_selectivity_fast(win_row, win_col, dist_mat, p, p.numInputDims(layer));
+            [f, acts, selectivity, p, act_peak, act_total] = delay_calc_selecivity(win_row, win_col, dist_mat, p, p.numInputDims(layer));
             
             if cycle==1,  %need to compare last set of weights of old grid to
                 initial_selec(layer,grid) = selectivity;

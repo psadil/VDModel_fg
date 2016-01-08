@@ -112,6 +112,7 @@ for trial = 1:p.nTrials,
     % simulate delay for appropriate cycles
     [weights, p] = delay_interfere(p, delayCycles, weights);
     
+    
     selec_forComp = zeros(p.numLayers,max(p.nGrids),2);
     % re-present initial sample stimulus
     [~, selec_forComp(:,:,1), p, pktot, ~, ~, ~] = ...
@@ -122,7 +123,7 @@ for trial = 1:p.nTrials,
         delay_present_stimulus(stimulus_sample, weights, p, trial, pktot);
     
     % calc recognition score
-    [p] = delay_calc_recognition(p, selec_forComp, trial);
+    [p] = delay_calc_recognitio(p, selec_forComp, trial);
     
         
 end

@@ -1,6 +1,4 @@
-% function dPrimePredictions = create_sim_simplex(firstRat, lastRat, etaExp, G_exp)
-
-function [] = create_sim_simplex(firstRat, lastRat)
+function [] = create_sim_delay(firstRat, lastRat)
 
 global consts
 
