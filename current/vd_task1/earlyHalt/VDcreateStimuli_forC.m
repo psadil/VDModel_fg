@@ -101,25 +101,37 @@ while notUnique
     stimuli2 = LA_match;
     
     
+    
+    
     notUnique=0;
     breakOut = 0;
     for item = 1:p.nMismatch-1
-        %         items = item+1:p.nMismatch;
-        %         items(item)=[];
+        
         for trial = item+1:p.nMismatch
             
-            %             if isequal(stimuli1(item,:,:),(stimuli1(trial,:,:)))
+            
             if stimuli1(item,:,:) == (stimuli1(trial,:,:))
                 notUnique = 1;
                 breakOut = 1;
                 break;
-                %             elseif isequal(stimuli2(item,:,:),(stimuli2(trial,:,:)))
+                
             elseif stimuli2(item,:,:) == (stimuli2(trial,:,:))
+                notUnique=1;
+                breakOut = 1;
+                break;
+                
+            elseif stimuli1(item,:,:) == (stimuli2(trial,:,:))
+                notUnique=1;
+                breakOut = 1;
+                break;
+                
+            elseif stimuli2(item,:,:) == (stimuli1(trial,:,:))
                 notUnique=1;
                 breakOut = 1;
                 break;
             end
         end
+        
         if breakOut
             break;
         end
@@ -197,19 +209,28 @@ while notUnique
     stimuli1 = HA_misMatch;
     stimuli2 = HA_match;
     
-    %     notUnique=0;
+    notUnique=0;
+    breakOut = 0;
     for item = 1:p.nMismatch-1
-        %         items = item+1:p.nMismatch;
-        %         items(item)=[];
+        
         for trial = item+1:p.nMismatch
             
-            %             if isequal(stimuli1(item,:,:),(stimuli1(trial,:,:)))
             if stimuli1(item,:,:) == (stimuli1(trial,:,:))
+                notUnique = 1;
+                breakOut = 1;
+                break;
+                
+            elseif stimuli2(item,:,:) == (stimuli2(trial,:,:))
                 notUnique=1;
                 breakOut = 1;
                 break;
-                %             elseif isequal(stimuli2(item,:,:),(stimuli2(trial,:,:)))
-            elseif stimuli2(item,:,:) == (stimuli2(trial,:,:))
+                
+            elseif stimuli1(item,:,:) == (stimuli2(trial,:,:))
+                notUnique=1;
+                breakOut = 1;
+                break;
+                
+            elseif stimuli2(item,:,:) == (stimuli1(trial,:,:))
                 notUnique=1;
                 breakOut = 1;
                 break;
@@ -219,7 +240,7 @@ while notUnique
             break;
         end
     end
-
+    
     
     %save stimuli
     if ~exist(strcat(ROOT,exptDir,'condition2'),'dir')
