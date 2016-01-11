@@ -77,9 +77,11 @@ while notUnique
         
         for feature = 1:nCaudalGrids
             %first stim in pair
-            LA_misMatch(stimPair,firstFeatureToCheck(feature):lastFeatureToCheck(feature),1) = features(chosenFeat(feature,1),:);
+            LA_misMatch(stimPair,firstFeatureToCheck(feature):lastFeatureToCheck(feature),1) =...
+                features(chosenFeat(feature,1),:);
             %second stim in pair
-            LA_misMatch(stimPair,firstFeatureToCheck(feature):lastFeatureToCheck(feature),2) = features(chosenFeat(feature,2),:);
+            LA_misMatch(stimPair,firstFeatureToCheck(feature):lastFeatureToCheck(feature),2) =...
+                features(chosenFeat(feature,2),:);
         end
         
     end
@@ -97,8 +99,14 @@ while notUnique
     %second stim in pair (matches first)
     LA_match(:,:,2) = LA_match(:,:,1);
     
-    stimuli1 = repmat(LA_misMatch,[1,1,1,3]);
-    stimuli2 = repmat(LA_match,[1,1,1,3]);
+    stimuli1 = reshape(repmat(reshape(LA_misMatch,...
+        [1,p.nMismatch,1,p.numInputDims_PRC/p.nDimReps,1,2]),[1,1,p.nDimReps,1,1,1]),...
+        [p.nMismatch,(p.numInputDims_PRC/p.nDimReps)*p.nDimReps,2]);
+    
+    
+    stimuli2 = reshape(repmat(reshape(LA_match,...
+        [1,p.nMatch,1,p.numInputDims_PRC/p.nDimReps,1,2]),[1,1,p.nDimReps,1,1,1]),...
+        [p.nMatch,(p.numInputDims_PRC/p.nDimReps)*p.nDimReps,2]);
     
     
     
@@ -176,9 +184,11 @@ while notUnique
         
         for grid = 1:nCaudalGrids
             %first stim in pair
-            HA_misMatch(stimPair,firstFeatureToCheck(grid):lastFeatureToCheck(grid),1) = features(chosenFeat(grid,1),:);
+            HA_misMatch(stimPair,firstFeatureToCheck(grid):lastFeatureToCheck(grid),1) =...
+                features(chosenFeat(grid,1),:);
             %second stim in pair
-            HA_misMatch(stimPair,firstFeatureToCheck(grid):lastFeatureToCheck(grid),2) = features(chosenFeat(grid,2),:);
+            HA_misMatch(stimPair,firstFeatureToCheck(grid):lastFeatureToCheck(grid),2) =...
+                features(chosenFeat(grid,2),:);
         end
         
         
@@ -201,13 +211,17 @@ while notUnique
     %second stim in pair (matches first)
     HA_match(:,:,2) = HA_match(:,:,1);
     
-%     stims.LA_misMatch = LA_misMatch;
-%     stims.LA_match = LA_match;
-%     stims.HA_misMatch = HA_misMatch;
-%     stims.HA_match = HA_match;
-%     
-    stimuli1 = repmat(HA_misMatch,[1,1,1,3]);
-    stimuli2 = repmat(HA_match,[1,1,1,3]);
+    stims.LA_misMatch = LA_misMatch;
+    stims.LA_match = LA_match;
+    stims.HA_misMatch = HA_misMatch;
+    stims.HA_match = HA_match;
+    
+    stimuli1 = reshape(repmat(reshape(HA_misMatch,...
+        [1,p.nMismatch,1,p.numInputDims_PRC/p.nDimReps,1,2]),[1,1,p.nDimReps,1,1,1]),...
+        [p.nMismatch,(p.numInputDims_PRC/p.nDimReps)*p.nDimReps,2]);
+    stimuli2 = reshape(repmat(reshape(HA_match,...
+        [1,p.nMatch,1,p.numInputDims_PRC/p.nDimReps,1,2]),[1,1,p.nDimReps,1,1,1]),...
+        [p.nMatch,(p.numInputDims_PRC/p.nDimReps)*p.nDimReps,2]);
     
     notUnique=0;
     breakOut = 0;

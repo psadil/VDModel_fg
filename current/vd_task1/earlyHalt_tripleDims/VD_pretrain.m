@@ -47,7 +47,8 @@ for layer = 1:max(p.numLayers)
             
             %%% Generate input data that is p.nInpDims
             %%% by p.nRows ()
-            [inp_mat] = VD_gen_limited_input(nInpDims,p); %generate an input vector
+            [inp_mat] = VD_gen_limited_input(nInpDims / p.nDimReps,p); %generate an input vector
+            
             
             %--------------------------------------------------------------
             % Find winning node

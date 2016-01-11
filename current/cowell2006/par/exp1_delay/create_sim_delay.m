@@ -68,9 +68,6 @@ parfor rat = firstRat:lastRat
     p.numInputDims_PRC = p.components;
     p.numInputDims = [p.numInputDims_Caudal, p.numInputDims_PRC];
     
-    p.decision_noise = noise;
-    p.maxFixations = [20, 25]; % should it be based on empirical data? total # saccades on match trials = 20
-    % first == low ambig, second == high ambig
     p.k_expt = k_expt;
     p.A = A; % was 0.8 %% Pre-training parameter. The bigger A is, the faster ETA decreases, and the smaller the amount of learning on the weights for all units.
     p.etaExp = etaExp;
@@ -79,10 +76,8 @@ parfor rat = firstRat:lastRat
     p.numTrainCycles = [train, train];
     p.numEncodingCycles = [20, 20]; % now better described as encoding cycles per fixation [LA, HA]
     p.numFeaturesToSample = [p.numGrids_Caudal,p.numGrids_Caudal]; % first == lesion, second == control
-    p.outsideRatio = [.2,.1];
     p.sizeOfPeak = 5;
     p.filtPeak = p.numRows+1;
-    p.setPre = 0;
     p.nameOfFolder = p.nameOfFolder;
     
     p.totalInpDimsConditions = 2; %%Once with small DIMS for caudal, once each with small and large DIMS for intact

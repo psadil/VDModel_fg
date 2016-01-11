@@ -45,25 +45,6 @@ preTrainedWeights = weights;
 
 %% initialize storage variables
 
-% to be plotted with plotFamilDiffs
-p.meanSelectivity_caudal_new = zeros(p.nTrials,min(p.nGrids));
-p.meanSelectivity_PRC_new = zeros(p.nTrials,min(p.nGrids));
-p.meanSelectivity_caudal_prev = zeros(p.nTrials,min(p.nGrids));
-p.meanSelectivity_PRC_prev = zeros(p.nTrials,min(p.nGrids));
-p.familDiff_caudal = zeros(p.nTrials,min(p.nGrids));
-p.familDiff_PRC = zeros(p.nTrials,min(p.nGrids));
-
-
-p.prevStimInit_act_peak = zeros(p.layer,p.nTrials);
-p.prevStimInit_act_total = zeros(p.layer,p.nTrials);
-p.prevStimFin_act_peak = zeros(p.layer,p.nTrials);
-p.prevStimFin_act_total = zeros(p.layer,p.nTrials);
-p.newStimInit_act_peak = zeros(p.layer,p.nTrials);
-p.newStimInit_act_total = zeros(p.layer,p.nTrials);
-p.newStimFin_act_peak = zeros(p.layer,p.nTrials);
-p.newStimFin_act_total = zeros(p.layer,p.nTrials);
-% two layers when PRC is available (control sessions)
-
 % tally of activation by trial and layer
 p.peak_act = zeros(p.nTrials,2);
 p.totalAct = zeros(p.nTrials,2);

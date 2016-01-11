@@ -26,7 +26,7 @@ global consts
 % startParms = [ .7 , 20 ];
 A = .3; % .7
 B = .8; % .6
-train = 100;
+train = 1;
 eta = train^-A;
 g = .5+10*train^-B;
 k = .08;

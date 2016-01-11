@@ -2,7 +2,7 @@ function [ p, weights ] = delay_interfere( p, weights )
 %delay_interfere simulates intereference during delay cycles
 %   Detailed explanation goes here
 
-fprintf('\ninterference being executed...');
+fprintf('\n%d interference cycles being executed...', p.delayCycles(p.stimCond));
 
 for layer = 1:max(p.numLayers)
     for grid = 1:p.nGrids(layer),
