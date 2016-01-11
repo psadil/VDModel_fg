@@ -1,4 +1,4 @@
-function [weights, stopSampling, p, trial_info] = VD_compare_stimuli(stimPair, weights, p, trial)
+function [weights, stopSampling, p] = VD_compare_stimuli(stimPair, weights, p, trial)
 %VD_compare_stimuli_controllOfFixation called by visDiscrimModel.m
 
 % want this function to: decide which features of the stimulus to present
@@ -116,8 +116,8 @@ while ((p.fixations(trial) < p.maxFix) && stopSampling == 0) || (keepSampling &&
     pktot.init_act_peak = zeros(p.numLayers,max(p.numGrids));
     pktot.init_act_total = zeros(p.numLayers,max(p.numGrids));
     
-    [weights, selectivity, initial_selec, p, pktot, ~, ~, ~, initial_weights] = VD_present_stimulus(stimulus, weights, p, features_sampled, trial, pktot);
-    
+    [weights, selectivity, initial_selec, p, pktot, initial_weights] = ...
+        VD_present_stimulus(stimulus, weights, p, trial, pktot);
     
     
     % after completing within-stimulus fixations, some fixations can land,
@@ -173,13 +173,13 @@ while ((p.fixations(trial) < p.maxFix) && stopSampling == 0) || (keepSampling &&
         %         trial_info.famil_difference=famil_difference;
         %         trial_info.mean_act = mean_act;
         %         trial_info.activations = activations;
-        trial_info.selectivity=selectivity;
-        trial_info.prevStimSelec = prevStimSelec;
+%         trial_info.selectivity=selectivity;
+%         trial_info.prevStimSelec = prevStimSelec;
         %         trial_info.prevStimActs = prevStimActs;
         %         trial_info.initialActs_prev = prevInitialActs;
-        trial_info.initialSelec_prev = prevInitialSelec;
+%         trial_info.initialSelec_prev = prevInitialSelec;
         %         trial_info.initialActs_new = initial_acts;
-        trial_info.initialSelec_new = initial_selec;
+%         trial_info.initialSelec_new = initial_selec;
         %         trial_info.correlation = correlation;
         %         trial_info.prev_mean_act=prev_mean_act;
         
@@ -204,7 +204,7 @@ while ((p.fixations(trial) < p.maxFix) && stopSampling == 0) || (keepSampling &&
     
     features_sampled_prev = features_sampled;
     prevStimSelec = selectivity;
-    prevInitialSelec = initial_selec;
+%     prevInitialSelec = initial_selec;
     %     prevInitialActs = initial_acts;
     %     prev_mean_act = mean_act;
     pktot.prevStimFin_act_peak = pktot.fin_act_peak;

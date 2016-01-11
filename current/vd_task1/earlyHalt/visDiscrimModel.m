@@ -116,7 +116,7 @@ for trial = 1:p.nTrials,
     
     %----------------------------------------------------------------------
     %%% Generate series of saccades and present stimuli, for this trial
-    [weights, stop_sampling, p, ~] = VD_compare_stimuli(stimPair, weights, p, trial); %weights output on previous trial get input on next trial
+    [weights, stop_sampling, p] = VD_compare_stimuli(stimPair, weights, p, trial); %weights output on previous trial get input on next trial
     
     %     p.activations(:,:,:,trial)=activations;
     

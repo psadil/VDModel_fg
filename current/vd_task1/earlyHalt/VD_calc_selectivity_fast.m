@@ -1,4 +1,4 @@
-function [f_out, act_out, selectivity, p, act_peak, act_total] = VD_calc_selectivity_fast(win_row, win_col, dist_mat,p, nInpDims)
+function [f_out, selectivity, p, act_peak, act_total] = VD_calc_selectivity_fast(win_row, win_col, dist_mat,p, nInpDims)
 
 %% Function called from VD_present_stimulus.m. Calculates grid_dist matrix, then
 %% calculates all units' activities and selectivity of activation peak.

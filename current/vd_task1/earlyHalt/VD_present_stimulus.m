@@ -1,4 +1,4 @@
-function [W, selec, initial_selec, p, pktot, usePRC, act_out, initial_acts,initial_weights] = VD_present_stimulus(stim, W, p, features_sampled, trial,pktot)
+function [W, selec, initial_selec, p, pktot, initial_weights] = VD_present_stimulus(stim, W, p, trial,pktot)
 
 % Function called by VD_present_stimulus.m. Presents the network with the two stimuli on this trial.
 % Choose whichever layer demonstrates higher selectivity
@@ -12,8 +12,8 @@ function [W, selec, initial_selec, p, pktot, usePRC, act_out, initial_acts,initi
 
 inp_mat = repmat(reshape(stim,[1 1 length(stim)]), [p.nRows p.nRows 1]);
 
-act_out = zeros(p.layer,p.nRows,p.nRows,p.maxNumGrids); % 5 grids (only 1 stimulus)
-initial_acts = zeros(p.layer,p.nRows,p.nRows,p.maxNumGrids);
+% act_out = zeros(p.layer,p.nRows,p.nRows,p.maxNumGrids); % 5 grids (only 1 stimulus)
+% initial_acts = zeros(p.layer,p.nRows,p.nRows,p.maxNumGrids);
 selec = zeros(p.numLayers,max(p.numGrids));
 initial_selec = zeros(p.numLayers,max(p.numGrids));
 
@@ -23,13 +23,6 @@ initial_weights = zeros(size(W));
 % pktot.init_act_peak = zeros(p.numLayers,max(p.numGrids));
 % pktot.init_act_total = zeros(p.numLayers,max(p.numGrids));
 % winact = zeros(p.numLayers,p.maxNumGrids,2);  % activation in each grid in x,y coordinates?
-
-% only use PRC layer if available and enough features were sampled
-% if (p.layer == 2) && (length(features_sampled) == p.numGrids_Caudal)
-    usePRC = 1;
-% else
-%     usePRC = 0;
-% end
 
 
 
@@ -66,13 +59,13 @@ for layer=1:p.layer
         % or if dealing with PRC but 5 features weren't sampled, skip
         % presenting
         %         if (layer==1 && (~any(features_sampled==grid) || usePRC)) || (layer==2 && ~usePRC)
-%         if ~p.fives
-%             if (layer==1 && (~any(features_sampled==grid))) || (layer==2 && ~usePRC)
-% 
-%                 
-%                 continue
-%             end
-%         end
+        %         if ~p.fives
+        %             if (layer==1 && (~any(features_sampled==grid))) || (layer==2 && ~usePRC)
+        %
+        %
+        %                 continue
+        %             end
+        %         end
         
         nEncodCycles = p.nEncodCycles;
         if p.variableEncode
@@ -83,28 +76,28 @@ for layer=1:p.layer
                 stick_switch = rand;
             end
         end
-           
-              
+        
+        
         %% update weights on new stimuli for initial calc of selectivity
         
-% % %         %-----------------------------------------
-% % %         % preliminary update for new stimulus
-% % %         %-----------------------------------------
-% % %         [win_row, win_col, dist_mat] = findWinningNode(weights, input_mat, p.numInputDims(layer));
-% % %         
-% % %         % NOTE, only need f, since we're only updating weights here
-% % %         [f, ~, ~, p, ~, ~] = VD_calc_selectivity_fast(win_row, win_col, dist_mat, p, p.numInputDims(layer));
-% % %         % Update Weights
-% % %         weights = weights + f.*(input_mat-weights); 
-%         
-%         % add random noise to all nodes
-%         noise = (-p.decision_noise + (p.decision_noise + p.decision_noise).*...
-%             (rand(p.numRows,p.numRows,p.numInputDims(layer))));
-%         weights = weights + noise;
-%         
-%         % Squidge the distribution of weight values back into the 0 to 1 range.
-%         weights = weights + p.decision_noise;
-%         weights = weights ./ (1+2*p.decision_noise);
+        % % %         %-----------------------------------------
+        % % %         % preliminary update for new stimulus
+        % % %         %-----------------------------------------
+        % % %         [win_row, win_col, dist_mat] = findWinningNode(weights, input_mat, p.numInputDims(layer));
+        % % %
+        % % %         % NOTE, only need f, since we're only updating weights here
+        % % %         [f, ~, ~, p, ~, ~] = VD_calc_selectivity_fast(win_row, win_col, dist_mat, p, p.numInputDims(layer));
+        % % %         % Update Weights
+        % % %         weights = weights + f.*(input_mat-weights);
+        %
+        %         % add random noise to all nodes
+        %         noise = (-p.decision_noise + (p.decision_noise + p.decision_noise).*...
+        %             (rand(p.numRows,p.numRows,p.numInputDims(layer))));
+        %         weights = weights + noise;
+        %
+        %         % Squidge the distribution of weight values back into the 0 to 1 range.
+        %         weights = weights + p.decision_noise;
+        %         weights = weights ./ (1+2*p.decision_noise);
         
         
         for cycle=1:nEncodCycles
@@ -117,19 +110,7 @@ for layer=1:p.layer
             %--------------------------------------------------------------
             %Calculate each unit's distance from winner and activation
             %--------------------------------------------------------------
-            [f, acts, selectivity, p, act_peak, act_total] = VD_calc_selectivity_fast(win_row, win_col, dist_mat, p, p.numInputDims(layer));
-            
-             % Update Weights
-            weights = weights + f.*(input_mat-weights);  % update based on spire around winning node
-            % add random noise to all nodes
-%             noise = (-p.decision_noise + (p.decision_noise + p.decision_noise).*...
-%                 (rand(p.numRows,p.numRows,p.numInputDims(layer))));
-%             weights = weights + noise;
-%             
-%             % Squidge the distribution of weight values back into the 0 to 1 range.
-%             weights = weights + p.decision_noise;
-%             weights = weights ./ (1+2*p.decision_noise);
-            
+            [f, selectivity, p, act_peak, act_total] = VD_calc_selectivity_fast(win_row, win_col, dist_mat, p, p.numInputDims(layer));
             
             if cycle==1,  %need to compare last set of weights of old grid to
                 initial_selec(layer,grid) = selectivity;
@@ -137,11 +118,24 @@ for layer=1:p.layer
                 pktot.init_act_total(layer,grid) = act_total;
                 
                 % initial weights of new grid.
-                initial_acts(layer,:,:,grid) = acts;
+                %                 initial_acts(layer,:,:,grid) = acts;
                 
                 initial_weights(layer,:,:,1:p.numInputDims(layer),grid) = weights;
                 
             end
+            
+            
+            
+            % Update Weights
+            weights = weights + f.*(input_mat-weights);  % update based on spire around winning node
+            % add random noise to all nodes
+            %             noise = (-p.decision_noise + (p.decision_noise + p.decision_noise).*...
+            %                 (rand(p.numRows,p.numRows,p.numInputDims(layer))));
+            %             weights = weights + noise;
+            %
+            %             % Squidge the distribution of weight values back into the 0 to 1 range.
+            %             weights = weights + p.decision_noise;
+            %             weights = weights ./ (1+2*p.decision_noise);
             
             
         end %%% Go to next cycle (if switchRatio is low enough)
@@ -151,11 +145,11 @@ for layer=1:p.layer
         % final calculation of selectivity, now that encoding has been
         % completed
         [win_row, win_col, dist_mat] = findWinningNode(weights, input_mat, p.numInputDims(layer));
-        [~, acts, selectivity, p, act_peak, act_total] = VD_calc_selectivity_fast(win_row, win_col, dist_mat, p, p.numInputDims(layer));
-            
+        [~, selectivity, p, act_peak, act_total] = VD_calc_selectivity_fast(win_row, win_col, dist_mat, p, p.numInputDims(layer));
         
-        W(layer,:,:,1:p.numInputDims(layer),grid) = weights; 
-        act_out(layer,:,:,grid) = acts; 
+        
+        W(layer,:,:,1:p.numInputDims(layer),grid) = weights;
+        %         act_out(layer,:,:,grid) = acts;
         selec(layer,grid) = selectivity;
         pktot.fin_act_peak(layer,grid) = act_peak;
         pktot.fin_act_total(layer,grid) = act_total;

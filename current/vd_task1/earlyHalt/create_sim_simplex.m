@@ -24,13 +24,13 @@ global consts
 %%% numEncodingCycles
 % startParms = [ .01 , .8 ]; % .09
 % startParms = [ .7 , 20 ];
-A = .6; % .7
-B = .6; % .6
+A = .3; % .7
+B = .8; % .6
 train = 100;
 eta = train^-A;
 g = .5+10*train^-B;
 k = .08;
-noise = 0;
+noise = 1e-6;
 leng = 6;
 startCrit = .5e-5;
 
