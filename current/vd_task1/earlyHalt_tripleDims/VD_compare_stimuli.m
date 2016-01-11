@@ -1,4 +1,4 @@
-function [weights, stopSampling, p, trial_info] = delay_compare_stimuli(stimPair, weights, p, trial)
+function [weights, stopSampling, p] = VD_compare_stimuli(stimPair, weights, p, trial)
 %VD_compare_stimuli_controllOfFixation called by visDiscrimModel.m
 
 % want this function to: decide which features of the stimulus to present
@@ -34,6 +34,9 @@ while ((p.fixations(trial) < p.maxFix) && stopSampling == 0) || (keepSampling &&
     avail_feat = randperm(p.numGrids_Caudal);
     sample_feat(avail_feat(1:p.nFeaturesToSample)) = 1; %sample features (at random)
     
+    % HUH..,MAYBE THIS NEEDS TO BE COMMENTED OUT: FIXATIONS ARE ONLY
+    % ENCODING CYCLES...
+    %     p.fixations(trial) = p.fixations(trial) + 1; %% total fixations across both stimuli
     
     if ~first_stim_sampled %force at least one feature in newly sampled stim to
         % be compared with features samped from prev
@@ -45,10 +48,49 @@ while ((p.fixations(trial) < p.maxFix) && stopSampling == 0) || (keepSampling &&
         end
     end
     
+%     stick = 1;
+    %     while stick == 1,
+    %         %------------------------------------------------------------------
+    %         % decide whether to stick or switch stimulus (using fixation ratio)
+    %         %------------------------------------------------------------------
+    %
+    %         stick_switch = rand;
+    %         %         stickProb = p.fixn_ratio/(p.fixn_ratio+1);
+    %         if stick_switch <= p.fixn_ratio
+    %             stick = 1;
+    %         else %if stick_switch >= stickProb
+    %             stick = 0;
+    %             continue;
+    %         end
+    %
+    %         %------------------------------------------------------------------
+    %         %if stick, sample more features
+    %         %------------------------------------------------------------------
+    %
+    %         if stick %&& (p.fixations(trial) <= p.maxFix),
+    %             % sample 3 features on each fixation (note: remove one already-sampled feature, if 1st or 2nd fixation on this stim)
+    %             if length(avail_feat) > p.nFeaturesToSample, % make sure that enough features are left to sample from
+    %                 avail_feat = avail_feat(2:end);
+    %                 %NOTE: all features can only be sampled once (features are being totted up over fixations and sampled at the end)
+    %
+    %                 % HUH..,MAYBE THIS NEEDS TO BE COMMENTED OUT: FIXATIONS ARE ONLY
+    %                 % ENCODING CYCLES...
+    %                 %     p.fixations(trial) = p.fixations(trial) + 1; %% total fixations across both stimuli
+    %
+    %                 avail_feat = avail_feat(randperm(length(avail_feat)));
+    %                 sample_feat(avail_feat(1:p.nFeaturesToSample)) = 1; %sample features
+    %             else
+    %                 stick = 0;
+    %             end
+    %         end
+    %     end
     
     p.sample_feat(trial,:) = sample_feat;
     p.featsSampedByComparison(stim,trial, comparison) = sum(sample_feat);
-        
+    
+    %     % incriment total fixation counter (used to shrink learning parameter)
+    %     p.fixations_total = p.fixations_total+fixations;
+    
     % Incorporate all evidence together into stimulus presentation; grab stimulus, sample the specified features, fill remaining inputs with 0.5
     features_sampled = find(sample_feat==1);
     
@@ -74,8 +116,8 @@ while ((p.fixations(trial) < p.maxFix) && stopSampling == 0) || (keepSampling &&
     pktot.init_act_peak = zeros(p.numLayers,max(p.numGrids));
     pktot.init_act_total = zeros(p.numLayers,max(p.numGrids));
     
-    [weights, selectivity, initial_selec, p, pktot, ~, ~, ~, initial_weights] = VD_present_stimulus(stimulus, weights, p, features_sampled, trial, pktot);
-    
+    [weights, selectivity, initial_selec, p, pktot, initial_weights] = ...
+        VD_present_stimulus(stimulus, weights, p, trial, pktot);
     
     
     % after completing within-stimulus fixations, some fixations can land,
@@ -131,13 +173,13 @@ while ((p.fixations(trial) < p.maxFix) && stopSampling == 0) || (keepSampling &&
         %         trial_info.famil_difference=famil_difference;
         %         trial_info.mean_act = mean_act;
         %         trial_info.activations = activations;
-        trial_info.selectivity=selectivity;
-        trial_info.prevStimSelec = prevStimSelec;
+%         trial_info.selectivity=selectivity;
+%         trial_info.prevStimSelec = prevStimSelec;
         %         trial_info.prevStimActs = prevStimActs;
         %         trial_info.initialActs_prev = prevInitialActs;
-        trial_info.initialSelec_prev = prevInitialSelec;
+%         trial_info.initialSelec_prev = prevInitialSelec;
         %         trial_info.initialActs_new = initial_acts;
-        trial_info.initialSelec_new = initial_selec;
+%         trial_info.initialSelec_new = initial_selec;
         %         trial_info.correlation = correlation;
         %         trial_info.prev_mean_act=prev_mean_act;
         
@@ -162,7 +204,7 @@ while ((p.fixations(trial) < p.maxFix) && stopSampling == 0) || (keepSampling &&
     
     features_sampled_prev = features_sampled;
     prevStimSelec = selectivity;
-    prevInitialSelec = initial_selec;
+%     prevInitialSelec = initial_selec;
     %     prevInitialActs = initial_acts;
     %     prev_mean_act = mean_act;
     pktot.prevStimFin_act_peak = pktot.fin_act_peak;
