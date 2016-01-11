@@ -81,7 +81,7 @@ for sess = 1:p.nSess,
 %     p.nEncodCycles = p.numEncodingCycles(p.stimCond);
     
     %% say what about to happen
-    fprintf('\n\nSESSION %d\n', sess);
+    fprintf('\n\nSESSION %d, RAT %d\n', sess, p.ratNum);
     
     %% execute model code
     p = delayModel(p,stims,weights);
