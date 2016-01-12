@@ -5,11 +5,6 @@ if exist('p', 'var')
     clear p
 end
 
-ratDir = strcat(pwd,'\rats');
-if ~exist(ratDir, 'dir'),
-    mkdir(ratDir);
-end
-
 outerDir = strcat(pwd, '/graphsAndSession');
 if ~exist(outerDir, 'dir'),
     mkdir(outerDir);
@@ -21,7 +16,6 @@ end
 %         mkdir(ratDir);
 %     end
 % end
-fprintf('\nSetting new seed by clock.');
 rng('shuffle');
 
 
@@ -63,7 +57,8 @@ parfor rat = firstRat:lastRat
     p.maxNumGrids = max(p.nGrids);
     p.nStimFactors = 4; % number of levels for each dimension
     
-    p.components = 8;
+    p.nDimReps = 3;
+    p.components = 24;
     p.numInputDims_Caudal = p.components/p.numGrids_Caudal;
     p.numInputDims_PRC = p.components;
     p.numInputDims = [p.numInputDims_Caudal, p.numInputDims_PRC];
@@ -82,7 +77,6 @@ parfor rat = firstRat:lastRat
     
     p.totalInpDimsConditions = 2; %%Once with small DIMS for caudal, once each with small and large DIMS for intact
     
-    p.expt = 'null';
     p.nMismatch = 4;
     p.nMatch = 0;
     
@@ -101,4 +95,4 @@ parfor rat = firstRat:lastRat
     
 end
 
-% plotFamilDiffs(1, lastRat, consts.nameOfFolder);
+% plotRecognition(1, lastRat, p.nameOfFolder);

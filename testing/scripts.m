@@ -1,21 +1,25 @@
 % testing the shape of the activation function. logistic
 
 L=1; % maximum
-k=.2; % curve steepness, also determines how low is the initial start
+k=50; % curve steepness, also determines how low is the initial start
 
 maxDist = .15;
 steps = .00001;
 
-x = maxDist:-steps:0;
+x = -maxDist:steps:maxDist;
 xaxis = 0:steps:maxDist;
 
 xlog = log(1./x);
 
-% plot(-x,xlog)
+plot(-x,xlog)
 
-acts = L ./ (1 + exp(-k * xlog));
+acts = L ./ (-1 + exp(-k * xlog));
 
-plot(-x,acts)
+plot(x,acts)
+
+x_other = -maxDist:steps:maxDist;
+acts_other = 1 ./ (1 + exp(.01 * (1./-x_other)));
+plot(x_other,acts_other)
 
 % note, however, that the weights aren't updated linearly. Rather, they
 % also travel along and exp() curve. 

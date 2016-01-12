@@ -49,7 +49,7 @@ meanRecog = mean(squeeze(mean(recognition,1)),3);
 %%
 close all
 
-figure
+figs(1) = figure;
 hold on
 plot(1:5,meanRecog(:,1), '--ok', 'MarkerSize',10)
 plot(1:5,meanRecog(:,2),'-ok','MarkerFaceColor','k', 'MarkerSize',10)
@@ -58,7 +58,8 @@ ax.XTick = 1:5;
 legend('Lesion','Control')
 legend('boxoff')
 
-
+saveas(figs(1),[saveFolder, '/recog'],'fig');
+saveas(figs(1),[saveFolder, '/recog'],'jpg');
 
 end
 

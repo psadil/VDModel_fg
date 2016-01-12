@@ -5,12 +5,11 @@ function [p, stims] = createDelayStimuli(p)
 % ROOT = [pwd '\'];
 % exptDir = [p.exptName, '\'];
 
-nTotalDims = p.components;
+nTotalDims = p.components / p.nDimReps;
 nCaudalGrids = p.numGrids_Caudal;
 nDimsCaudal = nTotalDims / nCaudalGrids;
 nStimFactors = p.nStimFactors;
 nSimpleConj = nDimsCaudal ^ nStimFactors;
-
 
 % number of features to use for stimuli (less then total)
 nStimsPerCond = 6;
@@ -55,7 +54,9 @@ for stimPair = 1:p.nMismatch,
 end
 
 
-stims.stimuli1 = LA_misMatch;
+stims.stimuli1 = reshape(repmat(reshape(LA_misMatch,...
+        [1,p.nMismatch,1,p.numInputDims_PRC/p.nDimReps,1,2]),[1,1,p.nDimReps,1,1,1]),...
+        [p.nMismatch,(p.numInputDims_PRC/p.nDimReps)*p.nDimReps,2]);
 
 % %save stimuli
 % if ~exist(strcat(ROOT,exptDir,'condition1'),'dir')

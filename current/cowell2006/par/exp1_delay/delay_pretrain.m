@@ -30,7 +30,7 @@ for layer = 1:max(p.numLayers)
                 fprintf('\nWithin pretrain, Cycle %d, G = %f, ETA = %f', cycle, p.G, p.eta);
             end
             
-            [inp_mat] = delay_gen_limited_input(nInpDims,p); %generate an input vector
+            [inp_mat] = delay_gen_limited_input(nInpDims/p.nDimReps,p); %generate an input vector
             
             %--------------------------------------------------------------
             % Find winning node

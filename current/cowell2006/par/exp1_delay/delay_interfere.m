@@ -12,7 +12,7 @@ for layer = 1:max(p.numLayers)
         
         for cycle=1:p.delayCycles(p.stimCond),
                         
-            inp_mat = delay_gen_limited_input(p.numInputDims(layer),p); %generate an input vector
+            inp_mat = delay_gen_limited_input(p.numInputDims(layer)/p.nDimReps,p); %generate an input vector
             
             %--------------------------------------------------------------
             % Find winning node

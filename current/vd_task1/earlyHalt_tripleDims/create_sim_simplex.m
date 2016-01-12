@@ -24,7 +24,7 @@ global consts
 %%% numEncodingCycles
 % startParms = [ .01 , .8 ]; % .09
 % startParms = [ .7 , 20 ];
-A = .3; % .7
+A = .8; % .7
 B = .8; % .6
 train = 1;
 eta = train^-A;

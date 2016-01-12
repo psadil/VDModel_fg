@@ -1,3 +1,14 @@
+
+1jan2016
+ps
+
+any folder with 'tripleDims' in name refers to how the input dimensions tripled, as per
+Cowell et al. 2006's actual stimuli (rather than caudal layer receiving 2 dims as input, and PRC 8,
+they received 6 and 24, respectively. Though, the dims were just triplicaitons of what was 
+already being input (i.e., [.35,.95] -> [.35,.35,.35,.95,.95,.95]))
+
+
+**************************************************************
 6jan2016
 
 ps
