@@ -30,7 +30,7 @@ train = 100;
 eta = train^-A;
 g = .5+10*train^-B;
 k = .25;
-noise = 1e-6;
+noise = 1.5e-6;
 leng = 6;
 startCrit = noise*3;
 
