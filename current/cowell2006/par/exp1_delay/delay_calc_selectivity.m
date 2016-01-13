@@ -36,12 +36,13 @@ act_out = log(ones(p.nRows,p.nRows) ./ dist_mat);
 
 % act_out = p.a + ((p.k - p.a)./ ((p.c + p.q * exp(-p.b*act_out)).^(1/p.v)));
 
-
 act_out = 1./(1+exp(-p.k_expt*act_out)); %squashing function   (why squash?)
 % 
 % surf(act_out)
 % max(act_out)
 % close all
+
+% act_out(act_out>9.21)=9.21;
 
 
 % surf(act_out);
@@ -106,3 +107,4 @@ selectivity = act_peak/act_total;
 
 
 % p.totalAct(trial,layer) = act_total;
+end

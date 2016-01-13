@@ -12,7 +12,8 @@ nStimFactors = p.nStimFactors;
 nSimpleConj = nDimsCaudal ^ nStimFactors;
 
 % number of features to use for stimuli (less then total)
-nStimsPerCond = 6;
+% nStimsPerCond = 6;
+nStimsPerCond = nSimpleConj;
 
 LA_misMatch = zeros(p.nMismatch,nTotalDims,2); %one col for stim1, one col for stim2
 

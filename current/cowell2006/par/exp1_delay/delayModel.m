@@ -1,4 +1,4 @@
-function p = delayModel(p,stims,weights)
+function p = delayModel(p,stims,weights_before)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Matlab code for making a Self Organising Feature Map grid (SOFM)
@@ -35,8 +35,8 @@ function p = delayModel(p,stims,weights)
 %     end
 % end
 
-% preTrainedWeights=rand(p.layer,p.nRows,p.nRows,p.numInputDims(p.numLayers),p.numGrids(1));
-preTrainedWeights = weights;
+preTrainedWeights=rand(p.layer,p.nRows,p.nRows,p.numInputDims(p.numLayers),p.numGrids(1));
+% preTrainedWeights = weights_before;
 
 % Get stimuli from stimulus files in '/p.expt/conditionXX/' directory.
 % location = strcat(p.root, p.expt, '/condition', num2str(p.stimCond),'/stimuli.mat');
@@ -69,9 +69,6 @@ for trial = 1:p.nTrials,
 %     stimPair = stimPair(:,:,:);
     stimPair = squeeze(stims.stimuli1(trial,:,:));
 
-
-    % take only first stimulus in pair
-    stimulus_sample = stimPair(:,1);
         
     pktot.fin_act_peak = zeros(p.numLayers,max(p.numGrids));
     pktot.fin_act_total = zeros(p.numLayers,max(p.numGrids));
@@ -80,7 +77,7 @@ for trial = 1:p.nTrials,
     
     % present initial sample stimulus
     [weights, ~, p, pktot] = ...
-        delay_present_stimulus(stimulus_sample, preTrainedWeights, p, trial, pktot);
+        delay_present_stimulus(stimPair(:,1), preTrainedWeights, p, trial, pktot);
     
     % simulate delay for appropriate cycles
     [p, weights] = delay_interfere(p, weights);
@@ -88,7 +85,7 @@ for trial = 1:p.nTrials,
     selec_forComp = zeros(p.numLayers,max(p.nGrids),2);
     % re-present initial sample stimulus
     [~, selec_forComp(:,:,1), p, pktot] = ...
-        delay_present_stimulus(stimulus_sample, weights, p, trial, pktot);
+        delay_present_stimulus(stimPair(:,1), weights, p, trial, pktot);
     
     % present initial novel stimulus
     [~, selec_forComp(:,:,2), p, pktot] = ...

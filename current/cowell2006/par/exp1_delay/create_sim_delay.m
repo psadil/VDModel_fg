@@ -29,12 +29,13 @@ parfor rat = firstRat:lastRat
     train = 100;
     etaExp = train^-A;
     G_exp = .5+10*train^-B;
-    k_expt = 1;
+    k_expt = .5;
+    p.eta_int = 0.05;
     
-    p.exptName = '8jan2016';
+    p.exptName = '12jan2016';
     p.nameOfFolder = ['eta', num2str(etaExp), '_g', num2str(G_exp), ...
         '_K', num2str(k_expt), '_A', num2str(A) ,'_B', num2str(B), '_20enc20_', num2str(train), ...
-        'trnNORAND_','5pk'];
+        'trnRAND_','5pk_etaInt', num2str(p.eta_int)];
     
     p.dataDir = strcat(pwd, '/graphsAndSession/', p.nameOfFolder);
     if ~exist(p.dataDir, 'dir'),

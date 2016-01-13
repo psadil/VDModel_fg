@@ -45,6 +45,9 @@ function [ win_row, win_col, dist_mat ] = findWinningNode( weights, inp_mat, nIn
 % last set of working code below...
 
 dist_mat_slices_sq = (weights - inp_mat).^2; %% Use portion of stimulus corresponding to the current grid
+% dist_mat_slices_sq = abs(weights - inp_mat);
+
+
 % First slice of this contains (squared) distances of x-coords,
 % second slice contains (squared) distances of y-coords
 dist_mat_temp_sq = sum(dist_mat_slices_sq,3);

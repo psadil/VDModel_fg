@@ -3,6 +3,7 @@ function [ p, weights ] = delay_interfere( p, weights )
 %   Detailed explanation goes here
 
 fprintf('\n%d interference cycles being executed...', p.delayCycles(p.stimCond));
+interefere = 1;
 
 for layer = 1:max(p.numLayers)
     for grid = 1:p.nGrids(layer),
@@ -12,6 +13,11 @@ for layer = 1:max(p.numLayers)
         
         for cycle=1:p.delayCycles(p.stimCond),
                         
+            
+%             if cycle == 300
+%                 1;
+%             end
+            
             inp_mat = delay_gen_limited_input(p.numInputDims(layer)/p.nDimReps,p); %generate an input vector
             
             %--------------------------------------------------------------
@@ -23,7 +29,7 @@ for layer = 1:max(p.numLayers)
             %--------------------------------------------------------------
             % Calculate each unit's distance from winner, for use in
             % updating
-            [f, ~] = delay_calc_act_fast(win_row, win_col, dist_mat,layer,p);
+            [f, ~] = delay_calc_act_fast(win_row, win_col, dist_mat,layer,p, interefere);
                         
             %%% Update Weights
             w = w + f.*(inp_mat-w);

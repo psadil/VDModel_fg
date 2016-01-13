@@ -1,7 +1,7 @@
 function [p,weights] = delay_pretrain(p)
 
 fprintf('\ndelay_pretrain being executed...');
-
+interefere = 0;
 
 %%%%%%%%%%%%%%%%%%%%% Perform pre-training of network %%%%%%%%%%%%%%%%
 weights = zeros(max(p.numLayers),p.numRows,p.numRows,p.numInputDims(p.numLayers),p.nGrids(1));
@@ -39,7 +39,7 @@ for layer = 1:max(p.numLayers)
             
             %------------------------------------------------------------------
             % Calculate each unit's distance from winner and resultant activation
-            [f, ~] = delay_calc_act_fast(win_row, win_col, dist_mat,layer,p);
+            [f, ~] = delay_calc_act_fast(win_row, win_col, dist_mat,layer,p,interefere);
             
             %             if nInpDims == p.numInputDims_PRC
             %                 p.activationsPretrain_PRC(:,:,grid,cycle)=act;
@@ -57,12 +57,13 @@ for layer = 1:max(p.numLayers)
         end  % end of training cycles loop
         
         %% Add random noise to the weights
-        %         rand_noise = (1 - 2*(rand(p.numRows,p.numRows,nInpDims))); % Creates a matrix of random values between -1 and 1.
-        %         w = w + rand_noise;
-        %
-        %         %%% Squidge the distribution of weight values back into the 0 to 1 range.
-        %         w = w + 1;
-        %         w = w./3;
+%                 rand_noise = (1 - 2*(rand(p.numRows,p.numRows,nInpDims))); % Creates a matrix of random values between -1 and 1.
+%                 w = w + rand_noise;
+        w = (w + (1 - 2*(rand(p.numRows,p.numRows,nInpDims))) + 1)./3 ;
+        
+                %%% Squidge the distribution of weight values back into the 0 to 1 range.
+%                 w = w + 1;
+%                 w = w./3;
         
         % Is there a problem with this, in that only some weight get the maximum possible
         % increment or decrement, and only a subset of these were high or low to start off with, therefore very few end up anywhere
@@ -77,7 +78,7 @@ for layer = 1:max(p.numLayers)
         %         save(location, 'w');
         %
         
-        weights(layer,:,:,1:p.numInputDims(layer),grid);
+        weights(layer,:,:,1:p.numInputDims(layer),grid) = w;
     end % end of grid loop
     
     
