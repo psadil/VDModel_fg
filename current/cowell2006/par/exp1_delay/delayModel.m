@@ -77,22 +77,22 @@ for trial = 1:p.nTrials,
     
     % present initial sample stimulus
     [weights, ~, p, pktot] = ...
-        delay_present_stimulus(stimPair(:,1), preTrainedWeights, p, trial, pktot);
+        present_stimulus(stimPair(:,1), preTrainedWeights, p, trial, pktot);
     
     % simulate delay for appropriate cycles
-    [p, weights] = delay_interfere(p, weights);
+    [p, weights] = interfere(p, weights);
     
     selec_forComp = zeros(p.numLayers,max(p.nGrids),2);
     % re-present initial sample stimulus
     [~, selec_forComp(:,:,1), p, pktot] = ...
-        delay_present_stimulus(stimPair(:,1), weights, p, trial, pktot);
+        present_stimulus(stimPair(:,1), weights, p, trial, pktot);
     
     % present initial novel stimulus
     [~, selec_forComp(:,:,2), p, pktot] = ...
-        delay_present_stimulus(stimPair(:,2), weights, p, trial, pktot);
+        present_stimulus(stimPair(:,2), weights, p, trial, pktot);
     
     % calc recognition score
-    [p] = delay_calc_recognition(p, selec_forComp, trial);
+    [p] = calc_recognition(p, selec_forComp, trial);
     
         
 end

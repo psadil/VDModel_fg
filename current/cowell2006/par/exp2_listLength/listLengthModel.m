@@ -1,4 +1,4 @@
-function p = listLengthModel(p,stims,weights)
+function p = listLengthModel(p,stims,weights_before)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Matlab code for making a Self Organising Feature Map grid (SOFM)
@@ -35,8 +35,8 @@ function p = listLengthModel(p,stims,weights)
 %     end
 % end
 
-% preTrainedWeights=rand(p.layer,p.nRows,p.nRows,p.numInputDims(p.numLayers),p.numGrids(1));
-preTrainedWeights = weights;
+preTrainedWeights=rand(p.layer,p.nRows,p.nRows,p.numInputDims(p.numLayers),p.numGrids(1));
+% preTrainedWeights = weights_before;
 
 % Get stimuli from stimulus files in '/p.expt/conditionXX/' directory.
 % location = strcat(p.root, p.expt, '/condition', num2str(p.stimCond),'/stimuli.mat');
@@ -44,25 +44,6 @@ preTrainedWeights = weights;
 % fclose('all');
 
 %% initialize storage variables
-
-% to be plotted with plotFamilDiffs
-p.meanSelectivity_caudal_new = zeros(p.nTrials,min(p.nGrids));
-p.meanSelectivity_PRC_new = zeros(p.nTrials,min(p.nGrids));
-p.meanSelectivity_caudal_prev = zeros(p.nTrials,min(p.nGrids));
-p.meanSelectivity_PRC_prev = zeros(p.nTrials,min(p.nGrids));
-p.familDiff_caudal = zeros(p.nTrials,min(p.nGrids));
-p.familDiff_PRC = zeros(p.nTrials,min(p.nGrids));
-
-
-p.prevStimInit_act_peak = zeros(p.layer,p.nTrials);
-p.prevStimInit_act_total = zeros(p.layer,p.nTrials);
-p.prevStimFin_act_peak = zeros(p.layer,p.nTrials);
-p.prevStimFin_act_total = zeros(p.layer,p.nTrials);
-p.newStimInit_act_peak = zeros(p.layer,p.nTrials);
-p.newStimInit_act_total = zeros(p.layer,p.nTrials);
-p.newStimFin_act_peak = zeros(p.layer,p.nTrials);
-p.newStimFin_act_total = zeros(p.layer,p.nTrials);
-% two layers when PRC is available (control sessions)
 
 % tally of activation by trial and layer
 p.peak_act = zeros(p.nTrials,2);
@@ -75,48 +56,51 @@ p.recognition = zeros(p.nTrials,1);
 % for picking out the stim in the stimulus pair...
 tTypeCnt = [0 0];
 
-for trial = 1:p.nTrials,
-    %%% Determine trial type and increment count
-    tType = p.tType(trial);
-    tTypeCnt(tType) = tTypeCnt(tType)+1;
+for sess = 1:p.nMismatch,
     
-    %----------------------------------------------------------------------
-    %%% Get the two stimuli for this simultaneous visual discrimination trial
-%     stim_name = sprintf('stimuli%d', tType); %tType==1 is Mismatch, tType==2 is Match
-%     stimuli = fid.(stim_name);
-%     stimPair = squeeze(stimuli(p.stimOrder(tTypeCnt(tType),tType),:,:));
-%     stimPair = stimPair(:,:,:);
-    stimPair = squeeze(stims.stimuli1(trial,:,:));
-
-
-    % take only first stimulus in pair
-    stimulus_sample = stimPair(:,1);
+    for trial = 1:p.nTrials
         
-    pktot.fin_act_peak = zeros(p.numLayers,max(p.numGrids));
-    pktot.fin_act_total = zeros(p.numLayers,max(p.numGrids));
-    pktot.init_act_peak = zeros(p.numLayers,max(p.numGrids));
-    pktot.init_act_total = zeros(p.numLayers,max(p.numGrids));
-    
-    % present initial sample stimulus
-    [weights, ~, p, pktot] = ...
-        listLength_present_stimulus(stimulus_sample, preTrainedWeights, p, trial, pktot);
-    
-    % simulate listLength for appropriate cycles
-    [p, weights] = listLength_interfere(p, weights);
-    
-    selec_forComp = zeros(p.numLayers,max(p.nGrids),2);
-    % re-present initial sample stimulus
-    [~, selec_forComp(:,:,1), p, pktot] = ...
-        listLength_present_stimulus(stimulus_sample, weights, p, trial, pktot);
-    
-    % present initial novel stimulus
-    [~, selec_forComp(:,:,2), p, pktot] = ...
-        listLength_present_stimulus(stimPair(:,2), weights, p, trial, pktot);
-    
-    % calc recognition score
-    [p] = listLength_calc_recognition(p, selec_forComp, trial);
-    
         
+        %%% Determine trial type and increment count
+        tType = p.tType(trial);
+        tTypeCnt(tType) = tTypeCnt(tType)+1;
+        
+        %----------------------------------------------------------------------
+        %%% Get the two stimuli for this simultaneous visual discrimination trial
+        %     stim_name = sprintf('stimuli%d', tType); %tType==1 is Mismatch, tType==2 is Match
+        %     stimuli = fid.(stim_name);
+        %     stimPair = squeeze(stimuli(p.stimOrder(tTypeCnt(tType),tType),:,:));
+        %     stimPair = stimPair(:,:,:);
+        stimPair = squeeze(stims.stimuli1(trial,:,:));
+        
+        
+        pktot.fin_act_peak = zeros(p.numLayers,max(p.numGrids));
+        pktot.fin_act_total = zeros(p.numLayers,max(p.numGrids));
+        pktot.init_act_peak = zeros(p.numLayers,max(p.numGrids));
+        pktot.init_act_total = zeros(p.numLayers,max(p.numGrids));
+        
+        for present = 1:p.nTrials
+            
+        end
+        
+        % present initial sample stimulus
+        [weights, ~, p, pktot] = ...
+            present_stimulus(stimPair(:,1), preTrainedWeights, p, trial, pktot);
+        
+        selec_forComp = zeros(p.numLayers,max(p.nGrids),2);
+        % re-present initial sample stimulus
+        [~, selec_forComp(:,:,1), p, pktot] = ...
+            present_stimulus(stimPair(:,1), weights, p, trial, pktot);
+        
+        % present initial novel stimulus
+        [~, selec_forComp(:,:,2), p, pktot] = ...
+            present_stimulus(stimPair(:,2), weights, p, trial, pktot);
+        
+        % calc recognition score
+        [p] = calc_recognition(p, selec_forComp, trial);
+        
+    end
+    
 end
 
 end
