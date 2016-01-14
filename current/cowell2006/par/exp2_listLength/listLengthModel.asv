@@ -45,41 +45,53 @@ preTrainedWeights=rand(p.layer,p.nRows,p.nRows,p.numInputDims(p.numLayers),p.num
 
 %% initialize storage variables
 
+% tally of activation by trial and layer
+p.peak_act = zeros(p.nTrials,2);
+p.totalAct = zeros(p.nTrials,2);
+
+p.recognition = zeros(p.nTrials,1);
 
 %% begin trial loop
-%----------------------------------------------------------------------
-%%% Get the two stimuli for this simultaneous visual discrimination trial
-
-pktot.fin_act_peak = zeros(p.numLayers,max(p.numGrids));
-pktot.fin_act_total = zeros(p.numLayers,max(p.numGrids));
-pktot.init_act_peak = zeros(p.numLayers,max(p.numGrids));
-pktot.init_act_total = zeros(p.numLayers,max(p.numGrids));
-
-for trial_present = 1:p.nTrials(p.stimCond)
+for sess = 1:length(p.nMismatch),
     
-    stimPair = squeeze(stims(trial_present,:,:,p.stimCond));
     
-    % present initial sample stimulus
-    [weights, ~, p, pktot] = ...
-        present_stimulus(stimPair(:,1), preTrainedWeights, p, trial_present, pktot);
     
-end
-
-for trial_test = 1:p.nTrials(p.stimCond)
+    %----------------------------------------------------------------------
+    %%% Get the two stimuli for this simultaneous visual discrimination trial
+    
+    
+    
+    pktot.fin_act_peak = zeros(p.numLayers,max(p.numGrids));
+    pktot.fin_act_total = zeros(p.numLayers,max(p.numGrids));
+    pktot.init_act_peak = zeros(p.numLayers,max(p.numGrids));
+    pktot.init_act_total = zeros(p.numLayers,max(p.numGrids));
+    
+    for trial_present = 1:p.nTrials(sess)
+        
+        stimPair = squeeze(stims(trial,:,:,sess));
+        
+        % present initial sample stimulus
+        [weights, ~, p, pktot] = ...
+            present_stimulus(stimPair(:,1), preTrainedWeights, p, trial, pktot);
+        
+        
+    end
+    
+    
     
     selec_forComp = zeros(p.numLayers,max(p.nGrids),2);
     % re-present initial sample stimulus
     [~, selec_forComp(:,:,1), p, pktot] = ...
-        present_stimulus(stimPair(:,1), weights, p, trial_test, pktot);
+        present_stimulus(stimPair(:,1), weights, p, trial, pktot);
     
     % present initial novel stimulus
     [~, selec_forComp(:,:,2), p, pktot] = ...
-        present_stimulus(stimPair(:,2), weights, p, trial_test, pktot);
+        present_stimulus(stimPair(:,2), weights, p, trial, pktot);
     
     % calc recognition score
-    [p] = calc_recognition(p, selec_forComp, trial_test);
+    [p] = calc_recognition(p, selec_forComp, trial);
+    
     
 end
-
 
 end

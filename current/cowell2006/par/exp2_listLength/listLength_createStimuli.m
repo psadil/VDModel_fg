@@ -36,14 +36,9 @@ lastFeatureToCheck = firstFeatureToCheck+(nDimsCaudal-1);
 
 
 %% LA
-stims = table;
-for stimCond = 1:length(p.nMismatch)
-    tmp = table(zeros(max(p.nMismatch,1)), {['length', num2str(p.nMismatch(stimCond))]});
-    stims = [stims, tmp];
-end
 
 
-
+stims = zeros(max(p.nTrials), p.components,2,length(p.nMismatch));
 for stimCond = 1:length(p.nMismatch);
     
     for stimPair = 1:p.nMismatch(stimCond),
@@ -61,14 +56,10 @@ for stimCond = 1:length(p.nMismatch);
         end
     end
     
-    tmp = table({'length', num2str(stimCond)}, ...
-        reshape(repmat(reshape(LA_misMatch,...
-        [1,p.nMismatch,1,p.numInputDims_PRC/p.nDimReps,1,2]),[1,1,p.nDimReps,1,1,1]),...
-        [p.nMismatch,(p.numInputDims_PRC/p.nDimReps)*p.nDimReps,2]));
-    
-    stims = [stims tmp];
-    
-    
+    stims(1:p.nMismatch(stimCond),:,:,stimCond) = reshape(repmat(reshape(LA_misMatch,...
+        [1,p.nMismatch(stimCond),1,p.numInputDims_PRC/p.nDimReps,1,2]),[1,1,p.nDimReps,1,1,1]),...
+        [p.nMismatch(stimCond),(p.numInputDims_PRC/p.nDimReps)*p.nDimReps,2]);;
+     
 end
 
 

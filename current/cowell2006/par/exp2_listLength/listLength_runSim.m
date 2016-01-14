@@ -15,7 +15,7 @@ p.root = [pwd, '\'];
 
 
 %% Initialise, pretrain, and save weight matrix
-[p,weights] = delay_pretrain(p);
+[p,weights] = pretrain(p);
 
 
 %% begin sessions
@@ -26,20 +26,21 @@ fprintf ('\nThere will be %d sessions in total.\n', p.nSess);
 startTime=GetSecs;
 for sess = 1:p.nSess,
     
+    
     if mod(sess,2)
         p.stimCond = 1;
     else
         p.stimCond = 1;
     end
     
-    if sess <= length(p.delayCycles);
+    if sess <= p.nSess/2;
         p.nInpDims = p.numGrids_Caudal;
         p.which_gp_layer = 1;
         p.stimCond = sess;
     else
         p.nInpDims = p.numGrids_PRC;
         p.which_gp_layer = 2;
-        p.stimCond = sess - length(p.delayCycles);
+        p.stimCond = sess - p.nSess/2;
     end
     p.stimSet = 1;
     
@@ -47,8 +48,8 @@ for sess = 1:p.nSess,
     %     [p] = delay_createStimOrder(p);
     [p, stims] = listLength_createStimuli(p);
     
-    p.tType = cat(2,ones(1,p.nMismatch), 2*ones(1,p.nMatch));
-    p.stimOrder = [randperm(p.nMismatch)' randperm(p.nMatch)'];
+    p.tType = cat(2,ones(1,p.nMismatch(p.stimCond)), 2*ones(1,p.nMatch));
+    p.stimOrder = [randperm(p.nMismatch(p.stimCond))' randperm(p.nMatch)'];
     
     %% load session based variables
     p.nRows = p.numRows;
@@ -71,12 +72,13 @@ for sess = 1:p.nSess,
     
     % number of input dimensions to those grids
     p.nInpDims=p.numInputDims(1:p.layer);
+            
+    % tally of activation by trial and layer
+    p.peak_act = zeros(p.nTrials(p.stimCond),2);
+    p.totalAct = zeros(p.nTrials(p.stimCond),2);
     
-    % variable to decide whether to every use the PRC layer, determined
-    % within VD_present_stimulus.m
-    p.usePRC = zeros(2,p.nTrials);
-    
-%     p.nEncodCycles = p.numEncodingCycles(p.stimCond);
+    p.recognition = zeros(p.nTrials(p.stimCond),1);
+
     
     %% say what about to happen
     fprintf('\n\nSESSION %d, RAT %d\n', sess, p.ratNum);

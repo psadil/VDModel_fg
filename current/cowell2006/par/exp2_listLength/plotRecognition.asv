@@ -45,23 +45,23 @@ end
 
 % first average across rats, then across trials
 meanRecog_rats = squeeze(mean(recognition,1));
-first = mean(meanRecog_rats(1,:,1),3);
-second = mean(meanRecog_rats(2,:,1:6),3);
-third = mean(meanRecog_rats(3,:,1:12),3);
-fourth = mean(meanRecog_rats(4,:,1:18),3);
+first = squeeze(mean(meanRecog_rats(1,:,1),3));
+second = squeeze(mean(meanRecog_rats(2,:,1:6),3));
+third = squeeze(mean(meanRecog_rats(3,:,1:12),3));
+fourth = squeeze(mean(meanRecog_rats(4,:,1:18),3));
 
 meanRecog = [first(1), first(2); second(1), second(2);...
-    third(1), third(2); fourth(1), fourth(2)];
+    third(1), fourth];
 
 %%
 close all
 
 figs(1) = figure;
 hold on
-plot(1:4,meanRecog(:,1), '--ok', 'MarkerSize',10)
-plot(1:4,meanRecog(:,2),'-ok','MarkerFaceColor','k', 'MarkerSize',10)
+plot(1:5,meanRecog(:,1), '--ok', 'MarkerSize',10)
+plot(1:5,meanRecog(:,2),'-ok','MarkerFaceColor','k', 'MarkerSize',10)
 ax = gca;
-ax.XTick = 1:4;
+ax.XTick = 1:5;
 legend('Lesion','Control')
 legend('boxoff')
 
