@@ -1784,6 +1784,42 @@ figs(24).CurrentAxes.YLim = [minY_dPrime, maxY_dPrime];
 saveas(figs(24),[saveFolder, '/dPrime_adj_comp'], 'fig');
 saveas(figs(24),[saveFolder, '/dPrime_adj_comp'], 'jpg');
 
+%%
+
+barvalues = [dP_all_comp_mean(4), dP_all_comp_mean(5), dP_all_comp_mean(6)];
+errors = [dP_all_comp_sem(4), dP_all_comp_sem(5), dP_all_comp_sem(6)];
+
+figs(25) = figure;
+handles = barweb(barvalues...
+    , errors...
+    , [] ...
+    , []...
+    , {'Simulation 2'}...
+    , {'Stimulus Ambiguity'}...
+    , {'d'''});
+legend('Low Ambiguity 1', 'High Ambiguity', 'Low Ambiguity 2','Location','NorthWest');
+legend BOXOFF
+set(gca,'fontsize',30)
+figs(25).CurrentAxes.YLim = [0, 5];
+set(findall(gcf,'type','text'),'FontSize',30,'fontWeight','bold')
+
+x1 = handles.bars(1).XOffset;
+x2 = handles.bars(2).XOffset;
+x3 = handles.bars(3).XOffset;
+
+barvalues = [dP_all_comp_mean(1); dP_all_comp_mean(2); dP_all_comp_mean(3)];
+errors = [dP_all_comp_sem(1); dP_all_comp_sem(2); dP_all_comp_sem(3)];
+
+hold on
+hand1 = errorbar([1+x1, 1+x2, 1+x3], barvalues, errors, '-kx', 'MarkerSize', 10,'linewidth', 2);
+
+
+
+
+legend('High Ambiguity', 'Low Ambiguity', 'Location','NorthEast');
+
+saveas(figs(22),[saveFolder, '/dPrime_adj'], 'fig');
+saveas(figs(22),[saveFolder, '/dPrime_adj'], 'jpg');
 
 
 

@@ -30,8 +30,8 @@ parfor rat = firstRat:lastRat
     p = struct();
     p.ratNum = rat;
     
-    A = .2;
-    B = .4;
+    A = .5;
+    B = .9;
     train = 100;
     etaExp = train^-A;
     G_exp = .5+10*train^-B;
