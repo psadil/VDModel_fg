@@ -24,7 +24,7 @@ global consts
 %%% numEncodingCycles
 % startParms = [ .01 , .8 ]; % .09
 % startParms = [ .7 , 20 ];
-A = .55; % .7
+A = .5; % .7
 B = .7; % .6
 train = 100;
 eta = train^-A;
@@ -32,7 +32,7 @@ g = .5+10*train^-B;
 k = .08;
 noise = 1e-6;
 leng = 6;
-startCrit = noise*3;
+startCrit = noise*2;
 
 %% parameters for generalized logistic function activation
 % 

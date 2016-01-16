@@ -24,15 +24,15 @@ global consts
 %%% numEncodingCycles
 % startParms = [ .01 , .8 ]; % .09
 % startParms = [ .7 , 20 ];
-A = .4; % .7
-B = .4; % .6
+A = .6; % .7
+B = .3; % .6
 train = 500;
 eta = train^-A;
 g = .5+10*train^-B;
 k = .08;
 noise = 1e-6;
 leng = 6;
-startCrit = .5e-5;
+startCrit = noise*2;
 % current goal: get pk selectivity to saturate at 5
 
 %% parameters for generalized logistic function activation
