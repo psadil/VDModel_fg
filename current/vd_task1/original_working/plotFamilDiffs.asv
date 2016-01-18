@@ -1817,7 +1817,7 @@ outPut.Properties.VariableNames{'Var1'} = 'rat';
 outPut.Properties.VariableNames{'Var2'} = 'half';
 outPut.Properties.VariableNames{'Var3'} = 'dPrime';
 outPut.Properties.VariableNames{'Var4'} = 'controlLesion';
-outPut.Properties.VariableNames{'Var4'} = 'ambiguity';
+outPut.Properties.VariableNames{'Var5'} = 'ambiguity';
 
 % save(['dPrime_', folderName, '.dat'], 'outPut');
 writetable(outPut, 'dPrime.dat');
