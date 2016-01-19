@@ -1741,8 +1741,9 @@ handles = barweb(barvalues...
     , {'High', 'Low'}...
     , {'Simulation 1'}...
     , {'Stimulus Ambiguity'}...
-    , {'d'''});
-legend('First Half', 'Second Half','Location','NorthWest');
+    , {'d'''}...
+    , [rgb('Chocolate') ; rgb('Goldenrod')]);
+legend('First Half', 'Second Half','Lesion', 'Location', 'NorthWest');
 legend BOXOFF
 set(gca,'fontsize',30)
 figs(22).CurrentAxes.YLim = [0, 5];
@@ -1817,7 +1818,7 @@ outPut.Properties.VariableNames{'Var1'} = 'rat';
 outPut.Properties.VariableNames{'Var2'} = 'half';
 outPut.Properties.VariableNames{'Var3'} = 'dPrime';
 outPut.Properties.VariableNames{'Var4'} = 'controlLesion';
-outPut.Properties.VariableNames{'Var4'} = 'ambiguity';
+outPut.Properties.VariableNames{'Var5'} = 'ambiguity';
 
 % save(['dPrime_', folderName, '.dat'], 'outPut');
 writetable(outPut, 'dPrime.dat');
