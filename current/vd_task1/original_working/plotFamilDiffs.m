@@ -1746,7 +1746,7 @@ handles = barweb(barvalues...
 legend('First Half', 'Second Half','Lesion', 'Location', 'NorthWest');
 legend BOXOFF
 set(gca,'fontsize',30)
-figs(22).CurrentAxes.YLim = [0, 5];
+figs(22).CurrentAxes.YLim = [0, 6];
 set(findall(gcf,'type','text'),'FontSize',30,'fontWeight','bold')
 
 x1 = handles.bars(1).XOffset;
