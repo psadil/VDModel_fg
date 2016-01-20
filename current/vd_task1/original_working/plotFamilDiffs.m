@@ -380,41 +380,24 @@ for rat = firstRat:lastRat
         FARate_second(rat,session) = sum(p.answer(p.nTrials/2+1:end).*(p.tType(p.nTrials/2+1:end)==2))/sum(p.tType(p.nTrials/2+1:end)==2); % a 'yes' on matching trials
         
         
-        % adjust by adding to all
-        hitRate_first_adj_all(rat,session) = (sum(p.answer(1:p.nTrials/2).*(p.tType(1:p.nTrials/2)==1)) + 1/(2*sum((p.tType(1:p.nTrials/2)==1))))/(sum(p.tType(1:p.nTrials/2)==1)+1);
-        FARate_first_adj_all(rat,session) = (sum(p.answer(1:p.nTrials/2).*(p.tType(1:p.nTrials/2)==2)) + 1/(2*sum((p.tType(1:p.nTrials/2)==2))))/(sum(p.tType(1:p.nTrials/2)==2)+1);
+       % adjust by adding to all
+        %         hitRate_first_adj_all(rat,session) = (sum(p.answer(1:p.nTrials/2).*(p.tType(1:p.nTrials/2)==1)) + 1/(2*sum((p.tType(1:p.nTrials/2)==1))))/(sum(p.tType(1:p.nTrials/2)==1)+1);
+        %         FARate_first_adj_all(rat,session) = (sum(p.answer(1:p.nTrials/2).*(p.tType(1:p.nTrials/2)==2)) + 1/(2*sum((p.tType(1:p.nTrials/2)==2))))/(sum(p.tType(1:p.nTrials/2)==2)+1);
+        %
+        %         hitRate_second_adj_all(rat,session) = (sum(p.answer(p.nTrials/2+1:end).*(p.tType(p.nTrials/2+1:end)==1)) + 1/(2*sum((p.tType(1:p.nTrials/2)==1))))/(sum(p.tType(p.nTrials/2+1:end)==1)+1);  % a 'yes' (mismatch judgement) on trials that were mismatches (ie, p.tType==1)
+        %         FARate_second_adj_all(rat,session) = (sum(p.answer(p.nTrials/2+1:end).*(p.tType(p.nTrials/2+1:end)==2)) + 1/(2*sum((p.tType(1:p.nTrials/2)==2))))/(sum(p.tType(p.nTrials/2+1:end)==2)+1); % a 'yes' on matching trials
+        %
+        hitRate_first_adj_all(rat,session) = (sum(p.answer(1:p.nTrials/2).*(p.tType(1:p.nTrials/2)==1)) + .5)/(sum(p.tType(1:p.nTrials/2)==1)+1);
+        FARate_first_adj_all(rat,session) = (sum(p.answer(1:p.nTrials/2).*(p.tType(1:p.nTrials/2)==2)) + .5)/(sum(p.tType(1:p.nTrials/2)==2)+1);
         
-        hitRate_second_adj_all(rat,session) = (sum(p.answer(p.nTrials/2+1:end).*(p.tType(p.nTrials/2+1:end)==1)) + 1/(2*sum((p.tType(1:p.nTrials/2)==1))))/(sum(p.tType(p.nTrials/2+1:end)==1)+1);  % a 'yes' (mismatch judgement) on trials that were mismatches (ie, p.tType==1)
-        FARate_second_adj_all(rat,session) = (sum(p.answer(p.nTrials/2+1:end).*(p.tType(p.nTrials/2+1:end)==2)) + 1/(2*sum((p.tType(1:p.nTrials/2)==2))))/(sum(p.tType(p.nTrials/2+1:end)==2)+1); % a 'yes' on matching trials
+        hitRate_second_adj_all(rat,session) = (sum(p.answer(p.nTrials/2+1:end).*(p.tType(p.nTrials/2+1:end)==1)) + .5)/(sum(p.tType(p.nTrials/2+1:end)==1)+1);  % a 'yes' (mismatch judgement) on trials that were mismatches (ie, p.tType==1)
+        FARate_second_adj_all(rat,session) = (sum(p.answer(p.nTrials/2+1:end).*(p.tType(p.nTrials/2+1:end)==2)) + .5)/(sum(p.tType(p.nTrials/2+1:end)==2)+1); % a 'yes' on matching trials
+        
+        
         
         % adjust by adding to only trials
-        hitRate_first_adj_some(rat,session) = hitRate_first(rat,session);
-        if hitRate_first_adj_some(rat,session) == 1
-            hitRate_first_adj_some(rat,session) = hitRate_first_adj_some(rat,session) - 1/(2*sum((p.tType(1:p.nTrials/2)==1)));
-        elseif hitRate_first_adj_some(rat,session) == 0
-            hitRate_first_adj_some(rat,session) = hitRate_first_adj_some(rat,session) + 1/(2*sum((p.tType(1:p.nTrials/2)==1)));
-        end
         
-        FARate_first_adj_some(rat,session) = FARate_first(rat,session);
-        if FARate_first_adj_some(rat,session) == 1
-            FARate_first_adj_some(rat,session) = FARate_first_adj_some(rat,session) - 1/(2*sum((p.tType(1:p.nTrials/2)==2)));
-        elseif FARate_first_adj_some(rat,session) == 0
-            FARate_first_adj_some(rat,session) = FARate_first_adj_some(rat,session) + 1/(2*sum((p.tType(1:p.nTrials/2)==2)));
-        end
         
-        hitRate_second_adj_some(rat,session) = hitRate_second(rat,session);
-        if hitRate_second_adj_some(rat,session) == 1
-            hitRate_second_adj_some(rat,session) = hitRate_second_adj_some(rat,session) - 1/(2*sum((p.tType(1:p.nTrials/2)==1)));
-        elseif hitRate_second_adj_some(rat,session) == 0
-            hitRate_second_adj_some(rat,session) = hitRate_second_adj_some(rat,session) + 1/(2*sum((p.tType(1:p.nTrials/2)==1)));
-        end
-        
-        FARate_second_adj_some(rat,session) = FARate_second(rat,session);
-        if FARate_second_adj_some(rat,session) == 1
-            FARate_second_adj_some(rat,session) = FARate_second_adj_some(rat,session) - 1/(2*sum((p.tType(1:p.nTrials/2)==2)));
-        elseif FARate_second_adj_some(rat,session) == 0
-            FARate_second_adj_some(rat,session) = FARate_second_adj_some(rat,session) + 1/(2*sum((p.tType(1:p.nTrials/2)==2)));
-        end
         
         
         acc_firstHalf(rat,session) = p.Acc_firstHalf;
@@ -431,6 +414,24 @@ for rat = firstRat:lastRat
         %         totalAct(rat,session,:,:) = p.totalAct;
     end
 end
+%%
+% THIS IS THE ADJUSTMENT FROM BARENSE ET AL.
+hitRate_first_adj_some = hitRate_first;
+hitRate_first_adj_some(hitRate_first_adj_some==0) = 1/(2*sum((p.tType(1:p.nTrials/2)==1)));
+hitRate_first_adj_some(hitRate_first_adj_some==1) = 1 - 1/(2*sum((p.tType(1:p.nTrials/2)==1)));
+
+FARate_first_adj_some = FARate_first;
+FARate_first_adj_some(FARate_first_adj_some==0) = 1/(2*sum((p.tType(1:p.nTrials/2)==2)));
+FARate_first_adj_some(FARate_first_adj_some==1) = 1 - 1/(2*sum((p.tType(1:p.nTrials/2)==2)));
+
+hitRate_second_adj_some = hitRate_second;
+hitRate_second_adj_some(hitRate_second_adj_some==0) = 1/(2*sum((p.tType(1+p.nTrials/2:end)==1)));
+hitRate_second_adj_some(hitRate_second_adj_some==1) = 1 - 1/(2*sum((p.tType(1+p.nTrials/2:end)==1)));
+
+FARate_second_adj_some = FARate_second;
+FARate_second_adj_some(FARate_second_adj_some==0) = 1/(2*sum((p.tType(1+p.nTrials/2:end)==2)));
+FARate_second_adj_some(FARate_second_adj_some==1) = 1 - 1/(2*sum((p.tType(1+p.nTrials/2:end)==2)));
+
 
 %%
 
@@ -1773,8 +1774,8 @@ saveas(figs(22),[saveFolder, '/dPrime_adj'], 'jpg');
 % figs(21).CurrentAxes.YLim = [minY_dPrime, maxY_dPrime];
 
 
-saveas(figs(22),[saveFolder, '/dPrime_adj'], 'fig');
-saveas(figs(22),[saveFolder, '/dPrime_adj'], 'jpg');
+% saveas(figs(22),[saveFolder, '/dPrime_adj'], 'fig');
+% saveas(figs(22),[saveFolder, '/dPrime_adj'], 'jpg');
 %
 %
 % figs(22) = figure;
@@ -1803,7 +1804,43 @@ saveas(figs(22),[saveFolder, '/dPrime_adj'], 'jpg');
 %
 % [squeeze(p.winning(1,1,:,1))-squeeze(p.winning(1,1,1,1)), squeeze(p.winning(1,1,:,2))-squeeze(p.winning(1,1,1,2))];
 
+%% d', CORRECT ADJUSTMENT
+
+barvalues = [dPrime_first_adj_some_mean(4), dPrime_second_adj_some_mean(4) ; dPrime_first_adj_some_mean(3), dPrime_second_adj_some_mean(3)];
+errors = [dPrime_first_adj_some_err(4), dPrime_second_adj_some_err(4) ; dPrime_first_adj_some_err(3), dPrime_second_adj_some_err(3)];
+
+figs(23) = figure;
+handles = barweb(barvalues...
+    , errors...
+    , [] ...
+    , {'High', 'Low'}...
+    , {'Simulation 1'}...
+    , {'Stimulus Ambiguity'}...
+    , {'d'''}...
+    , [rgb('Chocolate') ; rgb('Goldenrod')]);
+legend('First Half', 'Second Half','Lesion', 'Location', 'NorthWest');
+legend BOXOFF
+set(gca,'fontsize',30)
+figs(23).CurrentAxes.YLim = [0, 6];
+set(findall(gcf,'type','text'),'FontSize',30,'fontWeight','bold')
+
+x1 = handles.bars(1).XOffset;
+x2 = handles.bars(2).XOffset;
+
+barvalues = [dPrime_first_adj_some_mean(2), dPrime_second_adj_some_mean(2) ; dPrime_first_adj_some_mean(1), dPrime_second_adj_some_mean(1)];
+errors = [dPrime_first_adj_some_err(2), dPrime_second_adj_some_err(2) ; dPrime_first_adj_some_err(1), dPrime_second_adj_some_err(1)];
+
+hold on
+hand1 = errorbar([1+x1, 1+x2], barvalues(1,:), errors(1,:), '-kx', 'MarkerSize', 10,'linewidth', 2);
+hand2 = errorbar([2+x1, 2+x2], barvalues(2,:), errors(2,:), '-kx', 'MarkerSize', 10,'linewidth', 2);
+
+saveas(figs(23),[saveFolder, '/dPrime_adj_some'], 'fig');
+saveas(figs(23),[saveFolder, '/dPrime_adj_some'], 'jpg');
+
+
 %% output to R
+
+
 
 outPut = table( repmat(firstRat:lastRat,[1,8])' ...
     , repelem(1:2, numRats*4)'...
