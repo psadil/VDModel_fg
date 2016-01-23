@@ -396,6 +396,22 @@ for rat = firstRat:lastRat
         
         
         % adjust by adding to only trials
+        % THIS IS THE ADJUSTMENT FROM BARENSE ET AL.
+        hitRate_first_adj_some(rat,session) = hitRate_first(rat,session);
+        hitRate_first_adj_some(hitRate_first_adj_some==0) = 1/(2*sum((p.tType(1:p.nTrials/2)==1)));
+        hitRate_first_adj_some(hitRate_first_adj_some==1) = 1 - 1/(2*sum((p.tType(1:p.nTrials/2)==1)));
+        
+        FARate_first_adj_some(rat,session) = FARate_first(rat,session);
+        FARate_first_adj_some(FARate_first_adj_some==0) = 1/(2*sum((p.tType(1:p.nTrials/2)==2)));
+        FARate_first_adj_some(FARate_first_adj_some==1) = 1 - 1/(2*sum((p.tType(1:p.nTrials/2)==2)));
+        
+        hitRate_second_adj_some(rat,session) = hitRate_second(rat,session);
+        hitRate_second_adj_some(hitRate_second_adj_some==0) = 1/(2*sum((p.tType(1+p.nTrials/2:end)==1)));
+        hitRate_second_adj_some(hitRate_second_adj_some==1) = 1 - 1/(2*sum((p.tType(1+p.nTrials/2:end)==1)));
+        
+        FARate_second_adj_some = FARate_second;
+        FARate_second_adj_some(FARate_second_adj_some==0) = 1/(2*sum((p.tType(1+p.nTrials/2:end)==2)));
+        FARate_second_adj_some(FARate_second_adj_some==1) = 1 - 1/(2*sum((p.tType(1+p.nTrials/2:end)==2)));
         
         
         
@@ -414,23 +430,6 @@ for rat = firstRat:lastRat
         %         totalAct(rat,session,:,:) = p.totalAct;
     end
 end
-%%
-% THIS IS THE ADJUSTMENT FROM BARENSE ET AL.
-hitRate_first_adj_some = hitRate_first;
-hitRate_first_adj_some(hitRate_first_adj_some==0) = 1/(2*sum((p.tType(1:p.nTrials/2)==1)));
-hitRate_first_adj_some(hitRate_first_adj_some==1) = 1 - 1/(2*sum((p.tType(1:p.nTrials/2)==1)));
-
-FARate_first_adj_some = FARate_first;
-FARate_first_adj_some(FARate_first_adj_some==0) = 1/(2*sum((p.tType(1:p.nTrials/2)==2)));
-FARate_first_adj_some(FARate_first_adj_some==1) = 1 - 1/(2*sum((p.tType(1:p.nTrials/2)==2)));
-
-hitRate_second_adj_some = hitRate_second;
-hitRate_second_adj_some(hitRate_second_adj_some==0) = 1/(2*sum((p.tType(1+p.nTrials/2:end)==1)));
-hitRate_second_adj_some(hitRate_second_adj_some==1) = 1 - 1/(2*sum((p.tType(1+p.nTrials/2:end)==1)));
-
-FARate_second_adj_some = FARate_second;
-FARate_second_adj_some(FARate_second_adj_some==0) = 1/(2*sum((p.tType(1+p.nTrials/2:end)==2)));
-FARate_second_adj_some(FARate_second_adj_some==1) = 1 - 1/(2*sum((p.tType(1+p.nTrials/2:end)==2)));
 
 
 %%
