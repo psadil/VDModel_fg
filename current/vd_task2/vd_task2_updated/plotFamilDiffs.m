@@ -1816,8 +1816,8 @@ else
     legend('Control', 'Location','NorthWest');
     legend BOXOFF
     
-    saveas(figs(25),[saveFolder, '/dPrime_adj'], 'fig');
-    saveas(figs(25),[saveFolder, '/dPrime_adj'], 'jpg');
+    saveas(figs(25),[saveFolder, '/dPrime_paper'], 'fig');
+    saveas(figs(25),[saveFolder, '/dPrime_paper'], 'jpg');
     
 end
 
