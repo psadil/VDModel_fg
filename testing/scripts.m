@@ -1,59 +1,59 @@
+close all;
+
 % testing the shape of the activation function. logistic
-function [] = scripts(k)
-close all
-L = 1; % maximum
-% k = .09; % curve steepness, also determines how low is the initial start
-d = 6;
+L=1; % maximum
+k=.25; % curve steepness, also determines how low is the initial start
+b=1;
+% b=2/3;
+% a=1.7159;
+a = 1;
+d = 3;
+sigma2 = 5;
+v = 1;
 
-maxDist = .15;
-steps = .00001;
+maxDist = 100;
+steps = 1;
+maxDist_weights = 0.15;
+minDist_weights = .001;
 
-x = d.*(maxDist:-steps:0);
-xaxis = 0:steps:maxDist;
+x = 0:steps:maxDist;
+% xaxis = 0:steps:maxDist;
 
-xlog = log(1./((x.^2)./d));
+% xlog = log(v./((d*x.^2)./d));
+% xlog = 1./((d*(x.^2))./d);
 
-plot(-x,xlog)
+% plot(-x,xlog)
 
-acts = 5.*(L ./ (1 + exp(-k * xlog)));
-% acts = 5.*tanh(xlog);
+% acts = L ./ (1 + exp(-k * xlog));
+% acts = tanh(xlog);
+% acts = a.*tanh(b.*x);
 
-plot(x,acts)
+acts_min = (1-tanh(maxDist_weights))*exp(-(x.^2) / (2*sigma2));
+acts_max = (1-tanh(minDist_weights))*exp(-(x.^2) / (2*sigma2));
+acts_min_total = sum(acts_min);
+acts_max_total = sum(acts_max);
 
-end
+figure
+plot(x,acts_min)
 
-% x_other = -maxDist:steps:maxDist;
-% acts_other = 1 ./ (1 + exp(.01 * (1./-x_other)));
-% plot(x_other,acts_other)
-% 
-% % note, however, that the weights aren't updated linearly. Rather, they
-% % also travel along and exp() curve. 
-% 
-% 
-% a = 0; % lower bound
-% k = 1; % upper bound
-% c = 1; % typically 1
-% q = 10; % related to y(0)
-% b = .5; % growth rate
-% v = 1; % place of maximal growth
-% 
-% acts_general = a + ((k - a) ./ ((c + q*exp(-b*xlog)).^(1/v)));
-% 
-% plot(-x,acts_general)
-% 
-% 
-% test = -5:.1:10;
-% 
-% acts_general_test = a + ((k - a) ./ ((c + q*exp(-b*test)).^1/v));
-% plot(test,acts_general_test)
-% 
-% 
-% 
-% % this describes the region of the activation sigmoid we move along
-% % note, however, that since the actual inputs are log transformed, the
-% % shape of the actual activations might be slightly different (see above).
-% % Do we want to try and match a linear progression?
-% test = 2:.001:10;
-% actsTest = 1 ./ (1+exp(-1 * test));
-% plot(test,actsTest)
-% 
+figure
+plot(x,acts_max)
+
+% note, however, that the weights aren't updated linearly. Rather, they
+% also travel along and exp() curve. 
+
+% the total change will be approximately the difference between acts max
+% and acts min
+changeTot = acts_max_total - acts_min_total;
+
+% so, we want that change to occur over the course of about 60 trials
+% although there are a total of 72 trials, if saturation doesn't occur
+% until the very end of the second half, it'llbe easier to preserve the
+% performance of the lesioned networks durign the low ambiguity condition,
+% during which they're still seeing many features
+eta = changeTot / 60;
+
+% ah, but, that eta happens ~20 times per fixation, and an average of 10
+% fixations occur per trial
+eta_use = eta /( 20*10);
+eta

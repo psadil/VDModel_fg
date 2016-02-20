@@ -3,3 +3,18 @@ $ cat .gitignore
 # ignore .mat files output by models...
 **/graphsAndSession/**/*.mat
 **/rats
+
+**.csv
+*.csv
+
+**.dat
+*.dat
+
+**.mat
+*.mat
+
+*.jpg
+**.jpg
+
+*.png
+**.png

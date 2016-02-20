@@ -1,0 +1,6 @@
+there's a set of weights that will classify all 16 features (and neighboring nodes) as 1 (bernoulli)
+train a neural network model to get there.
+
+there is also a set of weights that...clasifies everything as 0. have the model start there
+
+then, find the rate at which the model would need to change such that...
