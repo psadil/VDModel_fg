@@ -22,7 +22,7 @@ end
 fprintf ('\nThere will be %d sessions in total.\n', p.nSess);
 
 startTime=GetSecs;
-for sess = 2:p.nSess,
+for sess = 1:p.nSess,
     
     
     % create stim sequence
@@ -40,11 +40,11 @@ for sess = 2:p.nSess,
         p.sess = p.stimCond;
     else
         if any([2,4] == sess)
-            p.stimCond = 2;
-            p.sess = 1;
-        else
             p.stimCond = 1;
             p.sess = 2;
+        else
+            p.stimCond = 2;
+            p.sess = 1;
         end
     end
     
@@ -107,8 +107,7 @@ for sess = 2:p.nSess,
     end
     
     
-    
-    fName = strcat(dataDir, '/Session',num2str(sess-1),'_Rat',num2str(p.ratNum),'.mat');
+    fName = strcat(dataDir, '/Session',num2str(sess),'_Rat',num2str(p.ratNum),'.mat');
     save(fName,'p');
     
     %reset famil_diff_thresh so that it's not carried over from previous session

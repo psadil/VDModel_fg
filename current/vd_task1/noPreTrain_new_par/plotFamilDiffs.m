@@ -145,9 +145,6 @@ for rat = firstRat:lastRat
         end
         
         
-
-        
-        
         tType(rat,session,:) = p.tType;
         answer(rat,session,:) = p.answer;
         correct(rat,session,:) = p.correct;
@@ -1055,7 +1052,7 @@ if ~onlyFigure
     ylabel('familiarity difference');
     legend('low,match', 'high,match', 'low,misMatch', 'high,misMatch','Location','best');
     title({'Familiarity diffs, lesion'});
-    axis(axisBounds_familDiffs);
+    axis([0,p.nTrials,-max(familDiffs_misMatch_caudal_mean(:)),max(familDiffs_misMatch_caudal_mean(:))]);
     
     % NO PRC
     
@@ -1121,23 +1118,23 @@ if ~onlyFigure
     axisBounds_familDiffs = [0,p.nTrials,minY_dPrime,maxY_dPrime];
     
     %
-    figs(3) = figure;
-    subplot(1,2,1)
-    barweb([dPrime_first_raw_mean(2), dPrime_second_raw_mean(2) ; dPrime_first_raw_mean(1), dPrime_second_raw_mean(1)], [dPrime_first_err(2), dPrime_second_err(2) ; dPrime_first_err(1), dPrime_second_err(1)], [], {'high', 'low'})
-    xlabel('stim ambiguity');
-    ylabel('d''');
-    legend('first Half', 'Second Half','Location','best');
-    title({'dPrime of Lesion'})
-    
-    subplot(1,2,2)
-    barweb([dPrime_first_raw_mean(4), dPrime_second_raw_mean(4) ; dPrime_first_raw_mean(3), dPrime_second_raw_mean(3)], [dPrime_first_err(4), dPrime_second_err(4) ; dPrime_first_err(3), dPrime_second_err(3)], [], {'high', 'low'})
-    xlabel('stim ambiguity');
-    ylabel('d''');
-    legend('first Half', 'Second Half','Location','best');
-    title({'dPrime of Control'})
-    
-    saveas(figs(3),[saveFolder, '/dPrime'], 'fig');
-    saveas(figs(3),[saveFolder, '/dPrime'], 'jpg');
+%     figs(3) = figure;
+%     subplot(1,2,1)
+%     barweb([dPrime_first_raw_mean(2), dPrime_second_raw_mean(2) ; dPrime_first_raw_mean(1), dPrime_second_raw_mean(1)], [dPrime_first_err(2), dPrime_second_err(2) ; dPrime_first_err(1), dPrime_second_err(1)], [], {'high', 'low'})
+%     xlabel('stim ambiguity');
+%     ylabel('d''');
+%     legend('first Half', 'Second Half','Location','best');
+%     title({'dPrime of Lesion'})
+%     
+%     subplot(1,2,2)
+%     barweb([dPrime_first_raw_mean(4), dPrime_second_raw_mean(4) ; dPrime_first_raw_mean(3), dPrime_second_raw_mean(3)], [dPrime_first_err(4), dPrime_second_err(4) ; dPrime_first_err(3), dPrime_second_err(3)], [], {'high', 'low'})
+%     xlabel('stim ambiguity');
+%     ylabel('d''');
+%     legend('first Half', 'Second Half','Location','best');
+%     title({'dPrime of Control'})
+%     
+%     saveas(figs(3),[saveFolder, '/dPrime'], 'fig');
+%     saveas(figs(3),[saveFolder, '/dPrime'], 'jpg');
     
     
     %% aboslute famil
@@ -1710,7 +1707,8 @@ if ~onlyFigure
     ylabel('familiarity difference');
     legend('match,low', 'match,high', 'misMatch,low', 'misMatch,high','Location','best');
     title({'familiarity difference during LESION sessions'});
-    axis(axisBounds_familDiffs);
+%     axis(axisBounds_familDiffs);
+    axis([0,p.nTrials,-max(familDiffs_misMatch_caudal_mean(:)),max(familDiffs_misMatch_caudal_mean(:))]);
     
     subplot(1,2,2); hold on
     plot(familDiff_used_match_avg(3,:), 'color', 'g')

@@ -7,7 +7,7 @@ b=1;
 % b=2/3;
 % a=1.7159;
 a = 1;
-d = 3;
+d = 2;
 sigma2 = 5;
 v = 1;
 
@@ -28,8 +28,12 @@ x = 0:steps:maxDist;
 % acts = tanh(xlog);
 % acts = a.*tanh(b.*x);
 
-acts_min = (1-tanh(maxDist_weights))*exp(-(x.^2) / (2*sigma2));
-acts_max = (1-tanh(minDist_weights))*exp(-(x.^2) / (2*sigma2));
+mse_max = sum(repelem(maxDist_weights,d).^2) / d;
+mse_min = sum(repelem(minDist_weights,d).^2) / d;
+
+
+acts_min = (1-tanh(mse_max))*exp(-(x.^2) / (2*sigma2));
+acts_max = (1-tanh(mse_min))*exp(-(x.^2) / (2*sigma2));
 acts_min_total = sum(acts_min);
 acts_max_total = sum(acts_max);
 
@@ -55,5 +59,5 @@ eta = changeTot / 60;
 
 % ah, but, that eta happens ~20 times per fixation, and an average of 10
 % fixations occur per trial
-eta_use = eta /( 20*10);
-eta
+eta_use = eta /( 20*20);
+eta_use

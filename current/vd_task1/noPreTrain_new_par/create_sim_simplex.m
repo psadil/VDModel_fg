@@ -25,35 +25,17 @@ parfor rat = firstRat:lastRat
     p = struct();
     p.ratNum = rat;
     
-    % name of folder containing stimuli to use
-    
-    
-    
-    % data is in DIFFERENCE of dPrime, from first to second half of trials.
-    % order of [caudal_LA, caudal_HA, PRC_LA, PRC_HA]
-    % want data: caudal LA => no diff
-    %            caudal HA => dPrime at 2, then 0 (diff of 2?)
-    %            PRC LA => no diff
-    %            PRC HA => no diff
-    % data = [0, -1.5, 0, 0];
-    
-    % initialize starting value of parameters
-    % etaExp
-    % G_exp
-    %%% numTrainCycles
-    %%% numEncodingCycles
-    % startParms = [ .01 , .8 ]; % .09
-    % startParms = [ .7 , 20 ];
+   
     A = .2;
     B = .4;
     train = 100;
-    eta = 0.0081;
+    eta = 1e-07;
     % g = .5+10*train^-B;
     k = .25;
     leng = 6;
     startCrit = eta*(20/4); % go through ~ 20 eta in 1 fixation (because 20 encoding cycles)
     % so, set criterion to be 1/4 of that (20/4)
-    noise = startCrit*2;  % make noise double criterion, which is still only ~half
+    noise = startCrit/2;  % make noise double criterion, which is still only ~half
     % of the change that we expect to see after 1 fixation
     % sigma2 = parms(2)^2;
     sigma2 = 5;
@@ -73,7 +55,6 @@ parfor rat = firstRat:lastRat
         '_K', num2str(k), '_A', num2str(A) ,'_B', num2str(B), '_20enc20_', ...
         '5pk_20Fix_', num2str(noise),'nois_', num2str(startCrit), 'stCrt_',num2str(leng), '_0reload1'];
     
-    
     p.nSess=4;
     p.sigma2 = sigma2;
     p.numRows = 200; %variables with 'num' to denote number are used to define RUN_SIM matrix (and translated to another name before used in simulation)
@@ -88,7 +69,7 @@ parfor rat = firstRat:lastRat
     p.components = 8;
     p.numInputDims_Caudal = p.components/p.numGrids_Caudal;   % Hm...assume that all dimensions are equally sampled across caudal grids...
     p.numInputDims_PRC = p.components;
-    p.numInputDims = [p.numInputDims_Caudal, p.numInputDims_PRC];   % should be back to [15 3 0] (using only the first 15 components)
+    p.numInputDims = [p.numInputDims_Caudal,  p.numInputDims_PRC];   % should be back to [15 3 0] (using only the first 15 components)
     p.nDimReps=1;
     
     p.decision_noise = noise;
@@ -156,4 +137,4 @@ parfor rat = firstRat:lastRat
     
 end
 
-% plotFamilDiffs(1, lastRat, consts.nameOfFolder,0);
+% plotFamilDiffs(1, lastRat, nameOfFolder,0);
