@@ -24,9 +24,9 @@ parfor rat = firstRat:lastRat
     p = struct();
     p.ratNum = rat;
     
-    A = .5;
-    B = .7;
-    train = 100;
+    A = .6;
+    B = .3;
+    train = 500;
     etaExp = train^-A;
     G_exp = .5+10*train^-B;
     k_expt = .08;

@@ -204,7 +204,7 @@ for rat = firstRat:lastRat
         
         % not sure anymore what this does, something about arranging number
         % of fixations...
-
+        
         
         
         %------------------------------------------------------------------
@@ -1083,7 +1083,8 @@ if ~onlyFigure
     ylabel('familiarity difference');
     legend('low,match', 'high,match', 'low,misMatch', 'high,misMatch','Location','best');
     title({'Familiarity diffs, CONTROL, CAUDAL'});
-    axis(axisBounds_familDiffs);
+    %     axis(axisBounds_familDiffs);
+    axis([0,p.nTrials,-max(familDiffs_misMatch_caudal_mean(:)),max(familDiffs_misMatch_caudal_mean(:))]);
     
     %--------------------------------------------------------------------------
     % PRC
@@ -1118,23 +1119,23 @@ if ~onlyFigure
     axisBounds_familDiffs = [0,p.nTrials,minY_dPrime,maxY_dPrime];
     
     %
-%     figs(3) = figure;
-%     subplot(1,2,1)
-%     barweb([dPrime_first_raw_mean(2), dPrime_second_raw_mean(2) ; dPrime_first_raw_mean(1), dPrime_second_raw_mean(1)], [dPrime_first_err(2), dPrime_second_err(2) ; dPrime_first_err(1), dPrime_second_err(1)], [], {'high', 'low'})
-%     xlabel('stim ambiguity');
-%     ylabel('d''');
-%     legend('first Half', 'Second Half','Location','best');
-%     title({'dPrime of Lesion'})
-%     
-%     subplot(1,2,2)
-%     barweb([dPrime_first_raw_mean(4), dPrime_second_raw_mean(4) ; dPrime_first_raw_mean(3), dPrime_second_raw_mean(3)], [dPrime_first_err(4), dPrime_second_err(4) ; dPrime_first_err(3), dPrime_second_err(3)], [], {'high', 'low'})
-%     xlabel('stim ambiguity');
-%     ylabel('d''');
-%     legend('first Half', 'Second Half','Location','best');
-%     title({'dPrime of Control'})
-%     
-%     saveas(figs(3),[saveFolder, '/dPrime'], 'fig');
-%     saveas(figs(3),[saveFolder, '/dPrime'], 'jpg');
+    %     figs(3) = figure;
+    %     subplot(1,2,1)
+    %     barweb([dPrime_first_raw_mean(2), dPrime_second_raw_mean(2) ; dPrime_first_raw_mean(1), dPrime_second_raw_mean(1)], [dPrime_first_err(2), dPrime_second_err(2) ; dPrime_first_err(1), dPrime_second_err(1)], [], {'high', 'low'})
+    %     xlabel('stim ambiguity');
+    %     ylabel('d''');
+    %     legend('first Half', 'Second Half','Location','best');
+    %     title({'dPrime of Lesion'})
+    %
+    %     subplot(1,2,2)
+    %     barweb([dPrime_first_raw_mean(4), dPrime_second_raw_mean(4) ; dPrime_first_raw_mean(3), dPrime_second_raw_mean(3)], [dPrime_first_err(4), dPrime_second_err(4) ; dPrime_first_err(3), dPrime_second_err(3)], [], {'high', 'low'})
+    %     xlabel('stim ambiguity');
+    %     ylabel('d''');
+    %     legend('first Half', 'Second Half','Location','best');
+    %     title({'dPrime of Control'})
+    %
+    %     saveas(figs(3),[saveFolder, '/dPrime'], 'fig');
+    %     saveas(figs(3),[saveFolder, '/dPrime'], 'jpg');
     
     
     %% aboslute famil
@@ -1485,7 +1486,9 @@ if ~onlyFigure
     ylabel('activation');
     legend('match,low', 'match,high', 'misMatch,low', 'misMatch,high','Location','best');
     title({'peakAct, LESION, caudal, NEW'});
-    axis(axisBounds_peak_tType_caudal);
+    %     axis(axisBounds_peak_tType_caudal);
+    axis([0,p.nTrials,min(peakAct_match_caudal_new_avg(:)),max(peakAct_match_caudal_new_avg(:))]);
+    
     
     subplot(2,2,2); hold on
     plot(totalAct_match_caudal_new_avg(1,:), 'color', 'g')
@@ -1507,7 +1510,9 @@ if ~onlyFigure
     ylabel('activation');
     legend('match,low', 'match,high', 'misMatch,low', 'misMatch,high','Location','best');
     title({'peakAct, LESION, caudal, PREV'});
-    axis(axisBounds_peak_tType_caudal);
+    %     axis(axisBounds_peak_tType_caudal);
+    axis([0,p.nTrials,min(peakAct_match_caudal_new_avg(:)),max(peakAct_match_caudal_new_avg(:))]);
+    
     
     subplot(2,2,4); hold on
     plot(totalAct_match_caudal_prev_avg(1,:), 'color', 'g')
@@ -1545,7 +1550,9 @@ if ~onlyFigure
     ylabel('activation');
     legend('match,low', 'match,high', 'misMatch,low', 'misMatch,high','Location','best');
     title({'peakAct, CONTROL, caudal, NEW'});
-    axis(axisBounds_peak_tType_caudal);
+    %     axis(axisBounds_peak_tType_caudal);
+    axis([0,p.nTrials,min(peakAct_match_caudal_new_avg(:)),max(peakAct_match_caudal_new_avg(:))]);
+    
     
     subplot(2,2,2); hold on
     plot(totalAct_match_caudal_new_avg(3,:), 'color', 'g')
@@ -1568,7 +1575,8 @@ if ~onlyFigure
     ylabel('activation');
     legend('match,low', 'match,high', 'misMatch,low', 'misMatch,high','Location','best');
     title({'peakAct, CONTROL, caudal, PREV'});
-    axis(axisBounds_peak_tType_caudal);
+    %     axis(axisBounds_peak_tType_caudal);
+    axis([0,p.nTrials,min(peakAct_match_caudal_new_avg(:)),max(peakAct_match_caudal_new_avg(:))]);
     
     subplot(2,2,4); hold on
     plot(totalAct_match_caudal_prev_avg(3,:), 'color', 'g')
@@ -1599,7 +1607,9 @@ if ~onlyFigure
     ylabel('activation');
     legend('match,low', 'match,high', 'misMatch,low', 'misMatch,high','Location','best');
     title({'peakAct, PRC, CONTROL, NEW'});
-    axis(axisBounds_peak_tType_PRC);
+    %     axis(axisBounds_peak_tType_PRC);
+    axis([0,p.nTrials,min(peakAct_match_PRC_new_avg(:)),max(peakAct_match_PRC_new_avg(:))]);
+    
     
     subplot(2,2,2); hold on
     plot(totalAct_match_PRC_new_avg(3,:), 'color', 'g')
@@ -1622,7 +1632,9 @@ if ~onlyFigure
     ylabel('activation');
     legend('match,low', 'match,high', 'misMatch,low', 'misMatch,high','Location','best');
     title({'peakAct, PRC, CONTROL, PREV'});
-    axis(axisBounds_peak_tType_PRC);
+    %     axis(axisBounds_peak_tType_PRC);
+    axis([0,p.nTrials,min(peakAct_match_PRC_new_avg(:)),max(peakAct_match_PRC_new_avg(:))]);
+    
     
     subplot(2,2,4); hold on
     plot(totalAct_match_PRC_prev_avg(3,:), 'color', 'g')
@@ -1707,7 +1719,7 @@ if ~onlyFigure
     ylabel('familiarity difference');
     legend('match,low', 'match,high', 'misMatch,low', 'misMatch,high','Location','best');
     title({'familiarity difference during LESION sessions'});
-%     axis(axisBounds_familDiffs);
+    %     axis(axisBounds_familDiffs);
     axis([0,p.nTrials,-max(familDiffs_misMatch_caudal_mean(:)),max(familDiffs_misMatch_caudal_mean(:))]);
     
     subplot(1,2,2); hold on

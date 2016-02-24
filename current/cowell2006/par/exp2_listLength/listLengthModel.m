@@ -35,8 +35,8 @@ function p = listLengthModel(p,stims,weights_before)
 %     end
 % end
 
-preTrainedWeights=rand(p.layer,p.nRows,p.nRows,p.numInputDims(p.numLayers),p.numGrids(1));
-% preTrainedWeights = weights_before;
+% preTrainedWeights=rand(p.layer,p.nRows,p.nRows,p.numInputDims(p.numLayers),p.numGrids(1));
+preTrainedWeights = weights_before;
 
 % Get stimuli from stimulus files in '/p.expt/conditionXX/' directory.
 % location = strcat(p.root, p.expt, '/condition', num2str(p.stimCond),'/stimuli.mat');

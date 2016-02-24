@@ -21,3 +21,6 @@ $ cat .gitignore
 
 **.fig
 *.fig
+
+**.asv
+*.asv

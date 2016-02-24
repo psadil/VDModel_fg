@@ -8,7 +8,7 @@ b=1;
 % a=1.7159;
 a = 1;
 d = 2;
-sigma2 = 5;
+sigma2 = .5;
 v = 1;
 
 maxDist = 100;
@@ -38,7 +38,7 @@ acts_min_total = sum(acts_min);
 acts_max_total = sum(acts_max);
 
 figure
-plot(x,acts_min)
+plot(x(1:10),acts_min(1:10))
 
 figure
 plot(x,acts_max)

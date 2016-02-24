@@ -15,7 +15,7 @@ p.root = [pwd, '\'];
 
 
 %% Initialise, pretrain, and save weight matrix
-[p,weights] = delay_pretrain(p);
+[p,weights] = pretrain(p);
 
 
 %% begin sessions

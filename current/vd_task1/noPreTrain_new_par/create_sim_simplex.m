@@ -1,6 +1,6 @@
 % function dPrimePredictions = create_sim_simplex(firstRat, lastRat, etaExp, G_exp)
 
-function [] = create_sim_simplex(firstRat, lastRat)
+function [dPrimePredictions] = create_sim_simplex(firstRat, lastRat, parms)
 
 if exist('p', 'var')
     clear p
@@ -17,7 +17,7 @@ end
 %         mkdir(ratDir);
 %     end
 % end
-rng('shuffle');
+% rng('shuffle');
 
 
 parfor rat = firstRat:lastRat
@@ -29,17 +29,16 @@ parfor rat = firstRat:lastRat
     A = .2;
     B = .4;
     train = 100;
-    eta = 1e-07;
+    eta = parms;
     % g = .5+10*train^-B;
     k = .25;
     leng = 6;
-    startCrit = eta*(20/4); % go through ~ 20 eta in 1 fixation (because 20 encoding cycles)
+    startCrit = eta*(20/5); % go through ~ 20 eta in 1 fixation (because 20 encoding cycles)
     % so, set criterion to be 1/4 of that (20/4)
-    noise = startCrit/2;  % make noise double criterion, which is still only ~half
-    % of the change that we expect to see after 1 fixation
+    noise = startCrit/4; 
     % sigma2 = parms(2)^2;
-    sigma2 = 5;
-    g=sigma2;
+    sigma2 = .5;
+    g = sigma2;
     % current goal: get pk selectivity to saturate at 5
    
     
@@ -53,9 +52,10 @@ parfor rat = firstRat:lastRat
     
     p.nameOfFolder = ['eta', num2str(eta), '_g', num2str(g), ...
         '_K', num2str(k), '_A', num2str(A) ,'_B', num2str(B), '_20enc20_', ...
-        '5pk_20Fix_', num2str(noise),'nois_', num2str(startCrit), 'stCrt_',num2str(leng), '_0reload1'];
+        '5pk_20Fix_', num2str(noise),'nois_', num2str(startCrit), 'stCrt_',num2str(leng), '_0reload1',...
+        'altTanh'];
     
-    p.nSess=4;
+    p.nSess = 4;
     p.sigma2 = sigma2;
     p.numRows = 200; %variables with 'num' to denote number are used to define RUN_SIM matrix (and translated to another name before used in simulation)
     p.numLayers = 2;
@@ -76,6 +76,8 @@ parfor rat = firstRat:lastRat
     p.maxFixations = [20, 25]; % should it be based on empirical data? total # saccades on match trials = 20
     p.k_expt = k_expt;
     p.A = A; % was 0.8 %% Pre-training parameter. The bigger A is, the faster ETA decreases, and the smaller the amount of learning on the weights for all units.
+    p.a = 1.7159;
+    p.b = 2/3;
     p.etaExp = etaExp;
     p.B = B; %was .8 Pre-training parameter. The bigger B is, the faster G decreases, and the smaller the neighbourhood of the winner that gets updated.
     p.G_exp = G_exp;
@@ -136,5 +138,7 @@ parfor rat = firstRat:lastRat
     run_sim(p)
     
 end
+
+dPrimePredictions = calcDPrime(1,lastRat, consts.nameOfFolder);
 
 % plotFamilDiffs(1, lastRat, nameOfFolder,0);

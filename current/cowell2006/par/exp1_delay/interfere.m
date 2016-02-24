@@ -18,7 +18,7 @@ for layer = 1:max(p.numLayers)
 %                 1;
 %             end
             
-            inp_mat = delay_gen_limited_input(p.numInputDims(layer)/p.nDimReps,p); %generate an input vector
+            inp_mat = gen_limited_input(p.numInputDims(layer)/p.nDimReps,p); %generate an input vector
             
             %--------------------------------------------------------------
             % Find winning node
@@ -29,7 +29,7 @@ for layer = 1:max(p.numLayers)
             %--------------------------------------------------------------
             % Calculate each unit's distance from winner, for use in
             % updating
-            [f, ~] = delay_calc_act_fast(win_row, win_col, dist_mat,layer,p, interefere);
+            [f, ~] = calc_act_fast(win_row, win_col, dist_mat,layer,p, interefere);
                         
             %%% Update Weights
             w = w + f.*(inp_mat-w);

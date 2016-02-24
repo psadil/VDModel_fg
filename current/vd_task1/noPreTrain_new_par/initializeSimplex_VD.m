@@ -13,7 +13,7 @@ consts.nRats = 20;
 consts.nIterations = 100;
 
 % name of folder containing stimuli to use
-consts.exptName = 'february15_2016';
+consts.exptName = 'february24_2016';
 consts.nameOfFolder = 'fminsearchbnd_tempSessionInfo';
 
 % data is in DIFFERENCE of dPrime, from first to second half of trials.
@@ -30,11 +30,11 @@ data = [0, -.5, 0, 0];
 %%% numTrainCycles
 %%% numEncodingCycles
 % startParms = [ (.15/(40*4)) , 5  ];
-startParms = (.15/(20*4));
+startParms = (1e-07);
 % consts.minParms = [(.15/(40*20*20)), 1,];
-consts.minParms = (.15/(80));
+consts.minParms = (1e-09);
 % consts.maxParms = [(1/(40*20)), 10];
-consts.maxParms = (1/(40*2));
+consts.maxParms = (1e-1);
 % NOTE: to deal with the need for integer parameters, 'nums' are rounded
 % inside create_sim
 
