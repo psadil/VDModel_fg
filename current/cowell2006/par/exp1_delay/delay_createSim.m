@@ -10,12 +10,6 @@ if ~exist(outerDir, 'dir'),
     mkdir(outerDir);
 end
 
-% for rat = firstRat:lastRat
-%     ratDir = strcat(pwd,'/rats/rat',num2str(rat));
-%     if ~exist(ratDir, 'dir'),
-%         mkdir(ratDir);
-%     end
-% end
 rng('shuffle');
 
 
@@ -24,9 +18,9 @@ parfor rat = firstRat:lastRat
     p = struct();
     p.ratNum = rat;
     
-    A = .6;
-    B = .3;
-    train = 500;
+    A = .2;
+    B = .4;
+    train = 100;
     etaExp = train^-A;
     G_exp = .5+10*train^-B;
     k_expt = .08;
@@ -34,8 +28,8 @@ parfor rat = firstRat:lastRat
     
     p.exptName = '12jan2016';
     p.nameOfFolder = ['eta', num2str(etaExp), '_g', num2str(G_exp), ...
-        '_K', num2str(k_expt), '_A', num2str(A) ,'_B', num2str(B), '_20enc20_', num2str(train), ...
-        'trnRAND_','5pk_etaInt', num2str(p.eta_int)];
+        '_K', num2str(k_expt), '_A', num2str(A) ,'_B', num2str(B), '_20enc_', num2str(train), ...
+        'trn_','5pk_etaInt', num2str(p.eta_int),'COWELL2006'];
     
     p.dataDir = strcat(pwd, '/graphsAndSession/', p.nameOfFolder);
     if ~exist(p.dataDir, 'dir'),
@@ -58,8 +52,8 @@ parfor rat = firstRat:lastRat
     p.maxNumGrids = max(p.nGrids);
     p.nStimFactors = 4; % number of levels for each dimension
     
-    p.nDimReps = 3;
-    p.components = 24;
+    p.nDimReps = 1;
+    p.components = 8;
     p.numInputDims_Caudal = p.components/p.numGrids_Caudal;
     p.numInputDims_PRC = p.components;
     p.numInputDims = [p.numInputDims_Caudal, p.numInputDims_PRC];
@@ -70,9 +64,9 @@ parfor rat = firstRat:lastRat
     p.B = B; %was .8 Pre-training parameter. The bigger B is, the faster G decreases, and the smaller the neighbourhood of the winner that gets updated.
     p.G_exp = G_exp;
     p.numTrainCycles = [train, train];
-    p.numEncodingCycles = [20, 20]; % now better described as encoding cycles per fixation [LA, HA]
+    p.numEncodingCycles = 20; % now better described as encoding cycles per fixation [LA, HA]
     p.numFeaturesToSample = [p.numGrids_Caudal,p.numGrids_Caudal]; % first == lesion, second == control
-    p.sizeOfPeak = 5;
+    p.sizeOfPeak = 9;
     p.filtPeak = p.numRows+1;
     p.nameOfFolder = p.nameOfFolder;
     
@@ -87,7 +81,7 @@ parfor rat = firstRat:lastRat
     [cols, rows] = meshgrid(1:p.numRows);
     p.gridMat = cat(3, rows, cols);
     fprintf('Creating a new experiment...\n');
-    p.expt = p.exptName; %input('\nEnter experiment name: ', 's');
+    p.expt = p.exptName;
     
     
     %% create stimuli for use

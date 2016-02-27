@@ -12,36 +12,13 @@ function p = delayModel(p,stims,weights_before)
 % 3rd-Dimension, slice 1: x-coords
 % 3rd-Dimension, slice 2: y-coords
 
-% global ROOT
-
-
 
 % Load the pretrained weights at beginning of visual discrimination task
 
-% preTrainedWeights=zeros(p.layer,p.nRows,p.nRows,p.numInputDims(p.numLayers),p.numGrids(1));
-%
-% for layer=1:p.layer
-%     nInpDims=p.numInputDims(layer);
-%     for grid=1:p.nGrids(layer)
-%         if ~p.setPre
-%             location = strcat(ROOT,'rats/rat', num2str(p.ratNum), '/pretrainedW__layer', num2str(layer), 'grid', num2str(grid),'.mat');
-%             load(location);
-%             preTrainedWeights(layer,:,:,1:nInpDims,grid)=w;
-%             fclose('all');
-%
-%         else
-%             preTrainedWeights = rand(size(weights));
-%         end
-%     end
-% end
 
 % preTrainedWeights=rand(p.layer,p.nRows,p.nRows,p.numInputDims(p.numLayers),p.numGrids(1));
 preTrainedWeights = weights_before;
 
-% Get stimuli from stimulus files in '/p.expt/conditionXX/' directory.
-% location = strcat(p.root, p.expt, '/condition', num2str(p.stimCond),'/stimuli.mat');
-% fid = load(location);
-% fclose('all');
 
 %% initialize storage variables
 
@@ -63,10 +40,6 @@ for trial = 1:p.nTrials,
     
     %----------------------------------------------------------------------
     %%% Get the two stimuli for this simultaneous visual discrimination trial
-%     stim_name = sprintf('stimuli%d', tType); %tType==1 is Mismatch, tType==2 is Match
-%     stimuli = fid.(stim_name);
-%     stimPair = squeeze(stimuli(p.stimOrder(tTypeCnt(tType),tType),:,:));
-%     stimPair = stimPair(:,:,:);
     stimPair = squeeze(stims.stimuli1(trial,:,:));
 
         

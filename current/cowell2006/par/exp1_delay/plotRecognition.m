@@ -1,14 +1,6 @@
 function [] = plotRecognition(firstRat, lastRat, folderName)
 % analyze recognition
 
-% now called directly from create_sim
-
-% currently, taking the maximum familiarity differences at each trial
-% produces the set of most desirable results
-% folderName must be a string (without / on either side)
-
-% folderName = '1encod_p6Ratio1p2_1sampVar5_0noise_100train_20Max25_5peak_100rows_A01_B4_forceSamp_NOshrinkingLearn_etaExp5p_Gexpp8_stim4Diff_NOfives';
-
 % scrsz = get(groot, 'ScreenSize');
 
 saveFolder = [pwd,'/graphsAndSession/', folderName];
@@ -45,6 +37,12 @@ end
 
 % first average across rats, then across trials
 meanRecog = mean(squeeze(mean(recognition,1)),3);
+
+% convert to table for writting to csv
+% recogT = table( squeeze(mean(recognition),1));
+% recogT.Properties.VariableNames
+
+% write that table as csv
 
 %%
 close all

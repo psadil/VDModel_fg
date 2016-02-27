@@ -41,14 +41,6 @@ for layer = 1:max(p.numLayers)
             % Calculate each unit's distance from winner and resultant activation
             [f, ~] = calc_act_fast(win_row, win_col, dist_mat,layer,p,interefere);
             
-            %             if nInpDims == p.numInputDims_PRC
-            %                 p.activationsPretrain_PRC(:,:,grid,cycle)=act;
-            %             elseif nInpDims == p.numInputDims_Caudal
-            %                 p.activationsPretrain_Caudal(:,:,grid,cycle)=act;
-            %
-            %             end
-            
-            %         act = 1./(1+exp(-1*act)); %squashing function %NOW INCLUDED IN calc_act_fast
             
             %%% Update Weights
             w = w + f.*(inp_mat-w);
@@ -57,13 +49,10 @@ for layer = 1:max(p.numLayers)
         end  % end of training cycles loop
         
         %% Add random noise to the weights
-%                 rand_noise = (1 - 2*(rand(p.numRows,p.numRows,nInpDims))); % Creates a matrix of random values between -1 and 1.
-%                 w = w + rand_noise;
-        w = (w + (1 - 2*(rand(p.numRows,p.numRows,nInpDims))) + 1)./3 ;
-        
-                %%% Squidge the distribution of weight values back into the 0 to 1 range.
-%                 w = w + 1;
-%                 w = w./3;
+
+        % add uniform noise [-1,1], then add 1, and divide it all by 3
+        % ending weights are again distributed on [0,1]
+        w = ((w + (1 - 2*(rand(p.numRows,p.numRows,nInpDims)))) + 1)./3 ;
         
         % Is there a problem with this, in that only some weight get the maximum possible
         % increment or decrement, and only a subset of these were high or low to start off with, therefore very few end up anywhere
@@ -71,12 +60,6 @@ for layer = 1:max(p.numLayers)
         % values tend to have lower matches. Perhaps not as bad as flat_noise_decay version of squidging, since at
         % least the noise increment/decrements will be normally distributed.
         
-        %------------------------------------------------------------------
-        % Save this pretrained grid
-        %------------------------------------------------------------------
-        %         location = strcat(p.root,'/rats/rat', num2str(p.ratNum), '/pretrainedW__layer', num2str(layer), 'grid', num2str(grid),'.mat');
-        %         save(location, 'w');
-        %
         
         weights(layer,:,:,1:p.numInputDims(layer),grid) = w;
     end % end of grid loop

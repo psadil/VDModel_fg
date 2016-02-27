@@ -13,11 +13,7 @@ for layer = 1:max(p.numLayers)
         
         for cycle=1:p.delayCycles(p.stimCond),
                         
-            
-%             if cycle == 300
-%                 1;
-%             end
-            
+                        
             inp_mat = gen_limited_input(p.numInputDims(layer)/p.nDimReps,p); %generate an input vector
             
             %--------------------------------------------------------------

@@ -9,7 +9,7 @@ consts.seed = fix(1e6*sum(clock));
 
 % need to make sure am estimating enough rats on each iteration of the
 % model to acocunt for noise of output.
-consts.nRats = 16;
+consts.nRats = 8;
 consts.nIterations = 100;
 
 % name of folder containing stimuli to use
@@ -30,7 +30,7 @@ data = [0, -.5, 0, 0];
 %%% numTrainCycles
 %%% numEncodingCycles
 % startParms = [ (.15/(40*4)) , 5  ];
-startParms = (1.420858e-06);
+startParms = (1e-05);
 % consts.minParms = [(.15/(40*20*20)), 1,];
 consts.minParms = (1e-07);
 % consts.maxParms = [(1/(40*20)), 10];

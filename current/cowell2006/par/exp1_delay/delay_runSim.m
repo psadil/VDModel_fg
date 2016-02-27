@@ -2,17 +2,6 @@ function[p] = delay_runSim(p)
 
 p.root = [pwd, '\'];
 
-% if nargin == 2
-%     fprintf('\nScanning file for previous seed.');
-%     seed_fid = fopen('seed.txt', 'r');
-%     seed = fscanf(seed_fid, '%f');
-% else
-% seed = fix(1e6*sum(clock));
-%     seed_fid = fopen('seed.txt', 'w');
-%     fprintf(seed_fid, '%.0f', seed);
-%     fclose(seed_fid);
-% end
-
 
 %% Initialise, pretrain, and save weight matrix
 [p,weights] = pretrain(p);
@@ -26,9 +15,6 @@ fprintf ('\nThere will be %d sessions in total.\n', p.nSess);
 startTime=GetSecs;
 for sess = 1:p.nSess,
     
-%     if sess==3
-%         1;
-%     end
     
     if sess <= length(p.delayCycles);
         p.nInpDims = p.numGrids_Caudal;
@@ -42,7 +28,6 @@ for sess = 1:p.nSess,
     p.stimSet = 1;
     
     % create stim sequence
-    %     [p] = delay_createStimOrder(p);
     [p, stims] = createDelayStimuli(p);
     
     p.tType = cat(2,ones(1,p.nMismatch), 2*ones(1,p.nMatch));
@@ -56,11 +41,7 @@ for sess = 1:p.nSess,
     
     % simply nicer to refer to things as layers, sometimes
     p.layer = p.which_gp_layer;
-    
-    %     % maximum number of fixations allowed (fixations before judgement of
-    %     % 'match' will be made)
-    %     p.maxFix = p.maxFixations(p.stimCond);
-    
+        
     % number of features picked up per fixation
     p.nFeaturesToSample = p.numFeaturesToSample(p.layer);
     
@@ -74,7 +55,6 @@ for sess = 1:p.nSess,
     % within VD_present_stimulus.m
     p.usePRC = zeros(2,p.nTrials);
     
-    %     p.nEncodCycles = p.numEncodingCycles(p.stimCond);
     
     %% say what about to happen
     fprintf('\n\nSESSION %d, RAT %d\n', sess, p.ratNum);

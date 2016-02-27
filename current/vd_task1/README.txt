@@ -1,3 +1,11 @@
+27feb2016
+ps
+
+noPreTrain_new_par -> an attempt to make a much much simpler model, one without
+peak and total activations, also without a complex activation function
+
+
+**************************************************************
 
 1jan2016
 ps

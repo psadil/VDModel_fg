@@ -1,6 +1,5 @@
 function m_out = init_weights(p, layer)
 
-% avail_values = [.05 .333 .667 .95];
 
 % (column X row X inputDim)
 

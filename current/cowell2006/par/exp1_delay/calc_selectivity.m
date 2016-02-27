@@ -19,7 +19,7 @@ grid_dist = min_row_dist_mat + min_col_dist_mat;
 
 
 f_1dim = p.etaExp .* exp(-(grid_dist/p.G_exp).^2);
-f_1dim = f_1dim .* (grid_dist < p.filtPeak);
+% f_1dim = f_1dim .* (grid_dist < p.filtPeak);
 
 
 f_out=zeros(p.numRows,p.numRows,nInpDims);
@@ -28,24 +28,14 @@ for dim=1:nInpDims
 end
 
 act_out = log(ones(p.nRows,p.nRows) ./ dist_mat);    
-                                                   
+act_out(act_out > 9.21) = 9.21;                                                   
 % surf(act_out)
 % max(max(act_out))
 % close all
 
 
-% act_out = p.a + ((p.k - p.a)./ ((p.c + p.q * exp(-p.b*act_out)).^(1/p.v)));
+% act_out = 1./(1+exp(-p.k_expt*act_out)); %squashing function
 
-act_out = 1./(1+exp(-p.k_expt*act_out)); %squashing function   (why squash?)
-% 
-% surf(act_out)
-% max(act_out)
-% close all
-
-% act_out(act_out>9.21)=9.21;
-
-
-% surf(act_out);
 
 %%% initialise array and record winner for all situations
 winners = zeros(9,2);
@@ -99,12 +89,8 @@ for unit = 1:p.sizeOfPeak
     act_peak = act_peak + act_out(winners(unit,1), winners(unit,2));
 end
 
-% p.act_peak(trial,layer) = act_peak;
-
-act_total = sum(sum(act_out));
+act_total = sum(act_out(:));
 selectivity = act_peak/act_total;
     
 
-
-% p.totalAct(trial,layer) = act_total;
 end

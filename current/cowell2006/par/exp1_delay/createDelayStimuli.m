@@ -1,9 +1,6 @@
 function [p, stims] = createDelayStimuli(p)
-% VDcreateStimuli - creates stimuli for input to VD network
+% createDelayStimuli - creates stimuli for input to simulation of delay 
 
-
-% ROOT = [pwd '\'];
-% exptDir = [p.exptName, '\'];
 
 nTotalDims = p.components / p.nDimReps;
 nCaudalGrids = p.numGrids_Caudal;
@@ -12,7 +9,6 @@ nStimFactors = p.nStimFactors;
 nSimpleConj = nDimsCaudal ^ nStimFactors;
 
 % number of features to use for stimuli (less then total)
-% nStimsPerCond = 6;
 nStimsPerCond = nSimpleConj;
 
 LA_misMatch = zeros(p.nMismatch,nTotalDims,2); %one col for stim1, one col for stim2
@@ -38,7 +34,7 @@ firstFeatureToCheck=(1:nDimsCaudal:nTotalDims);
 lastFeatureToCheck = firstFeatureToCheck+(nDimsCaudal-1);
 
 
-%% LA
+%% put features into unique stims
 for stimPair = 1:p.nMismatch,
     chosenFeat = zeros(nCaudalGrids,2);
     % sample until no features match
@@ -58,14 +54,6 @@ end
 stims.stimuli1 = reshape(repmat(reshape(LA_misMatch,...
         [1,p.nMismatch,1,p.numInputDims_PRC/p.nDimReps,1,2]),[1,1,p.nDimReps,1,1,1]),...
         [p.nMismatch,(p.numInputDims_PRC/p.nDimReps)*p.nDimReps,2]);
-
-% %save stimuli
-% if ~exist(strcat(ROOT,exptDir,'condition1'),'dir')
-%     mkdir(strcat(ROOT,exptDir,'condition1'))
-% end
-% location = strcat(ROOT,exptDir,'condition1', '/stimuli.mat');
-% save(location,'stimuli1');
-
 
 
 
