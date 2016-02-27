@@ -64,13 +64,14 @@ for layer=1:p.layer
         % or if dealing with PRC but 5 features weren't sampled, skip
         % presenting
         %         if (layer==1 && (~any(features_sampled==grid) || usePRC)) || (layer==2 && ~usePRC)
-        if ~p.fives
-            if (layer==1 && (~any(features_sampled==grid))) || (layer==2 && ~usePRC)
 
-                
-                continue
-            end
-        end
+%         if ~p.fives
+%             if (layer==1 && (~any(features_sampled==grid))) || (layer==2 && ~usePRC)
+% 
+%                 
+%                 continue
+%             end
+%         end
         
         nEncodCycles = p.nEncodCycles;
         if p.variableEncode
@@ -130,14 +131,6 @@ for layer=1:p.layer
             
             % Update Weights
             weights = weights + f.*(input_mat-weights);  % update based on spire around winning node
-            % add random noise to all nodes
-%             noise = (-p.decision_noise + (p.decision_noise + p.decision_noise).*...
-%                 (rand(p.numRows,p.numRows,p.numInputDims(layer))));
-%             weights = weights + noise;
-%             
-%             % Squidge the distribution of weight values back into the 0 to 1 range.
-%             weights = weights + p.decision_noise;
-%             weights = weights ./ (1+2*p.decision_noise);
             
         end %%% Go to next cycle (if switchRatio is low enough)
         

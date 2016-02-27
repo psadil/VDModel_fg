@@ -7,7 +7,7 @@ b=1;
 % b=2/3;
 % a=1.7159;
 a = 1;
-d = 2;
+d = 8;
 sigma2 = .5;
 v = 1;
 
@@ -41,7 +41,7 @@ figure
 plot(x(1:10),acts_min(1:10))
 
 figure
-plot(x,acts_max)
+plot(x(1:10),acts_max(1:10))
 
 % note, however, that the weights aren't updated linearly. Rather, they
 % also travel along and exp() curve. 
@@ -55,9 +55,10 @@ changeTot = acts_max_total - acts_min_total;
 % until the very end of the second half, it'llbe easier to preserve the
 % performance of the lesioned networks durign the low ambiguity condition,
 % during which they're still seeing many features
-eta = changeTot / 60;
+eta = changeTot / 60
 
 % ah, but, that eta happens ~20 times per fixation, and an average of 10
 % fixations occur per trial
-eta_use = eta /( 20*20);
+eta_use = eta /( 20);
 eta_use
+% ah! but, there's nothing that says we have to encode many times!

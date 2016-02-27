@@ -1608,7 +1608,7 @@ if ~onlyFigure
     legend('match,low', 'match,high', 'misMatch,low', 'misMatch,high','Location','best');
     title({'peakAct, PRC, CONTROL, NEW'});
     %     axis(axisBounds_peak_tType_PRC);
-    axis([0,p.nTrials,min(peakAct_match_PRC_new_avg(:)),max(peakAct_match_PRC_new_avg(:))]);
+%     axis([0,p.nTrials,min(peakAct_match_PRC_new_avg(:)),max(peakAct_match_PRC_new_avg(:))]);
     
     
     subplot(2,2,2); hold on
@@ -1633,7 +1633,7 @@ if ~onlyFigure
     legend('match,low', 'match,high', 'misMatch,low', 'misMatch,high','Location','best');
     title({'peakAct, PRC, CONTROL, PREV'});
     %     axis(axisBounds_peak_tType_PRC);
-    axis([0,p.nTrials,min(peakAct_match_PRC_new_avg(:)),max(peakAct_match_PRC_new_avg(:))]);
+%     axis([0,p.nTrials,min(peakAct_match_PRC_new_avg(:)),max(peakAct_match_PRC_new_avg(:))]);
     
     
     subplot(2,2,4); hold on

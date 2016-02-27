@@ -1,4 +1,4 @@
-function [ x,fVal ] = wrapper4fminbnd( pArray, data )
+function [ x,fVal ] = wrapper4fminbnd( pArray, data, nOfFolder )
 %wrapper4min out wrapper for call to simplex algorithm on VD model
 
 % pArray = parameter array, given by initializeSimplex_VD
@@ -20,10 +20,10 @@ options = optimset(defOpts, 'Display', 'iter', 'MaxFunEvals', consts.nIterations
         
         % predictions will be related to dPrime, data will be desired
         % dPrime diffs to model.
-        predictions = getdPrimePred(parms);
+        predictions = getdPrimePred(parms, nOfFolder)
         sqdist = (predictions - data).^2;
         rmsd=sqrt(mean(sqdist));
-        fprintf('\n\n rmsd:%d., eta:%d, G_exp:%d \r', rmsd, parms(1))
+        fprintf('\n\n rmsd:%d., eta:%d, \r', rmsd, parms(1))
     end
 
 end

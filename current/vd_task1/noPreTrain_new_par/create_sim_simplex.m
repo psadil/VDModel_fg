@@ -1,6 +1,6 @@
 % function dPrimePredictions = create_sim_simplex(firstRat, lastRat, etaExp, G_exp)
 
-function [dPrimePredictions] = create_sim_simplex(firstRat, lastRat, parms)
+function [dPrimePredictions] = create_sim_simplex(firstRat, lastRat, parms, nOfFolder)
 
 if exist('p', 'var')
     clear p
@@ -33,9 +33,9 @@ parfor rat = firstRat:lastRat
     % g = .5+10*train^-B;
     k = .25;
     leng = 6;
-    startCrit = eta*(20/5); % go through ~ 20 eta in 1 fixation (because 20 encoding cycles)
+    startCrit = eta/10; % go through ~ 20 eta in 1 fixation (because 20 encoding cycles)
     % so, set criterion to be 1/4 of that (20/4)
-    noise = startCrit/4; 
+    noise = startCrit/2; 
     % sigma2 = parms(2)^2;
     sigma2 = .5;
     g = sigma2;
@@ -49,11 +49,12 @@ parfor rat = firstRat:lastRat
     k_expt = startParms(3);
     
     p.exptName = '20feb2016';
-    
-    p.nameOfFolder = ['eta', num2str(eta), '_g', num2str(g), ...
-        '_K', num2str(k), '_A', num2str(A) ,'_B', num2str(B), '_20enc20_', ...
-        '5pk_20Fix_', num2str(noise),'nois_', num2str(startCrit), 'stCrt_',num2str(leng), '_0reload1',...
-        'altTanh'];
+
+    p.nameOfFolder = nOfFolder;
+%     p.nameOfFolder = ['eta', num2str(eta), '_g', num2str(g), ...
+%         '_K', num2str(k), '_A', num2str(A) ,'_B', num2str(B), '_20enc20_', ...
+%         '5pk_20Fix_', num2str(noise),'nois_', num2str(startCrit), 'stCrt_',num2str(leng), '_0reload1',...
+%         'altTanh'];
     
     p.nSess = 4;
     p.sigma2 = sigma2;
@@ -82,7 +83,7 @@ parfor rat = firstRat:lastRat
     p.B = B; %was .8 Pre-training parameter. The bigger B is, the faster G decreases, and the smaller the neighbourhood of the winner that gets updated.
     p.G_exp = G_exp;
     p.numTrainCycles = [train, train];
-    p.numEncodingCycles = [20, 20]; % now better described as encoding cycles per fixation [LA, HA]
+    p.numEncodingCycles = [1, 1]; % now better described as encoding cycles per fixation [LA, HA]
     p.numFeaturesToSample = [p.numGrids_Caudal,p.numGrids_Caudal]; % first == lesion, second == control
     p.fixn_ratio_lowHigh = [.3, .5]; % now describes ratio of within/total
     p.outsideRatio = [.2,.1];
@@ -91,7 +92,7 @@ parfor rat = firstRat:lastRat
     p.fives = 0;
     p.variableEncode = 1;
     p.diffEncode = 1;
-    p.numThresh = 2;
+    p.numThresh = 1;
     p.lengthOfCrit = leng;
     p.famil_diff_thresh_start=[startCrit; startCrit];
     p.setPre = 0;
@@ -139,6 +140,6 @@ parfor rat = firstRat:lastRat
     
 end
 
-dPrimePredictions = calcDPrime(1,lastRat, consts.nameOfFolder);
+dPrimePredictions = calcDPrime(1,lastRat, nOfFolder);
 
-% plotFamilDiffs(1, lastRat, nameOfFolder,0);
+% plotFamilDiffs(1, lastRat, nOfFolder,0);

@@ -9,12 +9,12 @@ consts.seed = fix(1e6*sum(clock));
 
 % need to make sure am estimating enough rats on each iteration of the
 % model to acocunt for noise of output.
-consts.nRats = 20;
+consts.nRats = 8;
 consts.nIterations = 100;
 
 % name of folder containing stimuli to use
 consts.exptName = 'february24_2016';
-consts.nameOfFolder = 'fminsearchbnd_tempSessionInfo';
+nOfFolder = 'fminsearchbnd_tempSessionInfo';
 
 % data is in DIFFERENCE of dPrime, from first to second half of trials.
 % order of [caudal_LA, caudal_HA, PRC_LA, PRC_HA]
@@ -30,16 +30,16 @@ data = [0, -.5, 0, 0];
 %%% numTrainCycles
 %%% numEncodingCycles
 % startParms = [ (.15/(40*4)) , 5  ];
-startParms = (1e-07);
+startParms = (1e-05);
 % consts.minParms = [(.15/(40*20*20)), 1,];
-consts.minParms = (1e-09);
+consts.minParms = (1e-07);
 % consts.maxParms = [(1/(40*20)), 10];
-consts.maxParms = (1e-1);
+consts.maxParms = (1e-3);
 % NOTE: to deal with the need for integer parameters, 'nums' are rounded
 % inside create_sim
 
 % call wrapper function of fminsearchbnd
-[finalParms, fVal] = wrapper4fminbnd(startParms, data);
+[finalParms, fVal] = wrapper4fminbnd(startParms, data, nOfFolder);
 
 totalTime = GetSecs - startTime;
 fprintf('\n\n %d. \r', totalTime)

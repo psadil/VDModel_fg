@@ -38,8 +38,11 @@ grid_dist = min_row_dist_mat + min_col_dist_mat;
 % grid_dist = (grid_dist < 2) .* grid_dist;
 
 % consider trying a=1.759 and b=(2/3) stuff
-f_1dim = p.etaExp .*exp(-(grid_dist.^2)./(2*p.sigma2)).*(1-p.a*tanh(min(p.b*dist_mat(:))));
-f_1dim = f_1dim .* (grid_dist < p.filtPeak);
+% f_1dim = p.etaExp .*exp(-(grid_dist.^2)./(2*p.sigma2)).*(1-p.a*tanh(min(p.b*dist_mat(:))));
+% f_1dim = f_1dim .* (grid_dist < p.filtPeak);
+
+% f_1dim = p.etaExp .*exp(-(grid_dist.^2)./(2*p.sigma2)).*(1-p.a*tanh(min(p.b*dist_mat(:))));
+f_1dim = p.etaExp .*exp(-(grid_dist.^2)./(2*p.sigma2));
 
 % MAYBE BRING THIS BACK!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 % f_out = repmat(f_1dim,[1,1,nInpDims]);
