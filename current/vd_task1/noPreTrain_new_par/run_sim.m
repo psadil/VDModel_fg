@@ -47,8 +47,9 @@ for sess = 1:p.nSess,
             p.sess = 1;
         end
     end
-    
+    fprintf('\n generating stims');
     [p, stims] = VDcreateStimuli_forC(p);
+    fprintf('\n success! generated unique stims');
     
     if sess > 2
         p.which_gp_layer = 2 ;

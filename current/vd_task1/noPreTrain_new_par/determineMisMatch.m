@@ -14,15 +14,16 @@ whichCaudal = 0;
 % any layer that has more than 1 grid.
 %--------------------------------------------------------------------------
 
-featuresToCompare = zeros(1,p.numGrids_Caudal);
-for feat = 1:p.numGrids_Caudal
-    if any(judging.featuresSampled_new==feat) && any(judging.featuresSampled_prev==feat)
-        featuresToCompare(feat) = 1;
-    end
-end
-if ~sum(featuresToCompare);
-    return;
-end
+% featuresToCompare = zeros(1,p.numGrids_Caudal);
+% for feat = 1:p.numGrids_Caudal
+%     if any(judging.featuresSampled_new==feat) && any(judging.featuresSampled_prev==feat)
+%         featuresToCompare(feat) = 1;
+%     end
+% end
+% if ~sum(featuresToCompare);
+%     return;
+% end
+featuresToCompare = p.numGrids_Caudal;
 p.comparedFeat(trial,:) = featuresToCompare;
 
 %--------------------------------------------------------------------------
@@ -36,7 +37,7 @@ for layer_new = 1:p.numLayers
         meanSelectivity_caudal_new = judging.initial_selec(layer_new,:).*featuresToCompare;
         
         
-    elseif layer_new == 2 && (all(p.usePRC(:,trial)))
+    elseif layer_new == 2 %&& (all(p.usePRC(:,trial)))
         
         % when plotting, need to make sure that the p.usePRC==(0 || 1) cases aren't
         % looked at...
@@ -73,7 +74,7 @@ for layer_prev = 1:p.numLayers
         
         p.familDiff_caudal(trial) = familDiff_caudal(whichCaudal);
         
-    elseif (layer_prev == 2) && (all(p.usePRC(:,trial)))
+    elseif (layer_prev == 2) %&& (all(p.usePRC(:,trial)))
         p.meanSelectivity_PRC_prev(trial) = judging.selectivity_prev(layer_prev,1);
         %         p.familDiff_PRC(trial) = abs(p.meanSelectivity_PRC_prev(trial) - p.meanSelectivity_PRC_new(trial));
         p.familDiff_PRC(trial) = p.meanSelectivity_PRC_prev(trial) - p.meanSelectivity_PRC_new(trial);
@@ -143,15 +144,16 @@ if p.layer == 2
 %     end
 
     
+if familDiff_PRC <0
+   2; 
+end
+
+
     % the following should be uncommented when noise loads on to thresh
     familDiffs_temp = [familDiff_caudal - thresh_caudal, familDiff_PRC - thresh_PRC];
     
     [~, whichFamilDiff] = max(familDiffs_temp);
-    
-%     if trial >= 40
-%         2;
-%     end
-    
+        
     
     if whichFamilDiff == 2
         familDiff = familDiff_PRC;

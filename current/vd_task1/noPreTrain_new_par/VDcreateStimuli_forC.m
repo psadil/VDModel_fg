@@ -104,16 +104,23 @@ while notUnique
         %         items(item)=[];
         for trial = item+1:p.nMismatch
             
-            %             if isequal(stimuli1(item,:,:),(stimuli1(trial,:,:)))
-            if stimuli1(item,:,:) == (stimuli1(trial,:,:))
-                notUnique = 1;
-                breakOut = 1;
-                break;
-                %             elseif isequal(stimuli2(item,:,:),(stimuli2(trial,:,:)))
-            elseif stimuli2(item,:,:) == (stimuli2(trial,:,:))
-                notUnique=1;
-                breakOut = 1;
-                break;
+            for pair1 = 1:2
+                for pair2 = 1:2
+                    if stimuli1(item,:,pair1) == (stimuli1(trial,:,pair2))
+                        notUnique=1;
+                        breakOut = 1;
+                        break;
+                        %             elseif isequal(stimuli2(item,:,:),(stimuli2(trial,:,:)))
+                    elseif stimuli2(item,:,pair1) == (stimuli2(trial,:,pair2))
+                        notUnique=1;
+                        breakOut = 1;
+                        break;
+                    elseif stimuli1(item,:,pair1) == (stimuli2(trial,:,pair2))
+                        notUnique=1;
+                        breakOut = 1;
+                        break;
+                    end
+                end
             end
         end
         if breakOut
@@ -193,15 +200,23 @@ while notUnique
         for trial = item+1:p.nMismatch
             
             %             if isequal(stimuli1(item,:,:),(stimuli1(trial,:,:)))
-            if stimuli1(item,:,:) == (stimuli1(trial,:,:))
-                notUnique=1;
-                breakOut = 1;
-                break;
-                %             elseif isequal(stimuli2(item,:,:),(stimuli2(trial,:,:)))
-            elseif stimuli2(item,:,:) == (stimuli2(trial,:,:))
-                notUnique=1;
-                breakOut = 1;
-                break;
+            for pair1 = 1:2
+                for pair2 = 1:2
+                    if stimuli1(item,:,pair1) == (stimuli1(trial,:,pair2))
+                        notUnique=1;
+                        breakOut = 1;
+                        break;
+                        %             elseif isequal(stimuli2(item,:,:),(stimuli2(trial,:,:)))
+                    elseif stimuli2(item,:,pair1) == (stimuli2(trial,:,pair2))
+                        notUnique=1;
+                        breakOut = 1;
+                        break;
+                    elseif stimuli1(item,:,pair1) == (stimuli2(trial,:,pair2))
+                        notUnique=1;
+                        breakOut = 1;
+                        break;
+                    end
+                end
             end
         end
         if breakOut

@@ -20,7 +20,10 @@ end
 % rng('shuffle');
 
 
-for rat = firstRat:lastRat
+
+
+
+parfor rat = firstRat:lastRat
     
     p = struct();
     p.ratNum = rat;
@@ -32,12 +35,12 @@ for rat = firstRat:lastRat
     eta = parms;  
     % g = .5+10*train^-B;
     k = .25;
-    leng = 6;
+    leng = 12;
     startCrit = eta/1000; % go through ~ 20 eta in 1 fixation (because 20 encoding cycles)
     % so, set criterion to be 1/4 of that (20/4)
-    noise = startCrit/2; 
+    noise = startCrit*.75; 
     % sigma2 = parms(2)^2;
-    sigma2 = .5;
+    sigma2 = 1;
     g = sigma2;
     % current goal: get pk selectivity to saturate at 5
    
@@ -92,7 +95,7 @@ for rat = firstRat:lastRat
     p.fives = 0;
     p.variableEncode = 1;
     p.diffEncode = 1;
-    p.numThresh = 1;
+    p.numThresh = 2;
     p.lengthOfCrit = leng;
     p.famil_diff_thresh_start=[startCrit; startCrit];
     p.setPre = 0;

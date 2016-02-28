@@ -79,8 +79,6 @@ p.fixations = zeros(1,p.nTrials);
 p.peak_act = zeros(p.nTrials,2);
 p.totalAct = zeros(p.nTrials,2);
 
-% p.answer = zeros(1,p.nTrials);
-% p.correct = zeros(1,p.nTrials);
 
 %% begin trial loop
 
@@ -104,7 +102,7 @@ for trial = 1:p.nTrials,
     
     %----------------------------------------------------------------------
     %%% Generate series of saccades and present stimuli, for this trial
-    [weights, stop_sampling, p, ~] = VD_compare_stimuli(stimPair, weights, p, trial); %weights output on previous trial get input on next trial
+    [weights, stop_sampling, p] = VD_compare_stimuli(stimPair, weights, p, trial); %weights output on previous trial get input on next trial
     
     %     p.activations(:,:,:,trial)=activations;
     
