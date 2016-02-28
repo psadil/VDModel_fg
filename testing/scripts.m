@@ -3,20 +3,21 @@ close all;
 % testing the shape of the activation function. logistic
 L=1; % maximum
 k=.25; % curve steepness, also determines how low is the initial start
-b=1;
-% b=2/3;
-% a=1.7159;
-a = 1;
-d = 8;
+% b=1;
+b=2/3;
+a=1.7159;
+% a = 1;
+d = 2;
 sigma2 = .5;
 v = 1;
 
 maxDist = 100;
 steps = 1;
 maxDist_weights = 0.15;
-minDist_weights = .001;
+minDist_weights = .00001;
 
-x = 0:steps:maxDist;
+% x = 0:steps:maxDist;
+x = [0,repelem(1,4),repelem(2,8),repelem(3,12)];
 % xaxis = 0:steps:maxDist;
 
 % xlog = log(v./((d*x.^2)./d));
@@ -32,16 +33,16 @@ mse_max = sum(repelem(maxDist_weights,d).^2) / d;
 mse_min = sum(repelem(minDist_weights,d).^2) / d;
 
 
-acts_min = (1-tanh(mse_max))*exp(-(x.^2) / (2*sigma2));
-acts_max = (1-tanh(mse_min))*exp(-(x.^2) / (2*sigma2));
+acts_min = (1-a*tanh(b*mse_max))*exp(-(x.^2) / (2*sigma2));
+acts_max = (1-a*tanh(b*mse_min))*exp(-(x.^2) / (2*sigma2));
 acts_min_total = sum(acts_min);
 acts_max_total = sum(acts_max);
 
 figure
-plot(x(1:10),acts_min(1:10))
+plot(acts_min)
 
 figure
-plot(x(1:10),acts_max(1:10))
+plot(acts_max)
 
 % note, however, that the weights aren't updated linearly. Rather, they
 % also travel along and exp() curve. 
@@ -55,10 +56,10 @@ changeTot = acts_max_total - acts_min_total;
 % until the very end of the second half, it'llbe easier to preserve the
 % performance of the lesioned networks durign the low ambiguity condition,
 % during which they're still seeing many features
-eta = changeTot / 60
+eta = changeTot / 40
 
-% ah, but, that eta happens ~20 times per fixation, and an average of 10
-% fixations occur per trial
-eta_use = eta /( 20);
-eta_use
-% ah! but, there's nothing that says we have to encode many times!
+% that eta happens ~20 times per fixation
+% but, need to account for the fact that all 6 simple features aren't seen on every
+% trial, and that 4 grids need to be saturated
+eta_use = (eta /( 20))*24
+

@@ -30,7 +30,7 @@ data = [0, -.5, 0, 0];
 %%% numTrainCycles
 %%% numEncodingCycles
 % startParms = [ (.15/(40*4)) , 5  ];
-startParms = (1.420858e-06);
+startParms = (6e-5);
 % consts.minParms = [(.15/(40*20*20)), 1,];
 consts.minParms = (1e-07);
 % consts.maxParms = [(1/(40*20)), 10];

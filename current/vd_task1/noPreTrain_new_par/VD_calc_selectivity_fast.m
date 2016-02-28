@@ -63,7 +63,7 @@ end
 
 % act_out = 1./(1+exp(-p.k_expt*act_out));
 % act_out = tanh(act_out);
-act_out = exp(-(grid_dist.^2)./(2*p.sigma2)).*(1-p.a*tanh(min(p.b*dist_mat(:))));
+act_out = exp(-(grid_dist.^2)./(2*p.sigma2)).*(1-p.a*tanh(p.b*min(dist_mat(:))));
 
 %
 % surf(act_out)

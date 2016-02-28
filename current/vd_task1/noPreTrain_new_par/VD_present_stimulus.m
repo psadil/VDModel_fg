@@ -136,10 +136,10 @@ for layer=1:p.layer
         
         
         
-        % final calculation of selectivity, now that encoding has been
-        % completed
-        [win_row, win_col, dist_mat] = findWinningNode(weights, input_mat, p.numInputDims(layer));
-        [~, acts, selectivity, p, act_peak, act_total] = VD_calc_selectivity_fast(win_row, win_col, dist_mat, p, p.numInputDims(layer));
+%         % final calculation of selectivity, now that encoding has been
+%         % completed
+%         [win_row, win_col, dist_mat] = findWinningNode(weights, input_mat, p.numInputDims(layer));
+%         [~, acts, selectivity, p, act_peak, act_total] = VD_calc_selectivity_fast(win_row, win_col, dist_mat, p, p.numInputDims(layer));
             
         
         W(layer,:,:,1:p.numInputDims(layer),grid) = weights; 
