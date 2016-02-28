@@ -35,7 +35,7 @@ parfor rat = firstRat:lastRat
     eta = parms;  
     % g = .5+10*train^-B;
     k = .25;
-    leng = 12;
+    leng = 6;
     startCrit = eta/1000; % go through ~ 20 eta in 1 fixation (because 20 encoding cycles)
     % so, set criterion to be 1/4 of that (20/4)
     noise = startCrit*.75; 

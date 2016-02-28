@@ -123,6 +123,8 @@ while notUnique
                 end
             end
         end
+        % stop searching through items if any have been found to be not
+        % unique
         if breakOut
             break;
         end

@@ -23,7 +23,7 @@ whichCaudal = 0;
 % if ~sum(featuresToCompare);
 %     return;
 % end
-featuresToCompare = p.numGrids_Caudal;
+featuresToCompare = ones(1,p.numGrids_Caudal);
 p.comparedFeat(trial,:) = featuresToCompare;
 
 %--------------------------------------------------------------------------
@@ -65,9 +65,6 @@ for layer_prev = 1:p.numLayers
             whichCaudal = whichCaudal(1);
         end
         
-        if isempty(whichCaudal)
-            2;
-        end
         
         p.meanSelectivity_caudal_prev(trial) = meanSelectivity_caudal_prev(whichCaudal);
         p.meanSelectivity_caudal_new(trial) = meanSelectivity_caudal_new(whichCaudal);
@@ -145,6 +142,7 @@ if p.layer == 2
 
     
 if familDiff_PRC <0
+    p.tType(trial)
    2; 
 end
 
