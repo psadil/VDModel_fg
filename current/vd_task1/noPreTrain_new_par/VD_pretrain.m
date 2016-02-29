@@ -1,10 +1,9 @@
-function [p] = VD_pretrain(p,rat)
+function [p,weights] = VD_pretrain(p)
 
-global ROOT;
 
 fprintf('\nVD_pretrain being executed...');
 
-
+weights=zeros(p.layer,p.nRows,p.nRows,p.numInputDims(p.numLayers),p.numGrids(1));
 % if p.nInpDims == p.numInputDims_PRC
 %     p.activationsPretrain_PRC = zeros(p.numRows,p.numRows,p.numGrids_PRC,p.nTrainCycles);
 % %     gridsInLayer=p.numGrids_PRC;
@@ -17,10 +16,9 @@ fprintf('\nVD_pretrain being executed...');
 % neighb_size=zeros(1,max(p.numLayers));
 
 %%%%%%%%%%%%%%%%%%%%% Perform pre-training of network %%%%%%%%%%%%%%%%
-for layer = 1:max(p.numLayers)
+for layer = 1:p.layer
     
     nInpDims = p.numInputDims(layer);
-    
     
     for grid = 1:p.nGrids(layer),
         fprintf('\n\nLayer number %d, Grid no. %d...\n(1==Caudal, 2==PRC)', layer, grid);
@@ -29,16 +27,14 @@ for layer = 1:max(p.numLayers)
         % initialize random weights for grids in this layer
         w = VD_init_weights(p, layer);
         
-        
-        
         %------------------------------------------------------------------
         % begin training cycle of newly generated grid
         %------------------------------------------------------------------
         
         for cycle=1:p.numTrainCycles(layer),
             
-            p.eta = cycle^(-p.A);		% Learning rate (how quickly weights are adapted)
-            p.G = 0.5 + 10*cycle^(-p.B);		% Gaussian width parameter
+            p.eta = cycle^(-p.A(layer));		% Learning rate (how quickly weights are adapted)
+            p.G = p.sigma2 + 50*cycle^(-p.B(layer));		% Gaussian width parameter
             %%% Note: G<0.5 is boring because the Gaussian only covers one node
             
             if cycle == 1 || cycle == p.numTrainCycles(layer),
@@ -65,7 +61,6 @@ for layer = 1:max(p.numLayers)
             %
             %             end
             
-            %         act = 1./(1+exp(-1*act)); %squashing function %NOW INCLUDED IN calc_act_fast
             
             %%% Update Weights
             w = w + f.*(inp_mat-w);
@@ -74,12 +69,12 @@ for layer = 1:max(p.numLayers)
         end  % end of training cycles loop
         
         %% Add random noise to the weights
-%         rand_noise = (1 - 2*(rand(p.numRows,p.numRows,nInpDims))); % Creates a matrix of random values between -1 and 1.
-%         w = w + rand_noise;
-%         
-%         %%% Squidge the distribution of weight values back into the 0 to 1 range.
-%         w = w + 1;
-%         w = w./3;
+        %         rand_noise = (1 - 2*(rand(p.numRows,p.numRows,nInpDims))); % Creates a matrix of random values between -1 and 1.
+        %         w = w + rand_noise;
+        %
+        %         %%% Squidge the distribution of weight values back into the 0 to 1 range.
+        %         w = w + 1;
+        %         w = w./3;
         
         % Is there a problem with this, in that only some weight get the maximum possible
         % increment or decrement, and only a subset of these were high or low to start off with, therefore very few end up anywhere
@@ -90,14 +85,13 @@ for layer = 1:max(p.numLayers)
         %------------------------------------------------------------------
         % Save this pretrained grid
         %------------------------------------------------------------------
-        location = strcat(ROOT,'rats/rat', num2str(rat), '/pretrainedW__layer', num2str(layer), 'grid', num2str(grid),'.mat');
-        save(location, 'w');
+        %         location = strcat(ROOT,'rats/rat', num2str(rat), '/pretrainedW__layer', num2str(layer), 'grid', num2str(grid),'.mat');
+        %         save(location, 'w');
+        weights(layer,:,:,1:p.numInputDims(layer),grid) = w;
+        
         
     end % end of grid loop
-    
-%     learn_rate(layer) = p.eta;
-%     neighb_size(layer) = p.G - 0.5;
-    
+     
 end % end of layer loop
 
 end

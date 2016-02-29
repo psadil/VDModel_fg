@@ -19,10 +19,10 @@ nSimpleConj = nDimsCaudal ^ nStimFactors;
 % number of features to use for stimuli (less then total)
 nStimsPerCond = 6;
 
-LA_misMatch = zeros(p.nMismatch,nTotalDims,2); %one col for stim1, one col for stim2
-LA_match = zeros(p.nMatch,nTotalDims,2);
-HA_misMatch = zeros(p.nMismatch,nTotalDims,2); %one col for stim1, one col for stim2
-HA_match = zeros(p.nMatch,nTotalDims,2);
+% LA_misMatch = zeros(p.nMismatch,nTotalDims,2); %one col for stim1, one col for stim2
+% LA_match = zeros(p.nMatch,nTotalDims,2);
+% HA_misMatch = zeros(p.nMismatch,nTotalDims,2); %one col for stim1, one col for stim2
+% HA_match = zeros(p.nMatch,nTotalDims,2);
 
 count=1;
 availFeat = zeros(nSimpleConj, nDimsCaudal);
@@ -58,7 +58,6 @@ end
 
 nMatchingLA = 0;
 tryAgain = 1;
-attempt = 0;
 while tryAgain
     breakOut = 0;
     
@@ -75,21 +74,22 @@ while tryAgain
         end
         probeWith = first(trials_LA_misMatch1(stim),:);
         
+        row_randIdx = randperm(size(first,1));
         for row = 1:size(first,1)
             
             % don't try this row if we've already used it somewhere
-            if ismember(row,used)
+            if ismember(row_randIdx(row),used)
                 continue
             end
             
-            probed = first(row,:);
+            probed = first(row_randIdx(row),:);
             if sum(probeWith == probed) == nMatchingLA
                 
                 % grab this stim from the pre-tmp
-                trials_LA_misMatch2(stim) = row;
+                trials_LA_misMatch2(stim) = row_randIdx(row);
                 
                 % declare that row as used
-                used = [used;row];
+                used = [used;row_randIdx(row)];
                 
                 % stop searching for a matching stim
                 break % the row loop
@@ -124,7 +124,6 @@ end
 nMatchingHA = 3;
 
 tryAgain = 1;
-attempt = 0;
 while tryAgain
     breakOut = 0;
     
@@ -141,21 +140,22 @@ while tryAgain
         end
         probeWith = first(trials_HA_misMatch1(stim),:);
         
+        row_randIdx = randperm(size(first,1));
         for row = 1:size(first,1)
             
             % don't try this row if we've already used it somewhere
-            if ismember(row,used)
+            if ismember(row_randIdx(row),used)
                 continue
             end
             
-            probed = first(row,:);
+            probed = first(row_randIdx(row),:);
             if sum(probeWith == probed) == nMatchingHA
                 
                 % grab this stim from the pre-tmp
-                trials_HA_misMatch2(stim) = row;
+                trials_HA_misMatch2(stim) = row_randIdx(row);
                 
                 % declare that row as used
-                used = [used;row];
+                used = [used;row_randIdx(row)];
                 
                 % stop searching for a matching stim
                 break % the row loop
@@ -193,7 +193,7 @@ stims.HA_match = zeros(36,8,2);
 stims.HA_match(:,:,1) = final(trials_HA(:,2),:);
 stims.HA_match(:,:,2) = final(trials_HA(:,2),:);
 
-stims.HA_match = zeros(36,8,2);
+stims.LA_match = zeros(36,8,2);
 stims.LA_misMatch(:,:,1) = final(trials_LA_misMatch1,:);
 stims.LA_misMatch(:,:,2) = final(trials_LA_misMatch2,:);
 
@@ -203,8 +203,8 @@ stims.HA_misMatch(:,:,2) = final(trials_HA_misMatch2,:);
 
 
 % gather all stims for output, repeat as necessary
-stims.stimuli1 = reshape(repmat(reshape(LA_misMatch,...
-    [1,p.nMismatch,1,p.numInputDims_PRC/p.nDimReps,1,2]),[1,1,p.nDimReps,1,1,1]),...
-    [p.nMismatch,(p.numInputDims_PRC/p.nDimReps)*p.nDimReps,2]);
+% stims.stimuli1 = reshape(repmat(reshape(LA_misMatch,...
+%     [1,p.nMismatch,1,p.numInputDims_PRC/p.nDimReps,1,2]),[1,1,p.nDimReps,1,1,1]),...
+%     [p.nMismatch,(p.numInputDims_PRC/p.nDimReps)*p.nDimReps,2]);
 
 end

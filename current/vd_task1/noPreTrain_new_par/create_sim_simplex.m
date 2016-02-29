@@ -29,16 +29,16 @@ parfor rat = firstRat:lastRat
     p.ratNum = rat;
     
    
-    A = .2;
-    B = .4;
-    train = 1;
+    A = [.2,.2];
+    B = [.1,.3];
+    train = 100;
     eta = parms;  
     % g = .5+10*train^-B;
     k = .25;
     leng = 6;
     startCrit = eta/1000; % go through ~ 20 eta in 1 fixation (because 20 encoding cycles)
     % so, set criterion to be 1/4 of that (20/4)
-    noise = startCrit*.5; 
+    noise = startCrit*.75; 
     % sigma2 = parms(2)^2;
     sigma2 = 1;
     g = sigma2;
@@ -141,6 +141,6 @@ parfor rat = firstRat:lastRat
     
 end
 
-dPrimePredictions = calcDPrime(1,lastRat, nOfFolder);
+% dPrimePredictions = calcDPrime(1,lastRat, nOfFolder);
 
-% plotFamilDiffs(1, lastRat, nOfFolder,0);
+plotFamilDiffs(1, lastRat, nOfFolder,0);
