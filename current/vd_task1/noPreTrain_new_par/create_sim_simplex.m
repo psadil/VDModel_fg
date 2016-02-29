@@ -23,15 +23,15 @@ end
 
 
 
-parfor rat = firstRat:lastRat
+for rat = firstRat:lastRat
     
     p = struct();
     p.ratNum = rat;
     
    
     A = [.2,.2];
-    B = [.1,.3];
-    train = 100;
+    B = [.1,.1];
+    train = 500;
     eta = parms;  
     % g = .5+10*train^-B;
     k = .25;
