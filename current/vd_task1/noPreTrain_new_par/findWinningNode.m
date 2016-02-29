@@ -21,7 +21,7 @@ dist_mat = dist_mat_temp_sq/nInpDims;
 
 % dist_mat_sqrt = sqrt(dist_mat_temp_sq);
 % Normalise by dividing by num_input_dims
-[win_row,win_col] = find(dist_mat==min(min(dist_mat)));
+[win_row,win_col] = find(dist_mat==min(dist_mat(:)));
 % Finds the row and column of minimal distance grid point(s)
 if length(win_row)>1
     rand_idx = ceil(length(win_row)*rand);	% If length(win_rows) is 2, chooses between first and second elements randomly

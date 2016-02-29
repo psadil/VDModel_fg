@@ -142,7 +142,7 @@ if p.layer == 2
 
     
 if familDiff_PRC <0
-    p.tType(trial)
+    p.tType(trial);
    2; 
 end
 

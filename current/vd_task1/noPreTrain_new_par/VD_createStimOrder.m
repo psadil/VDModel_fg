@@ -4,7 +4,6 @@ function [ p ] = VD_createStimOrder( p )
 %   called during run_sim
 
 
-
 p.tType = cat(2,ones(1,p.nMismatch), 2*ones(1,p.nMatch));
 p.tType = p.tType(randperm(length(p.tType)));
 %check to see whether there are more than 3 trials in a row the same % if yes, redo
