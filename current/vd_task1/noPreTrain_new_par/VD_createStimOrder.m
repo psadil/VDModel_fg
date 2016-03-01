@@ -24,7 +24,7 @@ while check
         check=0;
     end
 end
-p.stimOrder = [randperm(p.nMismatch)' randperm(p.nMatch)'];
+% p.stimOrder = [randperm(p.nMismatch)' randperm(p.nMatch)'];
 
 
 

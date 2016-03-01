@@ -193,7 +193,7 @@ stims.HA_match = zeros(36,8,2);
 stims.HA_match(:,:,1) = final(trials_HA(:,2),:);
 stims.HA_match(:,:,2) = final(trials_HA(:,2),:);
 
-stims.LA_match = zeros(36,8,2);
+stims.LA_misMatch = zeros(36,8,2);
 stims.LA_misMatch(:,:,1) = final(trials_LA_misMatch1,:);
 stims.LA_misMatch(:,:,2) = final(trials_LA_misMatch2,:);
 

@@ -10,7 +10,7 @@ comparison = 0;
 
 %% preparing input stimulus for processing
 
-stimPair = stimPair(1:p.components,:);
+% stimPair = stimPair(1:p.components,:);
 keepSampling = 0;
 
 %%

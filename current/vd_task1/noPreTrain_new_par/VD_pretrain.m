@@ -3,7 +3,7 @@ function [p,weights] = VD_pretrain(p)
 
 fprintf('\nVD_pretrain being executed...');
 
-weights=zeros(p.layer,p.nRows,p.nRows,p.numInputDims(p.numLayers),p.numGrids(1));
+weights=zeros(p.numLayers,p.numRows,p.numRows,p.numInputDims(p.numLayers),max(p.nGrids));
 % if p.nInpDims == p.numInputDims_PRC
 %     p.activationsPretrain_PRC = zeros(p.numRows,p.numRows,p.numGrids_PRC,p.nTrainCycles);
 % %     gridsInLayer=p.numGrids_PRC;
@@ -16,7 +16,7 @@ weights=zeros(p.layer,p.nRows,p.nRows,p.numInputDims(p.numLayers),p.numGrids(1))
 % neighb_size=zeros(1,max(p.numLayers));
 
 %%%%%%%%%%%%%%%%%%%%% Perform pre-training of network %%%%%%%%%%%%%%%%
-for layer = 1:p.layer
+for layer = 1:p.numLayers
     
     nInpDims = p.numInputDims(layer);
     
@@ -30,12 +30,12 @@ for layer = 1:p.layer
         %------------------------------------------------------------------
         % begin training cycle of newly generated grid
         %------------------------------------------------------------------
-        
+        p.winningPre = zeros(p.numTrainCycles(layer),2);
         for cycle=1:p.numTrainCycles(layer),
             
-            p.eta = cycle^(-p.A(layer));		% Learning rate (how quickly weights are adapted)
-            p.G = p.sigma2 + 50*cycle^(-p.B(layer));		% Gaussian width parameter
-            %%% Note: G<0.5 is boring because the Gaussian only covers one node
+            p.eta = cycle^(-p.A);		% Learning rate (how quickly weights are adapted)
+            p.G = p.sigma2 + (p.numRows/4 - p.sigma2)*cycle^(-p.B);		% Gaussian width parameter
+%            p.G = .5 + 10*cycle^(-p.B);
             
             if cycle == 1 || cycle == p.numTrainCycles(layer),
                 fprintf('\nWithin pretrain, Cycle %d, G = %f, ETA = %f', cycle, p.G, p.eta);
@@ -49,6 +49,7 @@ for layer = 1:p.layer
             % Find winning node
             %--------------------------------------------------------------
             [win_row, win_col, dist_mat] = findWinningNode(w, inp_mat, nInpDims);
+            p.winningPre(cycle,:) = [win_row, win_col];
             
             %------------------------------------------------------------------
             % Calculate each unit's distance from winner and resultant activation

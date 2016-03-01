@@ -1,4 +1,4 @@
-function p = visDiscrimModel(p,stims)
+function p = visDiscrimModel(p,stims,weights)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Matlab code for making a Self Organising Feature Map grid (SOFM)
@@ -16,23 +16,23 @@ function p = visDiscrimModel(p,stims)
 
 % Load the pretrained weights at beginning of visual discrimination task
 
-if p.sess == 1
-    % if first session, set new weights (birth new rat)
-    %     weights=rand(p.layer,p.nRows,p.nRows,p.numInputDims(p.numLayers),p.numGrids(1));
-%     p.layer=2 % take out when running for real!!
-    [p,weights] = VD_pretrain(p);
-    
-    location = strcat(p.root,'rats/rat', num2str(p.ratNum), '/W_stimCond', num2str(p.sess), '_layer', num2str(p.which_gp_layer), '.mat');
-    save(location, 'weights');
-    
-else
-    % if not first session, load rat
-    location = strcat(p.root,'rats/rat', num2str(p.ratNum), '/W_stimCond', num2str(p.sess-1), '_layer', num2str(p.which_gp_layer), '.mat');
-    load(location, 'weights');
-    
-    % go back to save/load when running for real
-    % weights=rand(p.layer,p.nRows,p.nRows,p.numInputDims(p.numLayers),p.numGrids(1));
-end
+% if p.sess == 1
+%     % if first session, set new weights (birth new rat)
+%     %     weights=rand(p.layer,p.nRows,p.nRows,p.numInputDims(p.numLayers),p.numGrids(1));
+% %     p.layer=2 % take out when running for real!!
+%     [p,weights] = VD_pretrain(p);
+%     
+%     location = strcat(p.root,'rats/rat', num2str(p.ratNum), '/W_stimCond', num2str(p.sess), '_layer', num2str(p.which_gp_layer), '.mat');
+%     save(location, 'weights');
+%     
+% else
+%     % if not first session, load rat
+%     location = strcat(p.root,'rats/rat', num2str(p.ratNum), '/W_stimCond', num2str(p.sess-1), '_layer', num2str(p.which_gp_layer), '.mat');
+%     load(location, 'weights');
+%     
+%     % go back to save/load when running for real
+%     % weights=rand(p.layer,p.nRows,p.nRows,p.numInputDims(p.numLayers),p.numGrids(1));
+% end
 
 
 
@@ -84,6 +84,9 @@ p.peak_act = zeros(p.nTrials,2);
 p.totalAct = zeros(p.nTrials,2);
 
 
+% which features were compared (should always be all 4,in this setup)
+p.comparedFeat = zeros(p.nTrials, p.numGrids_Caudal);
+
 %% begin trial loop
 
 % for picking out the stim in the stimulus pair...
@@ -96,10 +99,11 @@ for trial = 1:p.nTrials,
     
     %----------------------------------------------------------------------
     %%% Get the two stimuli for this simultaneous visual discrimination trial
-    stim_name = sprintf('stimuli%d', tType); %tType==1 is Mismatch, tType==2 is Match
+    stim_name = sprintf('stimuli%d', p.tType(trial)); %tType==1 is Mismatch, tType==2 is Match
     stimuli = fid.(stim_name);
-    stimPair = squeeze(stimuli(p.stimOrder(tTypeCnt(tType),tType),:,:));
-    stimPair = stimPair(:,:,:);
+%     stimPair = squeeze(stimuli(trial,:,:)); % keep an eye out for order effects
+    stimPair = squeeze(stimuli(tTypeCnt(tType),:,:));
+%     stimPair = squeeze(stimPair);
     %     stimPair = squeeze(stims.stimuli1(trial,:,:));
     
     
@@ -134,10 +138,8 @@ for trial = 1:p.nTrials,
     
 end % End of loop over trials
 
-
-
-location = strcat(p.root,'rats/rat', num2str(p.ratNum), '/W_stimCond', num2str(p.sess), '_layer', num2str(p.which_gp_layer), '.mat');
-save(location, 'weights');
+% location = strcat(p.root,'rats/rat', num2str(p.ratNum), '/W_stimCond', num2str(p.sess), '_layer', num2str(p.which_gp_layer), '.mat');
+% save(location, 'weights');
 
 
 % will eventually go into funciton that collects performance of all rats
@@ -160,3 +162,4 @@ p.dPrime_second = norminv(hitRate_second)-norminv(FARate_second);
 
 
 
+end

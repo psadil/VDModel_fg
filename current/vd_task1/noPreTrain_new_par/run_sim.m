@@ -2,7 +2,6 @@ function run_sim(p)
 
 % run_sim - runs the simulation defined in the RUN_SIM.mat file
 
-% ROOT = 'C:/Users/rcowell/Documents/Research/RH_VisDiscrim/';
 p.root = [pwd, '\'];
 
 dataDir = strcat(p.root,'rats');
@@ -15,8 +14,11 @@ if ~exist(dataDir, 'dir'),
     mkdir(dataDir);
 end
 
+% unique stims
 [p, stims] = VDcreateStimuli_simple(p);
 
+% preTrain this rat, for use in all conds
+[p,weights] = VD_pretrain(p);
 
 %% begin sessions
 
@@ -90,8 +92,11 @@ for sess = 1:p.nSess,
     %% say what about to happen
     fprintf('\n\nSESSION %d, RAT %d\n', sess, p.ratNum);
     
+    %reset famil_diff_thresh so that it's not carried over from previous session
+    p.famil_diff_thresh=[repmat(p.famil_diff_thresh_start(1),1,p.lengthOfCrit); repmat(p.famil_diff_thresh_start(2),1,p.lengthOfCrit)];
+    
     %% execute model code
-    p = visDiscrimModel(p,stims);
+    p = visDiscrimModel(p,stims,weights);
     
     
     %% save it up
@@ -109,11 +114,11 @@ for sess = 1:p.nSess,
     fName = strcat(dataDir, '/Session',num2str(sess),'_Rat',num2str(p.ratNum),'.mat');
     save(fName,'p');
     
-    %reset famil_diff_thresh so that it's not carried over from previous session
-    p.famil_diff_thresh=[repmat(p.famil_diff_thresh_start(1),1,p.lengthOfCrit); repmat(p.famil_diff_thresh_start(2),1,p.lengthOfCrit)];
     
 end
 
 p.runningTime = GetSecs-startTime;
 
 fprintf ('\n\nFinished. \r');
+
+end

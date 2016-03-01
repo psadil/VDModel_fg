@@ -13,8 +13,8 @@ v = 1;
 
 maxDist = 100;
 steps = 1;
-maxDist_weights = 0.15;
-minDist_weights = .00001;
+maxDist_weights = 1e-5;
+minDist_weights = 1e-8;
 
 % x = 0:steps:maxDist;
 x = [0,repelem(1,4),repelem(2,8),repelem(3,12)];
