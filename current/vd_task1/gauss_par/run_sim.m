@@ -87,6 +87,9 @@ for sess = 1:p.nSess,
     % within VD_present_stimulus.m
     p.usePRC = zeros(2,p.nTrials);
     
+    % last two are: row/col and prev/new
+    p.winning = zeros(p.layer,max(p.numGrids),p.nTrials,2,2);
+    
     p.nEncodCycles = p.numEncodingCycles(p.stimCond);
     
     %% say what about to happen

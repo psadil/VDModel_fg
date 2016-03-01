@@ -4,17 +4,17 @@ close all;
 L=1; % maximum
 k=.25; % curve steepness, also determines how low is the initial start
 % b=1;
-b=2/3;
-a=1.7159;
+b=atanh(2/3);
+a=150;
 % a = 1;
-d = 2;
-sigma2 = 1;
+d = 8;
+sigma2 = .01;
 v = 1;
 
 maxDist = 100;
 steps = 1;
-maxDist_weights = 1e-5;
-minDist_weights = 1e-8;
+maxDist_weights = .001;
+minDist_weights = 0;
 
 % x = 0:steps:maxDist;
 x = [0,repelem(1,4),repelem(2,8),repelem(3,12)];
@@ -61,5 +61,76 @@ eta = changeTot / 40
 % that eta happens ~20 times per fixation
 % but, need to account for the fact that all 6 simple features aren't seen on every
 % trial, and that 4 grids need to be saturated
-eta_use = (eta /( 20))*24
+eta_use = (eta /( 20))*16
 
+% update = eta_use*exp(-(x.^2) / (2*sigma2));
+
+% acts_updated = 40*eta_use+(1-a*tanh(b*mse_min))*exp(-(x.^2) / (2*sigma2));
+% plot(acts_updated)
+
+%% testing out classic activation functions...
+
+w1 = [.3,.3,.6];
+w2 = [.1,.1,.6];
+w3 = [.5,.5,.6];
+i = [.35,.35,.65];
+
+v1 = w1 * i';
+v2 = w2 * i';
+v3 = w3 * i';
+vi = i * i';
+
+mse1 = sum((w1-i).^2)/3;
+mse2 = sum((w2-i).^2)/3;
+mse3 = sum((w3-i).^2)/3;
+msei = sum((i-i).^2)/3;
+
+% these ones suffer, don't use
+act1 = a*tanh(b*v1) * (1-mse1);
+act2 = a*tanh(b*v2) * (1-mse2);
+act3 = a*tanh(b*v3) * (1-mse3);
+acti = a*tanh(b*vi) * (1-msei);
+
+% this one seems okay (would use in a peak/total activation manner), except
+% that the mse of the non-peak nodes will be much larger when the input is
+% either .95 or .05.
+act1 = a*tanh(b*(1-mse1));
+act2 = a*tanh(b*(1-mse2));
+act3 = a*tanh(b*(1-mse3));
+acti = a*tanh(b*(1-msei));
+
+% So, I think we need to base the activation function from the gaussian
+% neighborhood
+act1 = (a*tanh(b*(1-mse1)))*exp(-(x.^2) / (2*sigma2));
+act2 = (a*tanh(b*(1-mse2)))*exp(-(x.^2) / (2*sigma2));
+act3 = (a*tanh(b*(1-mse3)))*exp(-(x.^2) / (2*sigma2));
+
+sum(act1)
+sum(act2)
+sum(act3)
+
+
+n1 = .9;
+n2 = .5;
+n3 = .1;
+
+i1 = .9;
+i2 = .5;
+
+mse11 = (n1-i1)^2;
+mse12 = (n1-i2)^2;
+mse21 = (n2-i1)^2;
+mse22 = (n2-i2)^2;
+mse31 = (n3-i1)^2;
+mse32 = (n3-i2)^2;
+
+% when input is .9, so n1 wins
+sum([mse21,mse31])
+
+% when input is .5, so n2 wins
+sum([mse12,mse32])
+
+% holy fuck! the network has a vastly different total activation depending
+% on whether the input is in the 'middle' (the .35 and .65) of the space or not
+% this means that the network is going to be less selective for those
+% stimuli

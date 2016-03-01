@@ -38,7 +38,6 @@ grid_dist = min_row_dist_mat + min_col_dist_mat;
 % grid_dist = (grid_dist < 2) .* grid_dist;
 
 f_1dim = p.etaExp .* exp(-(grid_dist/p.G_exp).^2);
-f_1dim = f_1dim .* (grid_dist < p.filtPeak);
 
 % MAYBE BRING THIS BACK!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 % f_out = repmat(f_1dim,[1,1,nInpDims]);

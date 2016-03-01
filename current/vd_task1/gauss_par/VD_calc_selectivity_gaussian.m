@@ -26,7 +26,7 @@ for dim=1:nInpDims
     f_out(:,:,dim) = f_1dim;
 end
 
-act_out = gauss.*(1-p.a*tanh(p.b*min(dist_mat(:))));
+act_out = gauss.*(p.a*tanh(p.b*(1-min(dist_mat(:)))));
 
 act_total = sum(act_out(:));
 act_peak = act_total;

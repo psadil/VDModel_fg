@@ -102,7 +102,9 @@ while ((p.fixations(trial) < p.maxFix) && stopSampling == 0) || (keepSampling &&
     pktot.init_act_peak = zeros(p.numLayers,max(p.numGrids));
     pktot.init_act_total = zeros(p.numLayers,max(p.numGrids));
     
-    [weights, selectivity, initial_selec, p, pktot, usePRC, ~, ~] = VD_present_stimulus(stimulus, weights, p, features_sampled, trial, pktot);
+    whichStim=stim;
+    [weights, selectivity, initial_selec, p, pktot, ~, ~, ~] = ...
+        VD_present_stimulus(stimulus, weights, p, whichStim, trial, pktot);
     
     % after completing within-stimulus fixations, some fixations can land,
     % not on the other stimulus, but outside of both
@@ -129,7 +131,7 @@ while ((p.fixations(trial) < p.maxFix) && stopSampling == 0) || (keepSampling &&
         
         % storing whether PRC is used
         % second row is always new stim
-        p.usePRC(stim,trial) = usePRC;
+%         p.usePRC(stim,trial) = usePRC;
         
         
         %------------------------------------------------------------------
@@ -177,14 +179,14 @@ while ((p.fixations(trial) < p.maxFix) && stopSampling == 0) || (keepSampling &&
     
     features_sampled_prev = features_sampled;
     prevStimSelec = selectivity;
-    prevInitialSelec = initial_selec;
+%     prevInitialSelec = initial_selec;
     pktot.prevStimFin_act_peak = pktot.fin_act_peak;
     pktot.prevStimFin_act_total = pktot.fin_act_total;
     pktot.prevStimInit_act_peak = pktot.init_act_peak;
     pktot.prevStimInit_act_total = pktot.init_act_total;
     
     % first row is always previous stim
-    p.usePRC(stim,trial) = usePRC;
+%     p.usePRC(stim,trial) = usePRC;
     
     
     %----------------------------------------------------------------------

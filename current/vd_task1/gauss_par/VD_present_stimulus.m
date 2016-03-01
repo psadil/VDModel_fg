@@ -1,4 +1,4 @@
-function [W, selec, initial_selec, p, pktot, usePRC, act_out, initial_acts] = VD_present_stimulus(stim, W, p, features_sampled, trial,pktot)
+function [W, selec, initial_selec, p, pktot, usePRC, act_out, initial_acts] = VD_present_stimulus(stim, W, p, whichStim, trial,pktot)
 
 % Function called by VD_present_stimulus.m. Presents the network with the two stimuli on this trial.
 % Choose whichever layer demonstrates higher selectivity
@@ -71,11 +71,12 @@ for layer=1:p.layer
             [win_row, win_col, dist_mat] = findWinningNode(weights, input_mat, p.numInputDims(layer));
             
             
-            p.winning(layer,grid,trial,1:2) = [win_row, win_col];
+            p.winning(layer,grid,trial,1:2,whichStim) = [win_row, win_col];
             
             %--------------------------------------------------------------
             %Calculate each unit's distance from winner and activation
             %--------------------------------------------------------------
+%             [f, acts, selectivity, p, act_peak, act_total] = VD_calc_selectivity_fast(win_row, win_col, dist_mat, p, p.numInputDims(layer));
             [f, acts, selectivity, p, act_peak, act_total] = VD_calc_selectivity_gaussian(win_row, win_col, dist_mat, p, p.numInputDims(layer));
             
             if cycle==1,  %need to compare last set of weights of old grid to
@@ -98,9 +99,9 @@ for layer=1:p.layer
         % final calculation of selectivity, now that encoding has been
         % completed
         [win_row, win_col, dist_mat] = findWinningNode(weights, input_mat, p.numInputDims(layer));
+%         [~, acts, selectivity, p, act_peak, act_total] = VD_calc_selectivity_fast(win_row, win_col, dist_mat, p, p.numInputDims(layer));
         [~, acts, selectivity, p, act_peak, act_total] = VD_calc_selectivity_gaussian(win_row, win_col, dist_mat, p, p.numInputDims(layer));
-        
-        
+%         
         W(layer,:,:,1:p.numInputDims(layer),grid) = weights;
         act_out(layer,:,:,grid) = acts;
         selec(layer,grid) = selectivity;

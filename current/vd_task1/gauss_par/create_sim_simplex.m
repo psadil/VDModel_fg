@@ -17,18 +17,20 @@ parfor rat = firstRat:lastRat
     p = struct();
     p.ratNum = rat;
     
-    A = .6;
-    B = .3;
-    train = 500;
-    eta = parms;  
-    % g = .5+10*train^-B;
-    k = .25;
-    leng = 6;
-    startCrit = eta/1000; 
-    noise = startCrit*.75; 
-    sigma2 = .5;
+    A = .3;
+    B = .2;
+    train = 0;
+    eta = parms
+    %     eta = train^-A;
+    sigma2 = .01;
     g = sigma2;
-   
+    %     g = .5+10*train^-B;
+    k = .25;
+    leng = 48;
+    startCrit = eta/1000;
+    %     startCrit = 1e-6;
+    noise = 0;
+    
     
     startParms = [ eta , g, k ];
     
@@ -37,12 +39,12 @@ parfor rat = firstRat:lastRat
     k_expt = startParms(3);
     
     p.exptName = '20feb2016';
-
+    
     p.nameOfFolder = nOfFolder;
-%     p.nameOfFolder = ['eta', num2str(eta), '_g', num2str(g), ...
-%         '_K', num2str(k), '_A', num2str(A) ,'_B', num2str(B), '_20enc20_', ...
-%         '5pk_20Fix_', num2str(noise),'nois_', num2str(startCrit), 'stCrt_',num2str(leng), '_0reload1',...
-%         'altTanh'];
+    %     p.nameOfFolder = ['eta', num2str(eta), '_g', num2str(g), ...
+    %         '_K', num2str(k), '_A', num2str(A) ,'_B', num2str(B), '_20enc20_', ...
+    %         '5pk_20Fix_', num2str(noise),'nois_', num2str(startCrit), 'stCrt_',num2str(leng), '_0reload1',...
+    %         'altTanh'];
     
     p.nSess = 4;
     p.sigma2 = sigma2;
@@ -56,17 +58,19 @@ parfor rat = firstRat:lastRat
     p.nStimFactors = 4; % number of levels for each dimension
     
     p.components = 8;
-    p.numInputDims_Caudal = p.components/p.numGrids_Caudal;   
+    p.numInputDims_Caudal = p.components/p.numGrids_Caudal;
     p.numInputDims_PRC = p.components;
-    p.numInputDims = [p.numInputDims_Caudal,  p.numInputDims_PRC];   
+    p.numInputDims = [p.numInputDims_Caudal,  p.numInputDims_PRC];
     p.nDimReps=1; % number of times to repeat dims (cowell2006 == 3)
     
     p.decision_noise = noise;
     p.maxFixations = [20, 25]; % total # saccades on match trials = 20
-    p.k_expt = k_expt;
+    p.k_expt = k_expt; % sigmoidal rate param
     p.A = A; % Pre-training parameter. The bigger A is, the faster ETA decreases, and the smaller the amount of learning on the weights for all units.
-    p.a = 1.7159;
-    p.b = 2/3;
+    %     p.a = 1.7159; % tanh param
+    %     p.b = 2/3; % also tanh
+    p.a = 15;
+    p.b = atanh(2/3); % with this, max value of act will be (2/3)*a=10
     p.etaExp = etaExp;
     p.B = B; % Pre-training parameter. The bigger B is, the faster G decreases, and the smaller the neighbourhood of the winner that gets updated.
     p.G_exp = G_exp;
@@ -81,11 +85,10 @@ parfor rat = firstRat:lastRat
     p.numThresh = 2;
     p.lengthOfCrit = leng;
     p.famil_diff_thresh_start=[startCrit; startCrit];
-    p.setPre = 0;
     p.nameOfFolder = p.nameOfFolder;
     
     
-    p.totalInpDimsConditions = 2; 
+    p.totalInpDimsConditions = 2;
     p.totalTrainingConditions = 1; %number of different 'pretraining phase' lengths to run
     p.totalStimConditions = 1;
     p.totalStimSets = 1;
@@ -94,7 +97,7 @@ parfor rat = firstRat:lastRat
     p.expt = 'null'; %% For when running a single session
     
     % number of each trial type for use in actual simulations
-    p.nMismatch = 36; 
+    p.nMismatch = 36;
     p.nMatch = 36;
     p.nTrials = p.nMismatch+p.nMatch;
     
@@ -104,7 +107,7 @@ parfor rat = firstRat:lastRat
     
     
     fprintf('Creating a new experiment...\n');
-    p.expt = p.exptName; 
+    p.expt = p.exptName;
     p.totalStimConditions = 2;
     p.totalStimSets = 1;
     
@@ -121,7 +124,7 @@ end
 % uncomment if running simplex
 % dPrimePredictions = calcDPrime(1,lastRat, nOfFolder);
 
-% uncomment if looking at 
+% uncomment if looking at
 plotFamilDiffs(1, lastRat, nOfFolder,0);
 
 end

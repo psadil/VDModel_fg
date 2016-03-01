@@ -6,7 +6,7 @@ whichCaudal = 0;
 % to the current and previous stim to a funning familiarity difference
 
 % might be called again if not enough evidence has been accrued.
-
+ 
 %% Gather selectivity
 
 %--------------------------------------------------------------------------
