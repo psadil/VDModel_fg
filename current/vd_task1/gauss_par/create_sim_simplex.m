@@ -20,16 +20,16 @@ parfor rat = firstRat:lastRat
     A = .3;
     B = .2;
     train = 0;
-    eta = parms
+    eta = parms;
     %     eta = train^-A;
     sigma2 = .01;
     g = sigma2;
     %     g = .5+10*train^-B;
     k = .25;
-    leng = 48;
+    leng = 36;
     startCrit = eta/1000;
     %     startCrit = 1e-6;
-    noise = 0;
+    noise = startCrit*.9;
     
     
     startParms = [ eta , g, k ];

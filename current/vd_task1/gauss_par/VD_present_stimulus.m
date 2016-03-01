@@ -43,9 +43,6 @@ if p.variableEncode
     end
 end
 
-if p.layer == 2
-   2; 
-end
 
 for layer=1:p.layer
     
