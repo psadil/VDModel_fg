@@ -110,7 +110,7 @@ for trial = 1:p.nTrials,
     
     %----------------------------------------------------------------------
     %%% Generate series of saccades and present stimuli, for this trial
-    [weights, stop_sampling, p] = VD_compare_stimuli(stimPair, weights, p, trial); %weights output on previous trial get input on next trial
+    [weights, stop_sampling, p, threshUpdater] = VD_compare_stimuli(stimPair, weights, p, trial); %weights output on previous trial get input on next trial
     
     %     p.activations(:,:,:,trial)=activations;
     
@@ -134,7 +134,7 @@ for trial = 1:p.nTrials,
     %     p.activations_prev(1:p.layer,:,:,:,trial) = trial_info.prevStimActs;
     
     
-    [p] = determineCriterion(p ,trial);
+    [p] = determineCriterion(p ,trial, threshUpdater);
     
 end % End of loop over trials
 

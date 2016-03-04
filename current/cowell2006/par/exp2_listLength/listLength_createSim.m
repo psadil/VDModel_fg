@@ -40,35 +40,35 @@ parfor rat = firstRat:lastRat
     p.exptName = '8jan2016';
     p.nameOfFolder = ['eta', num2str(etaExp), '_g', num2str(G_exp), ...
         '_K', num2str(k_expt), '_A', num2str(A) ,'_B', num2str(B), '_20enc20_', num2str(train), ...
-        'trn_','5pk_20Fix_'];
+        'trn_','5pk_20Fix'];
     
     p.dataDir = strcat(pwd, '/graphsAndSession/', p.nameOfFolder);
     if ~exist(p.dataDir, 'dir'),
         mkdir(p.dataDir);
     end
-        
+    
     % even at 200 rows (possible 200^2 unique stimuli), that's not enough
     % to contain the 16^4 possible part combinations
     
     p.numRows = 200; %variables with 'num' to denote number are used to define RUN_SIM matrix (and translated to another name before used in simulation)
     p.numLayers = 2;
     
-        % different number of stimuli list lengths
+    % different number of stimuli list lengths
     p.nMismatch = [1,6,12,18];
     p.nMatch = 0;
     p.nTrials = p.nMismatch+p.nMatch;
     
     %     p.delayCycles = [0,200,400,600,800];
     p.nSess = length(p.nTrials) * p.numLayers;
-
+    
     p.numGrids_Caudal = 4;
     p.numGrids_PRC = 1;
     p.nGrids = [p.numGrids_Caudal, p.numGrids_PRC];
     p.maxNumGrids = max(p.nGrids);
     p.nStimFactors = 4; % number of levels for each dimension
     
-    p.nDimReps = 3;
-    p.components = 24;
+    p.nDimReps = 1;
+    p.components = 8;
     p.numInputDims_Caudal = p.components/p.numGrids_Caudal;
     p.numInputDims_PRC = p.components;
     p.numInputDims = [p.numInputDims_Caudal, p.numInputDims_PRC];
@@ -77,6 +77,9 @@ parfor rat = firstRat:lastRat
     p.A = A; % was 0.8 %% Pre-training parameter. The bigger A is, the faster ETA decreases, and the smaller the amount of learning on the weights for all units.
     p.etaExp = etaExp;
     p.B = B; %was .8 Pre-training parameter. The bigger B is, the faster G decreases, and the smaller the neighbourhood of the winner that gets updated.
+    p.a = 1.7159; % tanh param
+    p.b = 2/3; % also tanh
+    p.sigma2 = .001;
     p.G_exp = G_exp;
     p.numTrainCycles = [train, train];
     p.numEncodingCycles = [20, 20]; % now better described as encoding cycles per fixation [LA, HA]
@@ -97,7 +100,7 @@ parfor rat = firstRat:lastRat
     
     
     %% create stimuli for use
-        
+    
     [~] = listLength_runSim(p)
     
 end

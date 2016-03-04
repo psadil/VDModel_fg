@@ -39,6 +39,7 @@ availFeat(availFeat==2)=0.35;
 availFeat(availFeat==3)=0.65;
 availFeat(availFeat==4)=0.95;
 
+availFeat = Shuffle(availFeat,2);
 
 first = permn(1:nStimsPerCond,p.numInputDims_PRC/p.numInputDims_Caudal);
 final = zeros(size(first,1),p.numInputDims_PRC);

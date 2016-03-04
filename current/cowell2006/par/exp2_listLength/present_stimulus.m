@@ -1,4 +1,4 @@
-function [W, initial_selec, p, pktot] = present_stimulus(stim, W, p, trial,pktot)
+function [W, initial_selec, p, pktot, initial_selec_gauss] = present_stimulus(stim, W, p, trial,pktot)
 
 inp_mat = repmat(reshape(stim,[1 1 length(stim)]), [p.nRows p.nRows 1]);
 
@@ -6,6 +6,7 @@ inp_mat = repmat(reshape(stim,[1 1 length(stim)]), [p.nRows p.nRows 1]);
 % initial_acts = zeros(p.layer,p.nRows,p.nRows,p.maxNumGrids);
 % selec = zeros(p.numLayers,max(p.numGrids));
 initial_selec = zeros(p.numLayers,max(p.numGrids));
+initial_selec_gauss = zeros(p.numLayers,max(p.numGrids));
 
 % initial_weights = zeros(size(W));
 
@@ -40,11 +41,12 @@ for layer=1:p.layer
             %--------------------------------------------------------------
             %Calculate each unit's distance from winner and activation
             %--------------------------------------------------------------
-            [f, selectivity, p, ~, ~] = ...
+            [f, selectivity, p, ~, ~, actGauss] = ...
                 calc_selectivity(win_row, win_col, dist_mat, p, p.numInputDims(layer));
             
             if cycle==1,  %need to compare last set of weights of old grid to
                 initial_selec(layer,grid) = selectivity;
+                initial_selec_gauss(layer,grid) = actGauss;
 %                 pktot.init_act_peak(layer,grid) = act_peak;
 %                 pktot.init_act_total(layer,grid) = act_total;
                 

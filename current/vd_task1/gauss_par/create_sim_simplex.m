@@ -11,7 +11,8 @@ end
 
 rng('shuffle');
 
-
+p1 = parms(1);
+p2 = parms(2);
 parfor rat = firstRat:lastRat
     
     p = struct();
@@ -20,16 +21,16 @@ parfor rat = firstRat:lastRat
     A = .3;
     B = .2;
     train = 0;
-    eta = parms;
+    eta = p1;
     %     eta = train^-A;
     sigma2 = .01;
     g = sigma2;
     %     g = .5+10*train^-B;
     k = .25;
-    leng = 36;
-    startCrit = eta/1000;
+    leng = 6;
+    startCrit = eta/2000;
     %     startCrit = 1e-6;
-    noise = startCrit*.9;
+    noise = startCrit*p2;
     
     
     startParms = [ eta , g, k ];
@@ -67,15 +68,15 @@ parfor rat = firstRat:lastRat
     p.maxFixations = [20, 25]; % total # saccades on match trials = 20
     p.k_expt = k_expt; % sigmoidal rate param
     p.A = A; % Pre-training parameter. The bigger A is, the faster ETA decreases, and the smaller the amount of learning on the weights for all units.
-    %     p.a = 1.7159; % tanh param
-    %     p.b = 2/3; % also tanh
-    p.a = 15;
-    p.b = atanh(2/3); % with this, max value of act will be (2/3)*a=10
+        p.a = 1.7159; % tanh param
+        p.b = 2/3; % also tanh
+%     p.a = 15;
+%     p.b = atanh(2/3); % with this, max value of act will be (2/3)*a=10
     p.etaExp = etaExp;
     p.B = B; % Pre-training parameter. The bigger B is, the faster G decreases, and the smaller the neighbourhood of the winner that gets updated.
     p.G_exp = G_exp;
     p.numTrainCycles = [train, train];
-    p.numEncodingCycles = [1, 1]; % now better described as encoding cycles per fixation [LA, HA]
+    p.numEncodingCycles = [5, 5]; % now better described as encoding cycles per fixation [LA, HA]
     p.numFeaturesToSample = [p.numGrids_Caudal,p.numGrids_Caudal]; % first == lesion, second == control
     p.fixn_ratio_lowHigh = [.3, .5]; % now describes ratio of within/total
     p.outsideRatio = [.2,.1]; % chance to fixate outside of either stim
@@ -122,9 +123,9 @@ end
 
 
 % uncomment if running simplex
-% dPrimePredictions = calcDPrime(1,lastRat, nOfFolder);
+dPrimePredictions = calcDPrime(1,lastRat, nOfFolder);
 
 % uncomment if looking at
-plotFamilDiffs(1, lastRat, nOfFolder,0);
+% plotFamilDiffs(1, lastRat, nOfFolder,0);
 
 end

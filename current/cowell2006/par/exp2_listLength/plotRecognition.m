@@ -7,9 +7,6 @@ function [] = plotRecognition(firstRat, lastRat, folderName)
 % produces the set of most desirable results
 % folderName must be a string (without / on either side)
 
-% folderName = '1encod_p6Ratio1p2_1sampVar5_0noise_100train_20Max25_5peak_100rows_A01_B4_forceSamp_NOshrinkingLearn_etaExp5p_Gexpp8_stim4Diff_NOfives';
-
-% scrsz = get(groot, 'ScreenSize');
 
 saveFolder = [pwd,'/graphsAndSession/', folderName];
 
@@ -20,6 +17,7 @@ load(fileName)
 numRats = lastRat-firstRat+1;
 
 recognition = zeros(numRats,p.nSess/2,2,max(p.nTrials));
+gaussRecognition = zeros(numRats,p.nSess/2,2,max(p.nTrials));
 
 for rat = firstRat:lastRat
     for session = 1:p.nSess
@@ -35,8 +33,10 @@ for rat = firstRat:lastRat
         
         if session <= p.nSess/2
             recognition(rat,session,1,1:p.nTrials(session)) = p.recognition;
+            gaussRecognition(rat,session,1,1:p.nTrials(session)) = p.recognition_gauss;
         else
             recognition(rat,session-p.nSess/2,2,1:p.nTrials(session-p.nSess/2)) = p.recognition;
+            gaussRecognition(rat,session-p.nSess/2,2,1:p.nTrials(session-p.nSess/2)) = p.recognition_gauss;
         end
     end
 end
@@ -53,6 +53,16 @@ fourth = mean(meanRecog_rats(4,:,1:18),3);
 meanRecog = [first(1), first(2); second(1), second(2);...
     third(1), third(2); fourth(1), fourth(2)];
 
+meanRecogGauss_rats = squeeze(mean(recognition,1));
+first = mean(meanRecogGauss_rats(1,:,1),3);
+second = mean(meanRecogGauss_rats(2,:,1:6),3);
+third = mean(meanRecogGauss_rats(3,:,1:12),3);
+fourth = mean(meanRecogGauss_rats(4,:,1:18),3);
+
+meanRecogGauss = [first(1), first(2); second(1), second(2);...
+    third(1), third(2); fourth(1), fourth(2)];
+
+
 %%
 close all
 
@@ -67,6 +77,20 @@ legend('boxoff')
 
 saveas(figs(1),[saveFolder, '/recog'],'fig');
 saveas(figs(1),[saveFolder, '/recog'],'jpg');
+
+% gauss activation
+figs(2) = figure;
+hold on
+plot(1:4,meanRecogGauss(:,1), '--ok', 'MarkerSize',10)
+plot(1:4,meanRecogGauss(:,2),'-ok','MarkerFaceColor','k', 'MarkerSize',10)
+ax = gca;
+ax.XTick = 1:4;
+legend('Lesion','Control')
+legend('boxoff')
+
+saveas(figs(2),[saveFolder, '/recogGauss'],'fig');
+saveas(figs(2),[saveFolder, '/recogGauss'],'jpg');
+
 
 end
 

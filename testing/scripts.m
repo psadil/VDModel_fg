@@ -2,13 +2,13 @@ close all;
 
 % testing the shape of the activation function. logistic
 L=1; % maximum
-k=.25; % curve steepness, also determines how low is the initial start
+k=.08; % curve steepness, also determines how low is the initial start
 % b=1;
 b=atanh(2/3);
-a=150;
+a=15;
 % a = 1;
 d = 8;
-sigma2 = .01;
+sigma2 = .1;
 v = 1;
 
 maxDist = 100;
@@ -134,3 +134,15 @@ sum([mse12,mse32])
 % on whether the input is in the 'middle' (the .35 and .65) of the space or not
 % this means that the network is going to be less selective for those
 % stimuli
+
+a11 = 1/(1+exp(-k*log(1/mse11)))
+a21 = 1/(1+exp(-k*log(1/mse21)))
+a31 = 1/(1+exp(-k*log(1/mse31)))
+a11+a21+a31
+
+a12 = 1/(1+exp(-k*log(1/mse12)))
+a22 = 1/(1+exp(-k*log(1/mse22)))
+a32 = 1/(1+exp(-k*log(1/mse32)))
+a21+a22+a32
+
+

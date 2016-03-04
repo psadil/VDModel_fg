@@ -60,7 +60,7 @@ for trial_present = 1:p.nTrials(p.stimCond)
     stimPair = squeeze(stims(trial_present,:,:,p.stimCond));
     
     % present initial sample stimulus
-    [weights, ~, p, pktot] = ...
+    [weights, ~, p, pktot,~] = ...
         present_stimulus(stimPair(:,1), preTrainedWeights, p, trial_present, pktot);
     
 end
@@ -68,16 +68,17 @@ end
 for trial_test = 1:p.nTrials(p.stimCond)
     
     selec_forComp = zeros(p.numLayers,max(p.nGrids),2);
+    actGauss = zeros(p.numLayers,max(p.nGrids),2);
     % re-present initial sample stimulus
-    [~, selec_forComp(:,:,1), p, pktot] = ...
+    [~, selec_forComp(:,:,1), p, pktot, actGauss(:,:,1)] = ...
         present_stimulus(stimPair(:,1), weights, p, trial_test, pktot);
     
     % present initial novel stimulus
-    [~, selec_forComp(:,:,2), p, pktot] = ...
+    [~, selec_forComp(:,:,2), p, pktot, actGauss(:,:,2)] = ...
         present_stimulus(stimPair(:,2), weights, p, trial_test, pktot);
     
     % calc recognition score
-    [p] = calc_recognition(p, selec_forComp, trial_test);
+    [p] = calc_recognition(p, selec_forComp, trial_test, actGauss);
     
 end
 

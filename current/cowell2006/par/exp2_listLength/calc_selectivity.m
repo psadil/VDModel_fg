@@ -1,4 +1,4 @@
-function [f_out, selectivity, p, act_peak, act_total] = calc_selectivity(win_row, win_col, dist_mat,p, nInpDims)
+function [f_out, selectivity, p, act_peak, act_total, actGauss] = calc_selectivity(win_row, win_col, dist_mat,p, nInpDims)
 
 %% Function called from VD_present_stimulus.m. Calculates grid_dist matrix, then
 %% calculates all units' activities and selectivity of activation peak.
@@ -103,8 +103,11 @@ end
 
 act_total = sum(sum(act_out));
 selectivity = act_peak/act_total;
-    
 
+% for outputting gaussian acdtivation function
+gauss = exp(-(grid_dist.^2)./(2*p.sigma2));
+tmp = gauss.*(p.a*tanh(p.b*(1-min(dist_mat(:)))));
+actGauss = sum(tmp(:));
 
 % p.totalAct(trial,layer) = act_total;
 end

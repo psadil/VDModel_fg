@@ -1,4 +1,4 @@
-function [ stopSampling, p, whichCaudal ] = determineMisMatch( judging, p, trial)
+function [ stopSampling, p, whichCaudal, threshUpdater ] = determineMisMatch( judging, p, trial)
 %% determineMisMatch: determines if stimuli are misMatching
 stopSampling = 0;
 whichCaudal = 0;
@@ -6,7 +6,7 @@ whichCaudal = 0;
 % to the current and previous stim to a funning familiarity difference
 
 % might be called again if not enough evidence has been accrued.
- 
+
 %% Gather selectivity
 
 %--------------------------------------------------------------------------
@@ -54,8 +54,8 @@ for layer_prev = 1:p.numLayers
         %         p.meanSelectivity_caudal_prev(trial,:) = judging.selectivity_prev(layer_prev,:).*featuresToCompare; % only look at grids for which features were sampled
         meanSelectivity_caudal_prev = judging.selectivity_prev(layer_prev,:).*featuresToCompare;
         
-        %         familDiff_caudal = abs(meanSelectivity_caudal_prev - meanSelectivity_caudal_new);
-        familDiff_caudal = meanSelectivity_caudal_prev - meanSelectivity_caudal_new;
+        familDiff_caudal = abs(meanSelectivity_caudal_prev - meanSelectivity_caudal_new);
+        %         familDiff_caudal = meanSelectivity_caudal_prev - meanSelectivity_caudal_new;
         
         % determine which grid in caudal layer would be used for judgement
         %         whichCaudal = find(abs(familDiff_caudal)==max(abs(familDiff_caudal)));
@@ -73,8 +73,8 @@ for layer_prev = 1:p.numLayers
         
     elseif (layer_prev == 2) %&& (all(p.usePRC(:,trial)))
         p.meanSelectivity_PRC_prev(trial) = judging.selectivity_prev(layer_prev,1);
-        %         p.familDiff_PRC(trial) = abs(p.meanSelectivity_PRC_prev(trial) - p.meanSelectivity_PRC_new(trial));
-        p.familDiff_PRC(trial) = p.meanSelectivity_PRC_prev(trial) - p.meanSelectivity_PRC_new(trial);
+        p.familDiff_PRC(trial) = abs(p.meanSelectivity_PRC_prev(trial) - p.meanSelectivity_PRC_new(trial));
+        %         p.familDiff_PRC(trial) = p.meanSelectivity_PRC_prev(trial) - p.meanSelectivity_PRC_new(trial);
         
     end
 end
@@ -102,19 +102,18 @@ if p.layer == 2
     
     
     familDiff_PRC = p.familDiff_PRC(trial);
-
     
-if familDiff_PRC <0
-    p.tType(trial);
-   2; 
-end
-
-
+    
+    if p.tType(trial) == 2
+        2;
+    end
+    
+    
     % the following should be uncommented when noise loads on to thresh
     familDiffs_temp = [familDiff_caudal - thresh_caudal, familDiff_PRC - thresh_PRC];
     
     [~, whichFamilDiff] = max(familDiffs_temp);
-        
+    
     
     if whichFamilDiff == 2
         familDiff = familDiff_PRC;
@@ -125,12 +124,12 @@ end
         thresh = thresh_caudal;
         p.usePRC(:,trial) = 0;
     end
-    
+    threshUpdater = [familDiff_caudal; familDiff_PRC];
 else
     familDiff = familDiff_caudal;
     thresh = thresh_caudal;
     p.usePRC(:,trial) = 0;
-    
+    threshUpdater = familDiff_caudal;
 end
 
 %% compare differences in selectivity with threshold
@@ -138,9 +137,9 @@ end
 p.familDiff_withNoise(trial) = familDiff;
 
 
-if p.familDiff_withNoise(trial) > thresh    
+if p.familDiff_withNoise(trial) > thresh
     % we have misMatching feature! So, stop sampling
-    stopSampling = 1;                  
+    stopSampling = 1;
     
 else
     % no evidence for misMatch of stimuli

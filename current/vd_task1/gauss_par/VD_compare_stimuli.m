@@ -1,4 +1,4 @@
-function [weights, stopSampling, p] = VD_compare_stimuli(stimPair, weights, p, trial)
+function [weights, stopSampling, p, threshUpdater] = VD_compare_stimuli(stimPair, weights, p, trial)
 %VD_compare_stimuli_controllOfFixation called by visDiscrimModel.m
 
 % want this function to: decide which features of the stimulus to present
@@ -137,7 +137,7 @@ while ((p.fixations(trial) < p.maxFix) && stopSampling == 0) || (keepSampling &&
         %------------------------------------------------------------------
         % determine which layer is most selective
         %------------------------------------------------------------------
-        [stopSampling, p, whichCaudal] = determineMisMatch(judging, p, trial);
+        [stopSampling, p, whichCaudal, threshUpdater] = determineMisMatch(judging, p, trial);
         
         
         %------------------------------------------------------------------

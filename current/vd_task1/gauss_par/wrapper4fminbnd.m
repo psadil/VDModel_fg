@@ -8,7 +8,7 @@ function [ x,fVal ] = wrapper4fminbnd( pArray, data, nOfFolder )
 % structure consts initialized mainly inside initializeSimplex_VD
 global consts;
 
-rand('state', consts.seed)
+% rand('state', consts.seed)
 
 defOpts = optimset('fminsearch');
 options = optimset(defOpts, 'Display', 'iter', 'MaxFunEvals', consts.nIterations);
@@ -23,7 +23,7 @@ options = optimset(defOpts, 'Display', 'iter', 'MaxFunEvals', consts.nIterations
         predictions = getdPrimePred(parms, nOfFolder)
         sqdist = (predictions - data).^2;
         rmsd=sqrt(mean(sqdist));
-        fprintf('\n\n rmsd:%d., eta:%d, \r', rmsd, parms(1))
+        fprintf('\n\n rmsd:%d., eta:%d, \r', rmsd, parms)
     end
 
 end
