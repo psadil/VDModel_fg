@@ -1,4 +1,4 @@
-function p = visDiscrimModel(p,stims)
+function [p, weights] = visDiscrimModel(p,stims,weights)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Matlab code for making a Self Organising Feature Map grid (SOFM)
@@ -16,29 +16,37 @@ function p = visDiscrimModel(p,stims)
 
 % Load the pretrained weights at beginning of visual discrimination task
 
-if p.sess == 1
-    % if first session, set new weights (birth new rat)
-    weights=rand(p.layer,p.nRows,p.nRows,p.numInputDims(p.numLayers),p.numGrids(1));
+% if p.sess == 1
+%     % if first session, set new weights (birth new rat)
+%     %     weights=rand(p.layer,p.nRows,p.nRows,p.numInputDims(p.numLayers),p.numGrids(1));
+% %     p.layer=2 % take out when running for real!!
+%     [p,weights] = VD_pretrain(p);
+%     
+%     location = strcat(p.root,'rats/rat', num2str(p.ratNum), '/W_stimCond', num2str(p.sess), '_layer', num2str(p.which_gp_layer), '.mat');
+%     save(location, 'weights');
+%     
+% else
+%     % if not first session, load rat
+%     location = strcat(p.root,'rats/rat', num2str(p.ratNum), '/W_stimCond', num2str(p.sess-1), '_layer', num2str(p.which_gp_layer), '.mat');
+%     load(location, 'weights');
+%     
+%     % go back to save/load when running for real
+%     % weights=rand(p.layer,p.nRows,p.nRows,p.numInputDims(p.numLayers),p.numGrids(1));
+% end
 
-    location = strcat(p.root,'rats/rat', num2str(p.ratNum), '/W_stimCond', num2str(p.sess), '_layer', num2str(p.which_gp_layer), '.mat');
-    save(location, 'weights');
-
-else
-    % if not first session, load rat
-    location = strcat(p.root,'rats/rat', num2str(p.ratNum), '/W_stimCond', num2str(p.sess-1), '_layer', num2str(p.which_gp_layer), '.mat');
-    load(location, 'weights');
-    
-end
 
 
-
-fid = struct();
+fid1 = struct();
 if p.stimCond == 1
-    fid.stimuli1 = stims.LA_misMatch;
-    fid.stimuli2 = stims.LA_match;
+    fid2=struct();
+    fid2.stimuli1 = stims.LA_misMatch;
+    fid2.stimuli2 = stims.LA_match;
+    
+    fid1.stimuli1 = stims.HA_misMatch;
+    fid1.stimuli2 = stims.HA_match;
 elseif p.stimCond == 2
-    fid.stimuli1 = stims.HA_misMatch;
-    fid.stimuli2 = stims.HA_match;
+    fid1.stimuli1 = stims.HA_misMatch;
+    fid1.stimuli2 = stims.HA_match;
 end
 
 
@@ -79,8 +87,9 @@ p.fixations = zeros(1,p.nTrials);
 p.peak_act = zeros(p.nTrials,2);
 p.totalAct = zeros(p.nTrials,2);
 
-% p.answer = zeros(1,p.nTrials);
-% p.correct = zeros(1,p.nTrials);
+
+% which features were compared (should always be all 4,in this setup)
+p.comparedFeat = zeros(p.nTrials, p.numGrids_Caudal);
 
 %% begin trial loop
 
@@ -90,21 +99,32 @@ tTypeCnt = [0 0];
 for trial = 1:p.nTrials,
     %%% Determine trial type and increment count
     tType = p.tType(trial);
-    tTypeCnt(tType) = tTypeCnt(tType)+1;
+    if tType < 3
+        tTypeCnt(tType) = tTypeCnt(tType)+1;
+    else
+        tTypeCnt(tType-2) = tTypeCnt(tType-2)+1;
+    end
     
     %----------------------------------------------------------------------
     %%% Get the two stimuli for this simultaneous visual discrimination trial
-    stim_name = sprintf('stimuli%d', tType); %tType==1 is Mismatch, tType==2 is Match
-    stimuli = fid.(stim_name);
-    stimPair = squeeze(stimuli(p.stimOrder(tTypeCnt(tType),tType),:,:));
-    stimPair = stimPair(:,:,:);
-%     stimPair = squeeze(stims.stimuli1(trial,:,:));
-
+    if tType == 1 || tType == 2
+        stim_name = sprintf('stimuli%d', tType); %tType==1 is Mismatch, tType==2 is Match
+        stimuli = fid1.(stim_name);
+    else
+       stim_name = sprintf('stimuli%d', tType-2);
+       stimuli = fid2.(stim_name);
+    end
     
+    if tType < 3
+        stimPair = squeeze(stimuli(p.stimOrder(tTypeCnt(tType),tType),:,:));
+    else
+        stimPair = squeeze(stimuli(p.stimOrder(tTypeCnt(tType-2),tType-2),:,:));
+    end
+        
     
     %----------------------------------------------------------------------
     %%% Generate series of saccades and present stimuli, for this trial
-    [weights, stop_sampling, p, ~] = VD_compare_stimuli(stimPair, weights, p, trial); %weights output on previous trial get input on next trial
+    [weights, stop_sampling, p, threshUpdater] = VD_compare_stimuli(stimPair, weights, p, trial); %weights output on previous trial get input on next trial
     
     %     p.activations(:,:,:,trial)=activations;
     
@@ -128,14 +148,12 @@ for trial = 1:p.nTrials,
     %     p.activations_prev(1:p.layer,:,:,:,trial) = trial_info.prevStimActs;
     
     
-    [p] = determineCriterion(p ,trial);
+    [p] = determineCriterion(p ,trial, threshUpdater);
     
 end % End of loop over trials
 
-
-
-location = strcat(p.root,'rats/rat', num2str(p.ratNum), '/W_stimCond', num2str(p.sess), '_layer', num2str(p.which_gp_layer), '.mat');
-save(location, 'weights');
+% location = strcat(p.root,'rats/rat', num2str(p.ratNum), '/W_stimCond', num2str(p.sess), '_layer', num2str(p.which_gp_layer), '.mat');
+% save(location, 'weights');
 
 
 % will eventually go into funciton that collects performance of all rats
@@ -158,3 +176,4 @@ p.dPrime_second = norminv(hitRate_second)-norminv(FARate_second);
 
 
 
+end

@@ -53,7 +53,7 @@ fourth = mean(meanRecog_rats(4,:,1:18),3);
 meanRecog = [first(1), first(2); second(1), second(2);...
     third(1), third(2); fourth(1), fourth(2)];
 
-meanRecogGauss_rats = squeeze(mean(recognition,1));
+meanRecogGauss_rats = squeeze(mean(gaussRecognition,1));
 first = mean(meanRecogGauss_rats(1,:,1),3);
 second = mean(meanRecogGauss_rats(2,:,1:6),3);
 third = mean(meanRecogGauss_rats(3,:,1:12),3);

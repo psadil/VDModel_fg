@@ -386,7 +386,7 @@ for rat = firstRat:lastRat
         %------------------------------------------------------------------
         % tally results
         %------------------------------------------------------------------
-        
+        % a yes                 .*     misMatching trials / % nMisMatching
         hitRate_first(rat,session) = sum(p.answer(1:p.nTrials/2).*(p.tType(1:p.nTrials/2)==1))/sum(p.tType(1:p.nTrials/2)==1);  % a 'yes' (mismatch judgement) on trials that were mismatches (ie, p.tType==1)
         FARate_first(rat,session) = sum(p.answer(1:p.nTrials/2).*(p.tType(1:p.nTrials/2)==2))/sum(p.tType(1:p.nTrials/2)==2); % a 'yes' on matching trials
         
@@ -1867,23 +1867,23 @@ saveas(figs(23),[saveFolder, '/dPrime_adj_some'], 'jpg');
 
 
 
-outPut = table( repmat(firstRat:lastRat,[1,8])' ...
-    , repelem(1:2, numRats*4)'...
-    , [dPrime_first_adj_all(:,1); dPrime_first_adj_all(:,2) ;...
-    dPrime_first_adj_all(:,3); dPrime_first_adj_all(:,4) ; ...
-    dPrime_second_adj_all(:,1); dPrime_second_adj_all(:,2) ;...
-    dPrime_second_adj_all(:,3); dPrime_second_adj_all(:,4)]...
-    , repmat(repelem(1:2, numRats*2)', [2,1])...
-    , repmat(repelem(1:2, numRats)', [4,1]));
-
-outPut.Properties.VariableNames{'Var1'} = 'rat';
-outPut.Properties.VariableNames{'Var2'} = 'half';
-outPut.Properties.VariableNames{'Var3'} = 'dPrime';
-outPut.Properties.VariableNames{'Var4'} = 'controlLesion';
-outPut.Properties.VariableNames{'Var5'} = 'ambiguity';
-
-% save(['dPrime_', folderName, '.dat'], 'outPut');
-writetable(outPut, 'dPrime.dat');
+% outPut = table( repmat(firstRat:lastRat,[1,8])' ...
+%     , repelem(1:2, numRats*4)'...
+%     , [dPrime_first_adj_all(:,1); dPrime_first_adj_all(:,2) ;...
+%     dPrime_first_adj_all(:,3); dPrime_first_adj_all(:,4) ; ...
+%     dPrime_second_adj_all(:,1); dPrime_second_adj_all(:,2) ;...
+%     dPrime_second_adj_all(:,3); dPrime_second_adj_all(:,4)]...
+%     , repmat(repelem(1:2, numRats*2)', [2,1])...
+%     , repmat(repelem(1:2, numRats)', [4,1]));
+% 
+% outPut.Properties.VariableNames{'Var1'} = 'rat';
+% outPut.Properties.VariableNames{'Var2'} = 'half';
+% outPut.Properties.VariableNames{'Var3'} = 'dPrime';
+% outPut.Properties.VariableNames{'Var4'} = 'controlLesion';
+% outPut.Properties.VariableNames{'Var5'} = 'ambiguity';
+% 
+% % save(['dPrime_', folderName, '.dat'], 'outPut');
+% % writetable(outPut, 'dPrime.dat');
 
 end
 

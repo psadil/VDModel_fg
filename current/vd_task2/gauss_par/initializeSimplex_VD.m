@@ -5,11 +5,11 @@ startTime = GetSecs;
 global consts;
 
 % set seed based on internal clock time
-consts.seed = fix(1e6*sum(clock));
+% consts.seed = fix(1e6*sum(clock));
 
 % need to make sure am estimating enough rats on each iteration of the
 % model to acocunt for noise of output.
-consts.nRats = 8;
+consts.nRats = 32;
 consts.nIterations = 100;
 
 % name of folder containing stimuli to use
@@ -30,11 +30,11 @@ data = [0, -.5, 0, 0];
 %%% numTrainCycles
 %%% numEncodingCycles
 % startParms = [ (.15/(40*4)) , 5  ];
-startParms = (1e-05);
+startParms = [.001, .15];
 % consts.minParms = [(.15/(40*20*20)), 1,];
-consts.minParms = (1e-07);
+consts.minParms = [1e-04, 0];
 % consts.maxParms = [(1/(40*20)), 10];
-consts.maxParms = (1e-3);
+consts.maxParms = [1e-2, .95];
 % NOTE: to deal with the need for integer parameters, 'nums' are rounded
 % inside create_sim
 
