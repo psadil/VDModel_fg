@@ -42,10 +42,6 @@ parfor rat = firstRat:lastRat
     p.exptName = '20feb2016';
     
     p.nameOfFolder = nOfFolder;
-    %     p.nameOfFolder = ['eta', num2str(eta), '_g', num2str(g), ...
-    %         '_K', num2str(k), '_A', num2str(A) ,'_B', num2str(B), '_20enc20_', ...
-    %         '5pk_20Fix_', num2str(noise),'nois_', num2str(startCrit), 'stCrt_',num2str(leng), '_0reload1',...
-    %         'altTanh'];
     
     p.nSess = 6;
     p.sigma2 = sigma2;
@@ -125,9 +121,9 @@ end
 
 
 % uncomment if running simplex
-dPrimePredictions = calcDPrime(1,lastRat, nOfFolder);
+% dPrimePredictions = calcDPrime(1,lastRat, nOfFolder);
 
-% uncomment if looking at
-% plotFamilDiffs(1, lastRat, nOfFolder,0);
+% uncomment if looking at plots
+plotFamilDiffs(1, lastRat, nOfFolder,0);
 
 end

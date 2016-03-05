@@ -42,10 +42,12 @@ for sess = 1:p.nSess,
     
     % block HA and LA conditions, useful for when not resetting weights
     p.sess = sess;
-    
+    weights = weights_pre;
     if sess > 3
-        if sess ==4
+        if sess == 4
             weights = weights_pre;
+%         else
+            
         end
         p.which_gp_layer = 2 ;
     else
@@ -97,7 +99,7 @@ for sess = 1:p.nSess,
     p.famil_diff_thresh=[repmat(p.famil_diff_thresh_start(1),1,p.lengthOfCrit); repmat(p.famil_diff_thresh_start(2),1,p.lengthOfCrit)];
     
     %% execute model code
-    [p, weights] = visDiscrimModel(p,stims,weights);
+    [p, ~] = visDiscrimModel(p,stims,weights);
     
     
     %% save it up

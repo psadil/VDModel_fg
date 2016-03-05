@@ -38,7 +38,7 @@ while check
     %% then -- if in an LA trial -- that the intervening trials (trials that aren't
     % in compTrials) are from LA stims, while the rest aren't
     
-    if any(p.stimCond == [1,3])
+    if any(p.stimCond == [1,3]) 
         p.tType(trials) = p.tType(trials)+2;
     end
     
@@ -47,3 +47,4 @@ while check
     
 end
 
+end

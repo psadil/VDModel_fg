@@ -14,31 +14,11 @@ function [p, weights] = visDiscrimModel(p,stims,weights)
 
 
 
-% Load the pretrained weights at beginning of visual discrimination task
-
-% if p.sess == 1
-%     % if first session, set new weights (birth new rat)
-%     %     weights=rand(p.layer,p.nRows,p.nRows,p.numInputDims(p.numLayers),p.numGrids(1));
-% %     p.layer=2 % take out when running for real!!
-%     [p,weights] = VD_pretrain(p);
-%     
-%     location = strcat(p.root,'rats/rat', num2str(p.ratNum), '/W_stimCond', num2str(p.sess), '_layer', num2str(p.which_gp_layer), '.mat');
-%     save(location, 'weights');
-%     
-% else
-%     % if not first session, load rat
-%     location = strcat(p.root,'rats/rat', num2str(p.ratNum), '/W_stimCond', num2str(p.sess-1), '_layer', num2str(p.which_gp_layer), '.mat');
-%     load(location, 'weights');
-%     
-%     % go back to save/load when running for real
-%     % weights=rand(p.layer,p.nRows,p.nRows,p.numInputDims(p.numLayers),p.numGrids(1));
-% end
-
 
 
 fid1 = struct();
+fid2=struct();
 if p.stimCond == 1
-    fid2=struct();
     fid2.stimuli1 = stims.LA_misMatch;
     fid2.stimuli2 = stims.LA_match;
     
@@ -47,6 +27,9 @@ if p.stimCond == 1
 elseif p.stimCond == 2
     fid1.stimuli1 = stims.HA_misMatch;
     fid1.stimuli2 = stims.HA_match;
+    
+    fid2.stimuli1 = stims.HA_misMatch;
+    fid2.stimuli2 = stims.HA_match;
 end
 
 
