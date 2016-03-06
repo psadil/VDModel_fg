@@ -1,11 +1,22 @@
 function [p,weights] = pretrain(p)
 
-fprintf('\ndelay_pretrain being executed...');
+
+fprintf('\nVD_pretrain being executed...');
 interfere = 0;
+weights=zeros(p.numLayers,p.numRows,p.numRows,p.numInputDims(p.numLayers),max(p.nGrids));
+% if p.nInpDims == p.numInputDims_PRC
+%     p.activationsPretrain_PRC = zeros(p.numRows,p.numRows,p.numGrids_PRC,p.nTrainCycles);
+% %     gridsInLayer=p.numGrids_PRC;
+% % elseif p.nInpDims == p.numInputDims_Caudal
+%     p.activationsPretrain_Caudal = zeros(p.numRows,p.numRows,p.numGrids_Caudal,p.nTrainCycles);
+% %     gridsInLayer=p.numGrids_Caudal;
+% end
+
+% learn_rate=zeros(1,max(p.numLayers));
+% neighb_size=zeros(1,max(p.numLayers));
 
 %%%%%%%%%%%%%%%%%%%%% Perform pre-training of network %%%%%%%%%%%%%%%%
-weights = zeros(max(p.numLayers),p.numRows,p.numRows,p.numInputDims(p.numLayers),p.nGrids(1));
-for layer = 1:max(p.numLayers)
+for layer = 1:p.numLayers
     
     nInpDims = p.numInputDims(layer);
     
@@ -19,27 +30,37 @@ for layer = 1:max(p.numLayers)
         %------------------------------------------------------------------
         % begin training cycle of newly generated grid
         %------------------------------------------------------------------
-        
+        p.winningPre = zeros(p.numTrainCycles(layer),2);
         for cycle=1:p.numTrainCycles(layer),
             
             p.eta = cycle^(-p.A);		% Learning rate (how quickly weights are adapted)
-            p.G = 0.5 + 10*cycle^(-p.B);		% Gaussian width parameter
-            %%% Note: G<0.5 is boring because the Gaussian only covers one node
+            p.G = p.sigma2 + (p.numRows/4 - p.sigma2)*cycle^(-p.B);		% Gaussian width parameter
+%                        p.G = .5 + 10*cycle^(-p.B);
             
             if cycle == 1 || cycle == p.numTrainCycles(layer),
                 fprintf('\nWithin pretrain, Cycle %d, G = %f, ETA = %f', cycle, p.G, p.eta);
             end
             
-            [inp_mat] = gen_limited_input(nInpDims/p.nDimReps,p); %generate an input vector
+            %%% Generate input data that is p.nInpDims
+            %%% by p.nRows ()
+            [inp_mat] = gen_limited_input(nInpDims,p); %generate an input vector
             
             %--------------------------------------------------------------
             % Find winning node
             %--------------------------------------------------------------
             [win_row, win_col, dist_mat] = findWinningNode(w, inp_mat, nInpDims);
+            p.winningPre(cycle,:) = [win_row, win_col];
             
             %------------------------------------------------------------------
             % Calculate each unit's distance from winner and resultant activation
             [f, ~] = calc_act_fast(win_row, win_col, dist_mat,layer,p,interfere);
+            
+            %             if nInpDims == p.numInputDims_PRC
+            %                 p.activationsPretrain_PRC(:,:,grid,cycle)=act;
+            %             elseif nInpDims == p.numInputDims_Caudal
+            %                 p.activationsPretrain_Caudal(:,:,grid,cycle)=act;
+            %
+            %             end
             
             
             %%% Update Weights
@@ -49,10 +70,12 @@ for layer = 1:max(p.numLayers)
         end  % end of training cycles loop
         
         %% Add random noise to the weights
-
-        % add uniform noise [-1,1], then add 1, and divide it all by 3
-        % ending weights are again distributed on [0,1]
-        w = ((w + (1 - 2*(rand(p.numRows,p.numRows,nInpDims)))) + 1)./3 ;
+        %         rand_noise = (1 - 2*(rand(p.numRows,p.numRows,nInpDims))); % Creates a matrix of random values between -1 and 1.
+        %         w = w + rand_noise;
+        %
+        %         %%% Squidge the distribution of weight values back into the 0 to 1 range.
+        %         w = w + 1;
+        %         w = w./3;
         
         % Is there a problem with this, in that only some weight get the maximum possible
         % increment or decrement, and only a subset of these were high or low to start off with, therefore very few end up anywhere
@@ -60,10 +83,15 @@ for layer = 1:max(p.numLayers)
         % values tend to have lower matches. Perhaps not as bad as flat_noise_decay version of squidging, since at
         % least the noise increment/decrements will be normally distributed.
         
-        
+        %------------------------------------------------------------------
+        % Save this pretrained grid
+        %------------------------------------------------------------------
+        %         location = strcat(ROOT,'rats/rat', num2str(rat), '/pretrainedW__layer', num2str(layer), 'grid', num2str(grid),'.mat');
+        %         save(location, 'w');
         weights(layer,:,:,1:p.numInputDims(layer),grid) = w;
+        
+        
     end % end of grid loop
-    
     
 end % end of layer loop
 
