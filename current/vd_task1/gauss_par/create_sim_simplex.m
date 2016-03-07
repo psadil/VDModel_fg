@@ -23,12 +23,12 @@ parfor rat = firstRat:lastRat
     train = 0;
     eta = p1;
     %     eta = train^-A;
-    sigma2 = .01;
+    sigma2 = 1;
     g = sigma2;
     %     g = .5+10*train^-B;
     k = .25;
-    leng = 6;
-    startCrit = eta/2000;
+    leng = 4;
+    startCrit = eta/100;
     %     startCrit = 1e-6;
     noise = startCrit*p2;
     
@@ -68,10 +68,10 @@ parfor rat = firstRat:lastRat
     p.maxFixations = [20, 25]; % total # saccades on match trials = 20
     p.k_expt = k_expt; % sigmoidal rate param
     p.A = A; % Pre-training parameter. The bigger A is, the faster ETA decreases, and the smaller the amount of learning on the weights for all units.
-        p.a = 1.7159; % tanh param
+%         p.a = 1.7159; % tanh param
         p.b = 2/3; % also tanh
-%     p.a = 15;
-%     p.b = atanh(2/3); % with this, max value of act will be (2/3)*a=10
+    p.a = 150;
+    p.b = atanh(2/3); % with this, max value of act will be (2/3)*a=10
     p.etaExp = etaExp;
     p.B = B; % Pre-training parameter. The bigger B is, the faster G decreases, and the smaller the neighbourhood of the winner that gets updated.
     p.G_exp = G_exp;

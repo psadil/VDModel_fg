@@ -54,8 +54,8 @@ for layer_prev = 1:p.numLayers
         %         p.meanSelectivity_caudal_prev(trial,:) = judging.selectivity_prev(layer_prev,:).*featuresToCompare; % only look at grids for which features were sampled
         meanSelectivity_caudal_prev = judging.selectivity_prev(layer_prev,:).*featuresToCompare;
         
-        familDiff_caudal = abs(meanSelectivity_caudal_prev - meanSelectivity_caudal_new);
-        %         familDiff_caudal = meanSelectivity_caudal_prev - meanSelectivity_caudal_new;
+%         familDiff_caudal = abs(meanSelectivity_caudal_prev - meanSelectivity_caudal_new);
+                        familDiff_caudal = meanSelectivity_caudal_prev - meanSelectivity_caudal_new;
         
         % determine which grid in caudal layer would be used for judgement
         %         whichCaudal = find(abs(familDiff_caudal)==max(abs(familDiff_caudal)));
@@ -73,8 +73,8 @@ for layer_prev = 1:p.numLayers
         
     elseif (layer_prev == 2) %&& (all(p.usePRC(:,trial)))
         p.meanSelectivity_PRC_prev(trial) = judging.selectivity_prev(layer_prev,1);
-        p.familDiff_PRC(trial) = abs(p.meanSelectivity_PRC_prev(trial) - p.meanSelectivity_PRC_new(trial));
-        %         p.familDiff_PRC(trial) = p.meanSelectivity_PRC_prev(trial) - p.meanSelectivity_PRC_new(trial);
+%         p.familDiff_PRC(trial) = abs(p.meanSelectivity_PRC_prev(trial) - p.meanSelectivity_PRC_new(trial));
+                        p.familDiff_PRC(trial) = p.meanSelectivity_PRC_prev(trial) - p.meanSelectivity_PRC_new(trial);
         
     end
 end
@@ -87,7 +87,9 @@ thresh_caudal = mean(p.famil_diff_thresh(1,:));
 lower_caudal_thresh = thresh_caudal - noise;
 upper_caudal_thresh = thresh_caudal + noise;
 
+% thresh_caudal = abs(lower_caudal_thresh + (upper_caudal_thresh - lower_caudal_thresh)*rand);
 thresh_caudal = lower_caudal_thresh + (upper_caudal_thresh - lower_caudal_thresh)*rand;
+
 
 familDiff_caudal = p.familDiff_caudal(trial);
 
@@ -98,7 +100,8 @@ if p.layer == 2
     lower_PRC_thresh = thresh_PRC - noise;
     upper_PRC_thresh = thresh_PRC + noise;
     
-    thresh_PRC = lower_PRC_thresh + (upper_PRC_thresh - lower_PRC_thresh)*rand;
+%     thresh_PRC = abs(lower_PRC_thresh + (upper_PRC_thresh - lower_PRC_thresh)*rand);
+        thresh_PRC = lower_PRC_thresh + (upper_PRC_thresh - lower_PRC_thresh)*rand;
     
     
     familDiff_PRC = p.familDiff_PRC(trial);

@@ -1,4 +1,4 @@
-function [] = delay_createSim(firstRat, lastRat, parms, nOfFolder)
+function [] = tUnique_createSim(firstRat, lastRat, parms, nOfFolder)
 %% Creates a run_sim file for a single, yoked-pair simulation.
 
 if exist('p', 'var')
@@ -37,8 +37,8 @@ parfor rat = firstRat:lastRat
     end
     
     
-    p.delayCycles = [0,200,400,600,800];
-    p.nSess = length(p.delayCycles) * 2;
+    p.delayCycles = 200;
+    p.nSess = length(p.delayCycles) * 4;
     
     % even at 200 rows (possible 200^2 unique stimuli), that's not enough
     % to contain the 16^4 possible part combinations
@@ -77,8 +77,8 @@ parfor rat = firstRat:lastRat
     
     p.totalInpDimsConditions = 2; %%Once with small DIMS for caudal, once each with small and large DIMS for intact
     
-    p.nMismatch = 4;
-    p.nMatch = 0;
+    p.nMismatch = 30;
+    p.nMatch = 30;
     
     p.nTrials = p.nMismatch+p.nMatch;
     
@@ -91,7 +91,7 @@ parfor rat = firstRat:lastRat
     
     %% create stimuli for use
     
-    [~] = delay_runSim(p)
+    [~] = tUnique_runSim(p)
     
 end
 
