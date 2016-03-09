@@ -43,24 +43,32 @@ end
 
 %%
 
-% first average across rats, then across trials
-meanRecog_rats = squeeze(mean(recognition,1));
-first = mean(meanRecog_rats(1,:,1),3);
-second = mean(meanRecog_rats(2,:,1:6),3);
-third = mean(meanRecog_rats(3,:,1:12),3);
-fourth = mean(meanRecog_rats(4,:,1:18),3);
+% first, find the average for a rat in a given condition
+rats_first = squeeze(mean(recognition(:,1,:,1),4));
+rats_second = squeeze(mean(recognition(:,2,:,1:6),4));
+rats_third = squeeze(mean(recognition(:,3,:,1:12),4));
+rats_fourth = squeeze(mean(recognition(:,4,:,1:18),4));
 
-meanRecog = [first(1), first(2); second(1), second(2);...
-    third(1), third(2); fourth(1), fourth(2)];
+recog_mean = [mean(rats_first,1); mean(rats_second,1); mean(rats_third,1); mean(rats_fourth,1)];
 
-meanRecogGauss_rats = squeeze(mean(gaussRecognition,1));
-first = mean(meanRecogGauss_rats(1,:,1),3);
-second = mean(meanRecogGauss_rats(2,:,1:6),3);
-third = mean(meanRecogGauss_rats(3,:,1:12),3);
-fourth = mean(meanRecogGauss_rats(4,:,1:18),3);
+recog_sem = [std(rats_first)./sqrt(numRats); ...
+    std(rats_second)./sqrt(numRats); ...
+    std(rats_third)./sqrt(numRats); ...
+    std(rats_fourth)./sqrt(numRats)];
 
-meanRecogGauss = [first(1), first(2); second(1), second(2);...
-    third(1), third(2); fourth(1), fourth(2)];
+% now, look at gaussian results
+rats_gauss_first = squeeze(mean(gaussRecognition(:,1,:,1),4));
+rats_gauss_second = squeeze(mean(gaussRecognition(:,2,:,1:6),4));
+rats_gauss_third = squeeze(mean(gaussRecognition(:,3,:,1:12),4));
+rats_gauss_fourth = squeeze(mean(gaussRecognition(:,4,:,1:18),4));
+
+recog_gauss_mean = [mean(rats_gauss_first,1); mean(rats_gauss_second,1);...
+    mean(rats_gauss_third,1); mean(rats_gauss_fourth,1)];
+
+recog_gauss_sem = [std(rats_gauss_first)./sqrt(numRats); ...
+    std(rats_gauss_second)./sqrt(numRats); ...
+    std(rats_gauss_third)./sqrt(numRats); ...
+    std(rats_gauss_fourth)./sqrt(numRats)];
 
 
 %%
@@ -68,8 +76,8 @@ close all
 
 figs(1) = figure;
 hold on
-plot(1:4,meanRecog(:,1), '--ok', 'MarkerSize',10)
-plot(1:4,meanRecog(:,2),'-ok','MarkerFaceColor','k', 'MarkerSize',10)
+plot(1:4,recog_mean(:,1), '--ok', 'MarkerSize',10)
+plot(1:4,recog_mean(:,2),'-ok','MarkerFaceColor','k', 'MarkerSize',10)
 ax = gca;
 ax.XTick = 1:4;
 legend('Lesion','Control')
@@ -81,8 +89,8 @@ saveas(figs(1),[saveFolder, '/recog'],'jpg');
 % gauss activation
 figs(2) = figure;
 hold on
-plot(1:4,meanRecogGauss(:,1), '--ok', 'MarkerSize',10)
-plot(1:4,meanRecogGauss(:,2),'-ok','MarkerFaceColor','k', 'MarkerSize',10)
+plot(1:4,recog_gauss_mean(:,1), '--ok', 'MarkerSize',10)
+plot(1:4,recog_gauss_mean(:,2),'-ok','MarkerFaceColor','k', 'MarkerSize',10)
 ax = gca;
 ax.XTick = 1:4;
 legend('Lesion','Control')
@@ -91,6 +99,50 @@ legend('boxoff')
 saveas(figs(2),[saveFolder, '/recogGauss'],'fig');
 saveas(figs(2),[saveFolder, '/recogGauss'],'jpg');
 
+
+
+% recognition, sigmoidal
+figs(3) = figure;
+subplot(1,2,1)
+barweb(recog_mean(:,2), recog_sem(:,2), [], {'control'})
+xlabel('stim condition');
+ylabel('recognition');
+legend({'1','6','12','18'},'Location','best');
+figs(3).CurrentAxes.YLim = [min(recog_mean(:,2))-max(recog_sem(:,2)),...
+    max(recog_mean(:,2))+max(recog_sem(:,2))];
+
+subplot(1,2,2)
+barweb(recog_mean(:,1), recog_sem(:,1), [], {'lesion'})
+xlabel('stim condition');
+ylabel('recognition');
+legend({'1','6','12','18'},'Location','best');
+figs(3).CurrentAxes.YLim = [min(recog_mean(:,1))-max(recog_sem(:,1)),...
+    max(recog_mean(:,1))+max(recog_sem(:,1))];
+
+saveas(figs(3),[saveFolder, '/recog_sigm_barweb'],'fig');
+saveas(figs(3),[saveFolder, '/recog_sigm_barweb'],'jpg');
+
+
+% recognition, gaussian
+figs(4) = figure;
+subplot(1,2,1)
+barweb(recog_gauss_mean(:,2), recog_gauss_sem(:,2), [], {'control'})
+xlabel('stim condition');
+ylabel('recognition');
+legend({'1','6','12','18'},'Location','best');
+figs(4).CurrentAxes.YLim = [min(recog_gauss_mean(:,2))-max(recog_gauss_sem(:,2)),...
+    max(recog_gauss_mean(:,2))+max(recog_gauss_sem(:,2))];
+
+subplot(1,2,2)
+barweb(recog_gauss_mean(:,1), recog_gauss_sem(:,1), [], {'lesion'})
+xlabel('stim condition');
+ylabel('recognition');
+legend({'1','6','12','18'},'Location','best');
+figs(4).CurrentAxes.YLim = [min(recog_gauss_mean(:,1))-max(recog_gauss_sem(:,1)),...
+    max(recog_gauss_mean(:,1))+max(recog_gauss_sem(:,1))];
+
+saveas(figs(4),[saveFolder, '/recog_gauss_barweb'],'fig');
+saveas(figs(4),[saveFolder, '/recog_gauss_barweb'],'jpg');
 
 end
 

@@ -52,58 +52,15 @@ recog_sem = squeeze(std(squeeze(mean(recognition,4)),1,1))./sqrt(numRats);
 %%
 close all
 
-figs(1) = figure;
-hold on
-plot(1:5,meanRecog(:,1), '--ok', 'MarkerSize',10)
-plot(1:5,meanRecog(:,2),'-ok','MarkerFaceColor','k', 'MarkerSize',10)
-ax = gca;
-ax.XTick = 1:5;
-legend('Lesion','Control')
-legend('boxoff')
-
-saveas(figs(1),[saveFolder, '/recog'],'fig');
-saveas(figs(1),[saveFolder, '/recog'],'jpg');
-
-figs(2) = figure;
-hold on
-plot(1:5,meanRecog(:,1), '--ok', 'MarkerSize',10)
-ax = gca;
-ax.XTick = 1:5;
-legend('Lesion')
-legend('boxoff')
-
-saveas(figs(2),[saveFolder, '/recog_les'],'fig');
-saveas(figs(2),[saveFolder, '/recog_les'],'jpg');
-
-
-figs(3) = figure;
-hold on
-plot(1:5,meanRecog(:,2),'-ok','MarkerFaceColor','k', 'MarkerSize',10)
-ax = gca;
-ax.XTick = 1:5;
-legend('Control')
-legend('boxoff')
-
-saveas(figs(3),[saveFolder, '/recog_contr'],'fig');
-saveas(figs(3),[saveFolder, '/recog_contr'],'jpg');
 
 
 figs(4) = figure;
-subplot(1,2,1)
-barweb(meanRecog(:,2), recog_sem(:,2), [], {'control'})
+barweb([meanRecog(:,2),meanRecog(:,1)], [recog_sem(:,2),recog_sem(:,1)], [], {'trial unique','repeating'})
 xlabel('stim condition');
 ylabel('recognition');
-legend({'0','200','400','600','800'},'Location','best');
+legend({'control', 'lesion'},'Location','best');
 figs(4).CurrentAxes.YLim = [min(meanRecog(:,2))-max(recog_sem(:,2)),...
     max(meanRecog(:,2))+max(recog_sem(:,2))];
-
-subplot(1,2,2)
-barweb(meanRecog(:,1), recog_sem(:,1), [], {'lesion'})
-xlabel('stim condition');
-ylabel('recognition');
-legend({'0','200','400','600','800'},'Location','best');
-figs(4).CurrentAxes.YLim = [min(meanRecog(:,1))-max(recog_sem(:,1)),...
-    max(meanRecog(:,1))+max(recog_sem(:,1))];
 
 saveas(figs(4),[saveFolder, '/recog_barweb'],'fig');
 saveas(figs(4),[saveFolder, '/recog_barweb'],'jpg');

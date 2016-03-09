@@ -58,7 +58,7 @@ for stimCond = 1:length(p.nMismatch);
     
     stims(1:p.nMismatch(stimCond),:,:,stimCond) = reshape(repmat(reshape(LA_misMatch,...
         [1,p.nMismatch(stimCond),1,p.numInputDims_PRC/p.nDimReps,1,2]),[1,1,p.nDimReps,1,1,1]),...
-        [p.nMismatch(stimCond),(p.numInputDims_PRC/p.nDimReps)*p.nDimReps,2]);;
+        [p.nMismatch(stimCond),(p.numInputDims_PRC/p.nDimReps)*p.nDimReps,2]);
      
 end
 

@@ -59,7 +59,7 @@ while tryAgain
     
     % grab match for LA
     used = trials_LA(:); % the stims that we've already used
-    for stim = 1:p.nMisMatch
+    for stim = 1:p.nMismatch
         if breakOut
             break
         end
@@ -114,8 +114,8 @@ end
 
 % grab only the first and second stim generated from the repeating stims
 stims.LA_match = zeros(p.nMatch,8,2);
-stims.LA_match(:,:,1) = final(trials_LA(1,2),:);
-stims.LA_match(:,:,2) = final(trials_LA(2,2),:);
+stims.LA_match(:,:,1) = final(trials_LA(:,2),:);
+stims.LA_match(:,:,2) = final(trials_LA(:,2),:);
 
 % grab all of the trial unique stims for the trial-unique pairs
 stims.LA_misMatch = zeros(p.nMismatch,8,2);

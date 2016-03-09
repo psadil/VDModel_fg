@@ -24,9 +24,9 @@ global consts
 %%% numEncodingCycles
 % startParms = [ .01 , .8 ]; % .09
 % startParms = [ .7 , 20 ];
-A = .6; % .7
-B = .3; % .6
-train = 500;
+A = .5; % .7
+B = .7; % .6
+train = 100;
 eta = train^-A;
 g = .5+10*train^-B;
 k = .08;
@@ -120,7 +120,7 @@ for rat = firstRat:lastRat
     p.numThresh = 2;
     p.lengthOfCrit = leng;
     p.famil_diff_thresh_start=[startCrit; startCrit];
-    p.setPre = 0;
+    p.setPre = 1;
     p.nameOfFolder = consts.nameOfFolder;
     
        
@@ -259,4 +259,4 @@ for rat = firstRat:lastRat
     
 end
 
-plotFamilDiffs(1, lastRat, consts.nameOfFolder);
+plotFamilDiffs(1, lastRat, consts.nameOfFolder,0);

@@ -34,8 +34,8 @@ for layer = 1:p.numLayers
         for cycle=1:p.numTrainCycles(layer),
             
             p.eta = cycle^(-p.A);		% Learning rate (how quickly weights are adapted)
-            p.G = p.sigma2 + (p.numRows/4 - p.sigma2)*cycle^(-p.B);		% Gaussian width parameter
-%                        p.G = .5 + 10*cycle^(-p.B);
+            %             p.G = p.sigma2 + (p.numRows/4 - p.sigma2)*cycle^(-p.B);		% Gaussian width parameter
+            p.G = .5 + 10*cycle^(-p.B);
             
             if cycle == 1 || cycle == p.numTrainCycles(layer),
                 fprintf('\nWithin pretrain, Cycle %d, G = %f, ETA = %f', cycle, p.G, p.eta);

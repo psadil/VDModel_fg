@@ -1,7 +1,6 @@
 function [] = plotRecognition(firstRat, lastRat, folderName)
 % analyze recognition
 
-% scrsz = get(groot, 'ScreenSize');
 
 saveFolder = [pwd,'/graphsAndSession/', folderName];
 

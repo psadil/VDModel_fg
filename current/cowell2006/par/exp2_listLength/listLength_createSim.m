@@ -58,7 +58,6 @@ parfor rat = firstRat:lastRat
     p.nMatch = 0;
     p.nTrials = p.nMismatch+p.nMatch;
     
-    %     p.delayCycles = [0,200,400,600,800];
     p.nSess = length(p.nTrials) * p.numLayers;
     
     p.numGrids_Caudal = 4;

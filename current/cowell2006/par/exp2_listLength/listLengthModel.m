@@ -12,48 +12,20 @@ function p = listLengthModel(p,stims,weights_before)
 % 3rd-Dimension, slice 1: x-coords
 % 3rd-Dimension, slice 2: y-coords
 
-% global ROOT
-
-
-
-% Load the pretrained weights at beginning of visual discrimination task
-
-% preTrainedWeights=zeros(p.layer,p.nRows,p.nRows,p.numInputDims(p.numLayers),p.numGrids(1));
-%
-% for layer=1:p.layer
-%     nInpDims=p.numInputDims(layer);
-%     for grid=1:p.nGrids(layer)
-%         if ~p.setPre
-%             location = strcat(ROOT,'rats/rat', num2str(p.ratNum), '/pretrainedW__layer', num2str(layer), 'grid', num2str(grid),'.mat');
-%             load(location);
-%             preTrainedWeights(layer,:,:,1:nInpDims,grid)=w;
-%             fclose('all');
-%
-%         else
-%             preTrainedWeights = rand(size(weights));
-%         end
-%     end
-% end
-
-% preTrainedWeights=rand(p.layer,p.nRows,p.nRows,p.numInputDims(p.numLayers),p.numGrids(1));
-preTrainedWeights = weights_before;
-
-% Get stimuli from stimulus files in '/p.expt/conditionXX/' directory.
-% location = strcat(p.root, p.expt, '/condition', num2str(p.stimCond),'/stimuli.mat');
-% fid = load(location);
-% fclose('all');
-
-%% initialize storage variables
-
-
-%% begin trial loop
-%----------------------------------------------------------------------
-%%% Get the two stimuli for this simultaneous visual discrimination trial
-
+%% storage variables
 pktot.fin_act_peak = zeros(p.numLayers,max(p.numGrids));
 pktot.fin_act_total = zeros(p.numLayers,max(p.numGrids));
 pktot.init_act_peak = zeros(p.numLayers,max(p.numGrids));
 pktot.init_act_total = zeros(p.numLayers,max(p.numGrids));
+
+
+
+
+%% Load the pretrained weights at beginning of visual discrimination task
+preTrainedWeights = weights_before;
+
+
+%% begin trial loop
 
 for trial_present = 1:p.nTrials(p.stimCond)
     

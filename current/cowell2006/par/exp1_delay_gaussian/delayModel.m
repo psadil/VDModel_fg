@@ -4,7 +4,7 @@ function p = delayModel(p,stims,weights_before)
 % Matlab code for making a Self Organising Feature Map grid (SOFM)
 %
 % Rosie Cowell (Dec 2011)
-%
+%   
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Represent the SOFM as a 2-D grid of x,y coordinates

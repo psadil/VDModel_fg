@@ -20,7 +20,7 @@ parfor rat = firstRat:lastRat
     p.ratNum = rat;
     
     A = .2;
-    B = .2;
+    B = .4;
     train = 0;
     etaExp = p1;
     sigma2 = .01;

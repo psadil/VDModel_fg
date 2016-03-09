@@ -2,7 +2,7 @@ function [ p, weights ] = interfere( p, weights )
 %delay_interfere simulates intereference during delay cycles
 %   Detailed explanation goes here
 
-fprintf('\n%d interference cycles being executed...', p.delayCycles(p.stimCond));
+fprintf('\n%d interference cycles being executed...', p.delayCycles(1));
 interefere = 1;
 
 for layer = 1:max(p.numLayers)
@@ -11,7 +11,7 @@ for layer = 1:max(p.numLayers)
         % put the variable 'weights' into the format previously accepted by the model.
         w = squeeze(weights(layer,:,:,1:p.numInputDims(layer),grid));
         
-        for cycle=1:p.delayCycles(p.stimCond),
+        for cycle=1:p.delayCycles(1),
                         
                         
             inp_mat = gen_limited_input(p.numInputDims(layer)/p.nDimReps,p); %generate an input vector
