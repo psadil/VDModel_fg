@@ -1,7 +1,7 @@
 function [p, stims] = createListLengthStimuli(p)
 % createTUniqueStimuli - creates stimuli for input to VD network
 
-% generates 'mis-matching' stims and 'matching' stims
+% generates 'mis-matching' stims
 
 nTotalDims = p.components;
 nCaudalGrids = p.numGrids_Caudal;

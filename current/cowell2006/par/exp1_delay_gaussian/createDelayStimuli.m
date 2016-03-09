@@ -1,24 +1,25 @@
 function [p, stims] = createDelayStimuli(p)
-% createDelayStimuli - creates stimuli for input to simulation of delay 
+% createDelayStimuli - creates stimuli for input to simulation of delay
 
+% generates 'mis-matching' stims
 
-nTotalDims = p.components / p.nDimReps;
+nTotalDims = p.components;
 nCaudalGrids = p.numGrids_Caudal;
 nDimsCaudal = nTotalDims / nCaudalGrids;
 nStimFactors = p.nStimFactors;
 nSimpleConj = nDimsCaudal ^ nStimFactors;
 
-% number of features to use for stimuli (less then total)
-nStimsPerCond = nSimpleConj;
 
-LA_misMatch = zeros(p.nMismatch,nTotalDims,2); %one col for stim1, one col for stim2
+% number of features to use for stimuli (less then total)
+nStimsPerCond = 16;
+
 
 count=1;
 availFeat = zeros(nSimpleConj, nDimsCaudal);
 for inp1 = 1:nCaudalGrids,
     for inp2 = 1:nStimFactors,
         availFeat(count,:) = [inp1 inp2];
-        
+        %     availFeat(count) = inp2;
         count=count+1;
     end
 end
@@ -28,33 +29,97 @@ availFeat(availFeat==2)=0.35;
 availFeat(availFeat==3)=0.65;
 availFeat(availFeat==4)=0.95;
 
-features = availFeat;
+availFeat = Shuffle(availFeat,2);
 
-firstFeatureToCheck=(1:nDimsCaudal:nTotalDims);
-lastFeatureToCheck = firstFeatureToCheck+(nDimsCaudal-1);
+first = permn(1:nStimsPerCond,p.numInputDims_PRC/p.numInputDims_Caudal);
+final = zeros(size(first,1),p.numInputDims_PRC);
+firstIdx = 1;
+for col = 1:p.numInputDims_Caudal:p.numInputDims_PRC
+    final(:,col) = first(:,firstIdx);
+    firstIdx=firstIdx+1;
+end
 
+for feature = 1:nStimsPerCond
+    idx = find(final==feature);
+    
+    final(idx)=availFeat(feature,1);
+    final(idx+size(first,1))=availFeat(feature,2);
+    
+end
 
-%% put features into unique stims
-for stimPair = 1:p.nMismatch,
-    chosenFeat = zeros(nCaudalGrids,2);
-    % sample until no features match
-    while any(chosenFeat(:,1) == chosenFeat(:,2))
-        chosenFeat = randi(nStimsPerCond,[nCaudalGrids,2]);
+%%
+stims = zeros(max(p.nTrials), p.components,2);
+
+nMatchingLA = 0;
+tryAgain = 1;
+while tryAgain
+    breakOut = 0;
+    
+    % use these values to pull unique stimuli
+    trials_LA = reshape(randsample(size(final,1),p.nMismatch),...
+        [p.nMismatch,1]);
+    trials_LA_misMatch1 = trials_LA(:,1);
+    trials_LA_misMatch2 = zeros(size(trials_LA_misMatch1));
+    
+    % grab match for LA
+    used = trials_LA(:); % the stims that we've already used
+    for stim = 1:p.nMismatch
+        if breakOut
+            break
+        end
+        probeWith = first(trials_LA_misMatch1(stim),:);
+        
+        row_randIdx = randperm(size(first,1));
+        for row = 1:size(first,1)
+            
+            % don't try this row if we've already used it somewhere
+            if ismember(row_randIdx(row),used)
+                continue
+            end
+            
+            probed = first(row_randIdx(row),:);
+            if sum(probeWith == probed) == nMatchingLA
+                
+                % grab this stim from the pre-tmp
+                trials_LA_misMatch2(stim) = row_randIdx(row);
+                
+                % declare that row as used
+                used = [used;row_randIdx(row)];
+                
+                % stop searching for a matching stim
+                break % the row loop
+            end
+            
+            % if we've reached the end of all rows
+            if row == size(first,1)
+                breakOut = 1;
+            end
+        end
+        
+        % for when we broke out of the rows
+        if breakOut
+            break
+        end
+        
     end
     
-    for feature = 1:nCaudalGrids
-        %first stim in pair
-        LA_misMatch(stimPair,firstFeatureToCheck(feature):lastFeatureToCheck(feature),1) = features(chosenFeat(feature,1),:);
-        %second stim in pair
-        LA_misMatch(stimPair,firstFeatureToCheck(feature):lastFeatureToCheck(feature),2) = features(chosenFeat(feature,2),:);
+    % for when we've broken out of the stim loop
+    if breakOut
+        continue
     end
+    
+    % but, if we've made it this far..
+    tryAgain=0;
+    
 end
 
 
-stims.stimuli1 = reshape(repmat(reshape(LA_misMatch,...
-        [1,p.nMismatch,1,p.numInputDims_PRC/p.nDimReps,1,2]),[1,1,p.nDimReps,1,1,1]),...
-        [p.nMismatch,(p.numInputDims_PRC/p.nDimReps)*p.nDimReps,2]);
+%% classify as features
+
+% grab all of the trial unique stims for the trial-unique pairs
+stims(:,:,1) = final(trials_LA_misMatch1,:);
+stims(:,:,2) = final(trials_LA_misMatch2,:);
 
 
 
-
+end

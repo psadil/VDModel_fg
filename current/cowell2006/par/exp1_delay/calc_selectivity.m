@@ -28,13 +28,13 @@ for dim=1:nInpDims
 end
 
 act_out = log(ones(p.nRows,p.nRows) ./ dist_mat);    
-act_out(act_out > 9.21) = 9.21;                                                   
+% act_out(act_out > 9.21) = 9.21;                                                   
 % surf(act_out)
 % max(max(act_out))
 % close all
 
 
-% act_out = 1./(1+exp(-p.k_expt*act_out)); %squashing function
+act_out = 1./(1+exp(-p.k_expt*act_out)); %squashing function
 
 
 %%% initialise array and record winner for all situations

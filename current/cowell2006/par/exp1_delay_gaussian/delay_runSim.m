@@ -6,6 +6,9 @@ p.root = [pwd, '\'];
 %% Initialise, pretrain, and save weight matrix
 [p,weights] = pretrain(p);
 
+% create stim sequence
+[p, stims] = createDelayStimuli(p);
+
 
 %% begin sessions
 
@@ -27,11 +30,6 @@ for sess = 1:p.nSess,
     end
     p.stimSet = 1;
     
-    % create stim sequence
-    [p, stims] = createDelayStimuli(p);
-    
-    p.tType = cat(2,ones(1,p.nMismatch), 2*ones(1,p.nMatch));
-    p.stimOrder = [randperm(p.nMismatch)' randperm(p.nMatch)'];
     
     %% load session based variables
     p.nRows = p.numRows;
@@ -41,7 +39,7 @@ for sess = 1:p.nSess,
     
     % simply nicer to refer to things as layers, sometimes
     p.layer = p.which_gp_layer;
-        
+    
     % number of features picked up per fixation
     p.nFeaturesToSample = p.numFeaturesToSample(p.layer);
     

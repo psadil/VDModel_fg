@@ -18,18 +18,18 @@ parfor rat = firstRat:lastRat
     p = struct();
     p.ratNum = rat;
     
-    A = .2;
-    B = .4;
-    train = 100;
+    A = .6;
+    B = .3;
+    train = 500;
     etaExp = train^-A;
     G_exp = .5+10*train^-B;
     k_expt = .08;
     p.eta_int = 0.05;
     
-    p.exptName = '12jan2016';
+    p.exptName = '9mar2016';
     p.nameOfFolder = ['eta', num2str(etaExp), '_g', num2str(G_exp), ...
         '_K', num2str(k_expt), '_A', num2str(A) ,'_B', num2str(B), '_20enc_', num2str(train), ...
-        'trn_','5pk_etaInt', num2str(p.eta_int),'COWELL2006'];
+        'trn_','5pk_etaInt', num2str(p.eta_int),'sigmoid'];
     
     p.dataDir = strcat(pwd, '/graphsAndSession/', p.nameOfFolder);
     if ~exist(p.dataDir, 'dir'),

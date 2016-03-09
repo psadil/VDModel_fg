@@ -27,20 +27,17 @@ p.peak_act = zeros(p.nTrials,2);
 p.totalAct = zeros(p.nTrials,2);
 
 p.recognition = zeros(p.nTrials,1);
+p.recogByLayer = zeros(p.nTrials,p.layer);
 
 %% begin trial loop
 
 % for picking out the stim in the stimulus pair...
-tTypeCnt = [0 0];
 
 for trial = 1:p.nTrials,
-    %%% Determine trial type and increment count
-    tType = p.tType(trial);
-    tTypeCnt(tType) = tTypeCnt(tType)+1;
     
     %----------------------------------------------------------------------
     %%% Get the two stimuli for this simultaneous visual discrimination trial
-    stimPair = squeeze(stims.stimuli1(trial,:,:));
+    stimPair = squeeze(stims(trial,:,:));
 
         
     pktot.fin_act_peak = zeros(p.numLayers,max(p.numGrids));

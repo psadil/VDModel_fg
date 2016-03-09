@@ -1,4 +1,4 @@
-function [W, initial_selec, p, pktot] = present_stimulus(stim, W, p, trial,pktot)
+function [W, initial_selec, p, pktot] = present_stimulus(stim, W, p, trial,pktot, forTrain)
 
 inp_mat = repmat(reshape(stim,[1 1 length(stim)]), [p.nRows p.nRows 1]);
 initial_selec = zeros(p.numLayers,max(p.numGrids));
@@ -34,17 +34,18 @@ for layer=1:p.layer
             
             if cycle==1,  %need to compare last set of weights of old grid to
                 initial_selec(layer,grid) = selectivity;
-
+                
             end
             
-            % Update Weights
-            weights = weights + f.*(input_mat-weights);  % update based on spire around winning node
-            
+            if forTrain
+                % Update Weights
+                weights = weights + f.*(input_mat-weights);  % update based on spire around winning node
+            end
             
         end %%% Go to next cycle (if switchRatio is low enough)
-        
-        W(layer,:,:,1:p.numInputDims(layer),grid) = weights;        
-        
+        if forTrain
+            W(layer,:,:,1:p.numInputDims(layer),grid) = weights;
+        end
     end
 end
 
