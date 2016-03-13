@@ -21,13 +21,14 @@ for rat = firstRat:lastRat
     
     A = .3;
     B = .6;
-    train = 100;
+    train = 1;
     etaExp = p1;
     sigma2 = .01;
     G_exp = sigma2;
     k_expt = .25;
     p.eta_int = p2;
     p.nBatch = 100000;
+    p.shift = .5; % distance between stims
     
     p.exptName = '12jan2016';
     p.nameOfFolder = nOfFolder;
@@ -44,34 +45,37 @@ for rat = firstRat:lastRat
     % even at 200 rows (possible 200^2 unique stimuli), that's not enough
     % to contain the 16^4 possible part combinations
     
-    p.numRows = 300; %variables with 'num' to denote number are used to define RUN_SIM matrix (and translated to another name before used in simulation)
+    p.numRows = 50; %variables with 'num' to denote number are used to define RUN_SIM matrix (and translated to another name before used in simulation)
     p.numLayers = 2;
     
-    p.numGrids_Caudal = 3;
+    p.numGrids_Caudal = 4;
     p.numGrids_PRC = 1;
     p.nGrids = [p.numGrids_Caudal, p.numGrids_PRC];
     p.maxNumGrids = max(p.nGrids);
     p.nStimFactors = 4; % number of levels for each dimension
     
-    p.nDimReps = 1;
-    p.components = 15;
+    p.components = 10000;
     p.numInputDims_Caudal = p.components/p.numGrids_Caudal;
     p.numInputDims_PRC = p.components;
     p.numInputDims = [p.numInputDims_Caudal, p.numInputDims_PRC];
+    p.nDimReps = 1;
     
     p.k_expt = k_expt;
     p.A = A; % was 0.8 %% Pre-training parameter. The bigger A is, the faster ETA decreases, and the smaller the amount of learning on the weights for all units.
     p.etaExp = etaExp;
     p.sigma2 = sigma2;
-    %     p.a = 1.7159; % tanh param
-    %     p.b = 2/3; % also tanh
-    p.a = 150;
-    p.b = atanh(2/3);
+    p.a = 1.7159; % tanh param
+    p.b = 2/3; % also tanh
+    %     p.a = 150;
+    %     p.b = atanh(2/3);
     p.B = B; %was .8 Pre-training parameter. The bigger B is, the faster G decreases, and the smaller the neighbourhood of the winner that gets updated.
     p.G_exp = G_exp;
+    p.G = G_exp;
+    p.eta = etaExp;
     p.numTrainCycles = train;
-    p.mse = 1e-6; % mse error to train until
-    p.numEncodingCycles = 5; % now better described as encoding cycles per fixation [LA, HA]
+    %     p.mse = 1; % mse error to train until
+    p.dist = 0; % minimum average distance (dot product) to allow
+    p.numEncodingCycles = 1; % now better described as encoding cycles per fixation [LA, HA]
     p.numFeaturesToSample = [p.numGrids_Caudal,p.numGrids_Caudal]; % first == lesion, second == control
     p.sizeOfPeak = 5;
     p.filtPeak = p.numRows+1;

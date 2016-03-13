@@ -52,7 +52,7 @@ for layer = 1:max(p.numLayers)
 
         % add uniform noise [-1,1], then add 1, and divide it all by 3
         % ending weights are again distributed on [0,1]
-        w = ((w + (1 - 2*(rand(p.numRows,p.numRows,nInpDims)))) + 1)./3 ;
+%         w = ((w + (1 - 2*(rand(p.numRows,p.numRows,nInpDims)))) + 1)./3 ;
         
         % Is there a problem with this, in that only some weight get the maximum possible
         % increment or decrement, and only a subset of these were high or low to start off with, therefore very few end up anywhere

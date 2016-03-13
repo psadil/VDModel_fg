@@ -13,7 +13,7 @@ end
 rng('shuffle');
 
 
-parfor rat = firstRat:lastRat
+for rat = firstRat:lastRat
     
     p = struct();
     p.ratNum = rat;
@@ -24,12 +24,12 @@ parfor rat = firstRat:lastRat
     etaExp = train^-A;
     G_exp = .5+10*train^-B;
     k_expt = .08;
-    p.eta_int = 0.05;
+    p.eta_int = 0.1;
     
     p.exptName = '9mar2016';
     p.nameOfFolder = ['eta', num2str(etaExp), '_g', num2str(G_exp), ...
         '_K', num2str(k_expt), '_A', num2str(A) ,'_B', num2str(B), '_20enc_', num2str(train), ...
-        'trn_','5pk_etaInt', num2str(p.eta_int),'sigmoid'];
+        'trnNoNoise_','5pk_etaInt', num2str(p.eta_int),'sigmoid'];
     
     p.dataDir = strcat(pwd, '/graphsAndSession/', p.nameOfFolder);
     if ~exist(p.dataDir, 'dir'),
@@ -66,7 +66,7 @@ parfor rat = firstRat:lastRat
     p.numTrainCycles = [train, train];
     p.numEncodingCycles = 20; % now better described as encoding cycles per fixation [LA, HA]
     p.numFeaturesToSample = [p.numGrids_Caudal,p.numGrids_Caudal]; % first == lesion, second == control
-    p.sizeOfPeak = 9;
+    p.sizeOfPeak = 5;
     p.filtPeak = p.numRows+1;
     p.nameOfFolder = p.nameOfFolder;
     

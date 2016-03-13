@@ -59,7 +59,7 @@ for layer = 1:max(p.numLayers)
         %% Add random noise to the weights
 %                 rand_noise = (1 - 2*(rand(p.numRows,p.numRows,nInpDims))); % Creates a matrix of random values between -1 and 1.
 %                 w = w + rand_noise;
-        w = (w + (1 - 2*(rand(p.numRows,p.numRows,nInpDims))) + 1)./3 ;
+%         w = (w + (1 - 2*(rand(p.numRows,p.numRows,nInpDims))) + 1)./3 ;
         
                 %%% Squidge the distribution of weight values back into the 0 to 1 range.
 %                 w = w + 1;

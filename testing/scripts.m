@@ -146,3 +146,16 @@ a32 = 1/(1+exp(-k*log(1/mse32)))
 a21+a22+a32
 
 
+
+%% testing gauss
+sig = 1;
+c = sig;
+% a = 10/(sig*sqrt(2*pi));
+a=.9;
+mu = 0;
+b = mu;
+
+x = -2:.01:2;
+f = a*exp(- ((x - b).^2) / 2*c^2);
+
+plot(x,f)

@@ -18,7 +18,7 @@ for layer = 1:p.numLayers
         if trainGrid(layer,grid)
             
             % initialize random weights for grids in this layer
-            w = init_weights(p, layer);
+            w = gen_limited_input(nInpDims,p.numRows);
             
             %--------------------------------------------------------------
             % begin training cycle of newly generated grid
@@ -43,29 +43,34 @@ for layer = 1:p.numLayers
                     
                     % Generate input data that is p.nInpDims
                     % by p.nRows
-                    [inp_mat] = gen_limited_input(nInpDims,p); %generate an input vector
+                    [inp_mat] = gen_limited_input(nInpDims,p.numRows); %generate an input vector
                     
                     
                     %----------------------------------------------------------
                     % Find winning node
                     %----------------------------------------------------------
-                    [win_row, win_col, dist_mat] = findWinningNode(w, inp_mat, nInpDims);
+                    [win_row, win_col, dist_mat] = findWinningNode(w, inp_mat);
                     
                     
                     % Calculate each unit's distance from winner and resultant activation
-                    [f, ~] = calc_act_fast(win_row, win_col, dist_mat,layer,p,interfere);
+                    f = calc_act_fast(win_row, win_col,layer,p,interfere);
                     
                     
-                    % Update Weights
-                    w = w + f.*(inp_mat-w);
+                    % update weights
+%                     w = w + f.*(inp_mat-w);
                     
-                    smse = smse + min(dist_mat(:));
+                    % Update Weights and normalize
+                    w = (w + f.*(inp_mat-repmat(dot(w,w,3),[1,1,p.numInputDims(layer)]).*inp_mat)) ./ ...
+                        repmat(squeeze(sqrt(sum((w + f.*(inp_mat-repmat(dot(w,w,3),[1,1,p.numInputDims(layer)]).*inp_mat)).^2,3))),...
+                        [1,1,p.numInputDims(layer)]);
+                    
+                    smse = smse + max(dist_mat(:));
                 end  % end of training cycles loop
                 
                 mse = smse / p.numTrainCycles;
                 
                 % test to see if mse has reached desired error
-                if mse < p.mse;
+                if mse > p.dist;
                     trainGrid(layer,grid) = 0;
                     fprintf('\nWithin pretrain, batch %d, G = %f, ETA = %f, MSE = %d',...
                         batch, p.G, p.eta, mse);

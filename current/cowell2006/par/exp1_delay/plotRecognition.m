@@ -100,7 +100,7 @@ barweb(meanRecog(:,2), recog_sem(:,2), [], {'control'})
 xlabel('stim condition');
 ylabel('recognition');
 legend({'0','200','400','600','800'},'Location','best');
-figs(4).CurrentAxes.YLim = [min(meanRecog(:,2))-max(recog_sem(:,2)),...
+figs(4).CurrentAxes.YLim = [0,...
     max(meanRecog(:,2))+max(recog_sem(:,2))];
 
 subplot(1,2,2)
@@ -108,8 +108,8 @@ barweb(meanRecog(:,1), recog_sem(:,1), [], {'lesion'})
 xlabel('stim condition');
 ylabel('recognition');
 legend({'0','200','400','600','800'},'Location','best');
-figs(4).CurrentAxes.YLim = [min(meanRecog(:,1))-max(recog_sem(:,1)),...
-    max(meanRecog(:,1))+max(recog_sem(:,1))];
+figs(4).CurrentAxes.YLim = [0,...
+    max(meanRecog(:,2))+max(recog_sem(:,2))];
 
 saveas(figs(4),[saveFolder, '/recog_barweb'],'fig');
 saveas(figs(4),[saveFolder, '/recog_barweb'],'jpg');

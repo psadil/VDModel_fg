@@ -49,9 +49,13 @@ for trial_test = 1:p.nTrials(p.stimCond)
     [~, selec_forComp(:,:,2), p, pktot, actGauss(:,:,2)] = ...
         present_stimulus(stimPair(:,2), weights, p, trial_test, pktot);
     
+    gauss = 0;
     % calc recognition score
-    [p] = calc_recognition(p, selec_forComp, trial_test, actGauss);
+    [p] = calc_recognition(p, selec_forComp, trial_test, gauss);
     
+    gauss = 1;
+    % calc Guass
+    [p] = calc_recognition(p, actGauss, trial_test, gauss);
 end
 
 

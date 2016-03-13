@@ -19,7 +19,7 @@ grid_dist = min_row_dist_mat + min_col_dist_mat;
 
 
 f_1dim = p.etaExp .* exp(-(grid_dist/p.G_exp).^2);
-f_1dim = f_1dim .* (grid_dist < p.filtPeak);
+% f_1dim = f_1dim .* (grid_dist < p.filtPeak);
 
 
 f_out=zeros(p.numRows,p.numRows,nInpDims);
@@ -101,7 +101,7 @@ end
 
 % p.act_peak(trial,layer) = act_peak;
 
-act_total = sum(sum(act_out));
+act_total = sum(act_out(:));
 selectivity = act_peak/act_total;
 
 % for outputting gaussian acdtivation function
