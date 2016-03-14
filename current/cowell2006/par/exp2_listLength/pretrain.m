@@ -20,16 +20,16 @@ for layer = 1:max(p.numLayers)
         % begin training cycle of newly generated grid
         %------------------------------------------------------------------
         
-        for cycle=1:p.numTrainCycles(layer),
+        for cycle=1:p.numTrainCycles,
             
             p.eta = cycle^(-p.A);		% Learning rate 
             p.G = 0.5 + 10*cycle^(-p.B);		% Gaussian width parameter
             
-            if cycle == 1 || cycle == p.numTrainCycles(layer),
+            if cycle == 1 || cycle == p.numTrainCycles,
                 fprintf('\nWithin pretrain, Cycle %d, G = %f, ETA = %f', cycle, p.G, p.eta);
             end
             
-            inp_mat = gen_limited_input(nInpDims/p.nDimReps,p); %generate an input vector
+            inp_mat = gen_limited_input(nInpDims,p); %generate an input vector
             
             %--------------------------------------------------------------
             % Find winning node

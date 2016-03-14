@@ -19,7 +19,6 @@ availFeat = zeros(nSimpleConj, nDimsCaudal);
 for inp1 = 1:nCaudalGrids,
     for inp2 = 1:nStimFactors,
         availFeat(count,:) = [inp1 inp2];
-        %     availFeat(count) = inp2;
         count=count+1;
     end
 end
@@ -116,7 +115,7 @@ for stimCond = 1:length(p.nMismatch)
     
     
     %% classify as features
-        
+    
     % grab all of the trial unique stims for the trial-unique pairs
     stims(1:p.nMismatch(stimCond),:,1,stimCond) = final(trials_LA_misMatch1,:);
     stims(1:p.nMismatch(stimCond),:,2,stimCond) = final(trials_LA_misMatch2,:);

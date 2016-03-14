@@ -5,22 +5,13 @@ if exist('p', 'var')
     clear p
 end
 
-ratDir = strcat(pwd,'\rats');
-if ~exist(ratDir, 'dir'),
-    mkdir(ratDir);
-end
 
 outerDir = strcat(pwd, '/graphsAndSession');
 if ~exist(outerDir, 'dir'),
     mkdir(outerDir);
 end
 
-% for rat = firstRat:lastRat
-%     ratDir = strcat(pwd,'/rats/rat',num2str(rat));
-%     if ~exist(ratDir, 'dir'),
-%         mkdir(ratDir);
-%     end
-% end
+
 fprintf('\nSetting new seed by clock.');
 rng('shuffle');
 
@@ -37,7 +28,6 @@ parfor rat = firstRat:lastRat
     G_exp = .5+10*train^-B;
     k_expt = .08;
     
-    p.exptName = '8jan2016';
     p.nameOfFolder = ['eta', num2str(etaExp), '_g', num2str(G_exp), ...
         '_K', num2str(k_expt), '_A', num2str(A) ,'_B', num2str(B), '_20enc20_', num2str(train), ...
         'trn_','5pk_20Fix'];
@@ -47,26 +37,21 @@ parfor rat = firstRat:lastRat
         mkdir(p.dataDir);
     end
     
-    % even at 200 rows (possible 200^2 unique stimuli), that's not enough
-    % to contain the 16^4 possible part combinations
     
     p.numRows = 200; %variables with 'num' to denote number are used to define RUN_SIM matrix (and translated to another name before used in simulation)
     p.numLayers = 2;
     
     % different number of stimuli list lengths
     p.nMismatch = [1,6,12,18];
-    p.nMatch = 0;
-    p.nTrials = p.nMismatch+p.nMatch;
+    p.nTrials = p.nMismatch;
     
     p.nSess = length(p.nTrials) * p.numLayers;
     
     p.numGrids_Caudal = 4;
     p.numGrids_PRC = 1;
     p.nGrids = [p.numGrids_Caudal, p.numGrids_PRC];
-    p.maxNumGrids = max(p.nGrids);
     p.nStimFactors = 4; % number of levels for each dimension
     
-    p.nDimReps = 1;
     p.components = 8;
     p.numInputDims_Caudal = p.components/p.numGrids_Caudal;
     p.numInputDims_PRC = p.components;
@@ -80,22 +65,17 @@ parfor rat = firstRat:lastRat
     p.b = 2/3; % also tanh
     p.sigma2 = .001;
     p.G_exp = G_exp;
-    p.numTrainCycles = [train, train];
+    p.numTrainCycles = train;
     p.numEncodingCycles = 20; % now better described as encoding cycles per fixation [LA, HA]
-    p.numFeaturesToSample = [p.numGrids_Caudal,p.numGrids_Caudal]; % first == lesion, second == control
     p.sizeOfPeak = 5;
-    p.filtPeak = p.numRows+1;
-    p.nameOfFolder = p.nameOfFolder;
-    
-    p.totalInpDimsConditions = 2; %%Once with small DIMS for caudal, once each with small and large DIMS for intact
-    
-    p.expt = 'null';
+        
     
     %%Make the grid_matrix for calculating city-block distance later.
     [cols, rows] = meshgrid(1:p.numRows);
     p.gridMat = cat(3, rows, cols);
-    fprintf('Creating a new experiment...\n');
-    p.expt = p.exptName; %input('\nEnter experiment name: ', 's');
+    
+    
+    fprintf('Creating a new experiment...%s\n', p.nameOfFolder);
     
     
     %% create stimuli for use
@@ -105,3 +85,5 @@ parfor rat = firstRat:lastRat
 end
 
 % plotFamilDiffs(1, lastRat, consts.nameOfFolder);
+
+end

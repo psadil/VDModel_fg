@@ -19,7 +19,6 @@ grid_dist = min_row_dist_mat + min_col_dist_mat;
 
 
 f_1dim = p.etaExp .* exp(-(grid_dist/p.G_exp).^2);
-% f_1dim = f_1dim .* (grid_dist < p.filtPeak);
 
 
 f_out=zeros(p.numRows,p.numRows,nInpDims);
@@ -34,7 +33,7 @@ act_out = 1./(1+exp(-p.k_expt*act_out)); %squashing function
 
 
 %%% initialise array and record winner for all situations
-winners = zeros(9,2);
+winners = zeros(25,2);
 winners(1,:) = [win_row win_col];
 %city block distance 1 neighbours
 winners(2,:) = [win_row win_col+1];

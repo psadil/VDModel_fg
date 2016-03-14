@@ -18,6 +18,8 @@ numRats = lastRat-firstRat+1;
 
 recognition = zeros(numRats,p.nSess/2,2,max(p.nTrials));
 gaussRecognition = zeros(numRats,p.nSess/2,2,max(p.nTrials));
+recogByLayer = zeros(numRats,p.nSess,2,max(p.nTrials));
+recogByLayer = zeros(size(recogByLayer));
 
 for rat = firstRat:lastRat
     for session = 1:p.nSess
@@ -31,12 +33,16 @@ for rat = firstRat:lastRat
         % collect all trial-wise selectivity of choice phase
         %------------------------------------------------------------------
         
-        if session <= p.nSess/2
-            recognition(rat,session,1,1:p.nTrials(session)) = p.recognition;
-            gaussRecognition(rat,session,1,1:p.nTrials(session)) = p.recognition_gauss;
+        recogByLayer(rat,session,1,1:p.nTrials(p.stimCond)) = p.recogByLayer(:,1);
+        recogByLayer_gauss(rat,session,1,1:p.nTrials(p.stimCond)) = p.recogByLayer_gauss(:,1);
+        if p.layer == 1
+            recognition(rat,p.stimCond,1,1:p.nTrials(p.stimCond)) = p.recognition;
+            gaussRecognition(rat,p.stimCond,1,1:p.nTrials(p.stimCond)) = p.recognition_gauss;
         else
-            recognition(rat,session-p.nSess/2,2,1:p.nTrials(session-p.nSess/2)) = p.recognition;
-            gaussRecognition(rat,session-p.nSess/2,2,1:p.nTrials(session-p.nSess/2)) = p.recognition_gauss;
+            recogByLayer(rat,session,2,1:p.nTrials(p.stimCond)) = p.recogByLayer(:,2);
+            recogByLayer_gauss(rat,session,2,1:p.nTrials(p.stimCond)) = p.recogByLayer_gauss(:,2);
+            recognition(rat,p.stimCond,2,1:p.nTrials(p.stimCond)) = p.recognition;
+            gaussRecognition(rat,p.stimCond,2,1:p.nTrials(p.stimCond)) = p.recognition_gauss;
         end
     end
 end
@@ -44,31 +50,61 @@ end
 %%
 
 % first, find the average for a rat in a given condition
-rats_first = squeeze(mean(recognition(:,1,:,1),4));
-rats_second = squeeze(mean(recognition(:,2,:,1:6),4));
-rats_third = squeeze(mean(recognition(:,3,:,1:12),4));
-rats_fourth = squeeze(mean(recognition(:,4,:,1:18),4));
+rats = zeros(numRats,length(p.nTrials),2);
+for stimCond = 1:length(p.nTrials)
+    rats(:,stimCond,:) = squeeze(mean(recognition(:,stimCond,:,1:p.nTrials(stimCond)),4));
+end
+recog_mean = squeeze(mean(rats,1));
+recog_sem = squeeze(std(rats,1) ./ sqrt(numRats));
 
-recog_mean = [mean(rats_first,1); mean(rats_second,1); mean(rats_third,1); mean(rats_fourth,1)];
 
-recog_sem = [std(rats_first)./sqrt(numRats); ...
-    std(rats_second)./sqrt(numRats); ...
-    std(rats_third)./sqrt(numRats); ...
-    std(rats_fourth)./sqrt(numRats)];
+% gauss recognition
+rats_gauss = zeros(numRats,length(p.nTrials),2);
+for stimCond = 1:length(p.nTrials)
+    rats_gauss(:,stimCond,:) = squeeze(mean(recognition(:,stimCond,:,1:p.nTrials(stimCond)),4));
+end
+recog_gauss_mean = squeeze(mean(rats_gauss,1));
 
-% now, look at gaussian results
-rats_gauss_first = squeeze(mean(gaussRecognition(:,1,:,1),4));
-rats_gauss_second = squeeze(mean(gaussRecognition(:,2,:,1:6),4));
-rats_gauss_third = squeeze(mean(gaussRecognition(:,3,:,1:12),4));
-rats_gauss_fourth = squeeze(mean(gaussRecognition(:,4,:,1:18),4));
+recog_gauss_sem = squeeze(std(rats,1) ./ sqrt(numRats));
 
-recog_gauss_mean = [mean(rats_gauss_first,1); mean(rats_gauss_second,1);...
-    mean(rats_gauss_third,1); mean(rats_gauss_fourth,1)];
+% -------------------------------------------------------------------------
+% recognition by layer
+% -------------------------------------------------------------------------
 
-recog_gauss_sem = [std(rats_gauss_first)./sqrt(numRats); ...
-    std(rats_gauss_second)./sqrt(numRats); ...
-    std(rats_gauss_third)./sqrt(numRats); ...
-    std(rats_gauss_fourth)./sqrt(numRats)];
+% sigmoid
+rats_byLayer = zeros(numRats,p.nSess,2);
+for sess = 1:p.nSess 
+    
+    % fill up with recognition calculated from each layer. Will be some 0s,
+    % since PRC was only available on sessions 5-8
+    if sess <= length(p.nTrials)
+        rats_byLayer(:,sess,1) = squeeze(mean(recogByLayer(:,sess,1,1:p.nTrials(sess)),4));
+    elseif sess > length(p.nTrials)
+        idx = sess - length(p.nTrials);
+        rats_byLayer(:,sess,1) = squeeze(mean(recogByLayer(:,sess,1,1:p.nTrials(idx)),4));
+        rats_byLayer(:,sess,2) = squeeze(mean(recogByLayer(:,sess,2,1:p.nTrials(idx)),4));
+    end
+end
+recogByLayer_mean = squeeze(mean(rats_byLayer,1));
+recogByLayer_sem = squeeze(std(rats_byLayer,1) ./ sqrt(numRats));
+
+
+% gauss
+rats_byLayer_gauss = zeros(numRats,p.nSess,2);
+for sess = 1:p.nSess 
+    
+    % fill up with recognition calculated from each layer. Will be some 0s,
+    % since PRC was only available on sessions 5-8
+    if sess <= length(p.nTrials)
+        rats_byLayer_gauss(:,sess,1) = squeeze(mean(recogByLayer_gauss(:,sess,1,1:p.nTrials(sess)),4));
+    elseif sess > length(p.nTrials)
+        idx = sess - length(p.nTrials);
+        rats_byLayer_gauss(:,sess,1) = squeeze(mean(recogByLayer_gauss(:,sess,1,1:p.nTrials(idx)),4));
+        rats_byLayer_gauss(:,sess,2) = squeeze(mean(recogByLayer_gauss(:,sess,2,1:p.nTrials(idx)),4));
+    end
+end
+recogByLayer_gauss_mean = squeeze(mean(rats_byLayer_gauss,1));
+recogByLayer_gauss_sem = squeeze(std(rats_byLayer_gauss,1) ./ sqrt(numRats));
 
 
 %%
@@ -106,7 +142,7 @@ figs(3) = figure;
 subplot(1,2,1)
 barweb(recog_mean(:,2), recog_sem(:,2), [], {'control'})
 xlabel('stim condition');
-ylabel('recognition');
+ylabel('recognition sigmoid');
 legend({'1','6','12','18'},'Location','best');
 figs(3).CurrentAxes.YLim = [min(recog_mean(:,2))-max(recog_sem(:,2)),...
     max(recog_mean(:,2))+max(recog_sem(:,2))];
@@ -114,7 +150,7 @@ figs(3).CurrentAxes.YLim = [min(recog_mean(:,2))-max(recog_sem(:,2)),...
 subplot(1,2,2)
 barweb(recog_mean(:,1), recog_sem(:,1), [], {'lesion'})
 xlabel('stim condition');
-ylabel('recognition');
+ylabel('recognition sigmoid');
 legend({'1','6','12','18'},'Location','best');
 figs(3).CurrentAxes.YLim = [min(recog_mean(:,1))-max(recog_sem(:,1)),...
     max(recog_mean(:,1))+max(recog_sem(:,1))];
@@ -128,7 +164,7 @@ figs(4) = figure;
 subplot(1,2,1)
 barweb(recog_gauss_mean(:,2), recog_gauss_sem(:,2), [], {'control'})
 xlabel('stim condition');
-ylabel('recognition');
+ylabel('recognition gauss');
 legend({'1','6','12','18'},'Location','best');
 figs(4).CurrentAxes.YLim = [min(recog_gauss_mean(:,2))-max(recog_gauss_sem(:,2)),...
     max(recog_gauss_mean(:,2))+max(recog_gauss_sem(:,2))];
@@ -136,13 +172,39 @@ figs(4).CurrentAxes.YLim = [min(recog_gauss_mean(:,2))-max(recog_gauss_sem(:,2))
 subplot(1,2,2)
 barweb(recog_gauss_mean(:,1), recog_gauss_sem(:,1), [], {'lesion'})
 xlabel('stim condition');
-ylabel('recognition');
+ylabel('recognition gauss');
 legend({'1','6','12','18'},'Location','best');
 figs(4).CurrentAxes.YLim = [min(recog_gauss_mean(:,1))-max(recog_gauss_sem(:,1)),...
     max(recog_gauss_mean(:,1))+max(recog_gauss_sem(:,1))];
 
 saveas(figs(4),[saveFolder, '/recog_gauss_barweb'],'fig');
 saveas(figs(4),[saveFolder, '/recog_gauss_barweb'],'jpg');
+
+
+%% recognition by layer
+figs(5) = figure;
+subplot(1,2,1)
+barweb([recogByLayer_mean(1:4,2),recogByLayer_mean(5:8,2)]',...
+    [recogByLayer_sem(1:4,2),recogByLayer_sem(5:8,2)]', [], {'PRC, lesion', 'PRC, control'})
+xlabel('stim condition');
+ylabel('recognition sigmoid');
+legend({'1','6','12','18'},'Location','best');
+figs(5).CurrentAxes.YLim = [0,...
+    max(recogByLayer_mean(:,2))+max(recogByLayer_sem(:,2))];
+
+subplot(1,2,2)
+barweb([recogByLayer_mean(1:4,1),recogByLayer_mean(5:8,1)]',...
+    [recogByLayer_sem(1:4,1),recogByLayer_sem(5:8,1)]', [], {'caudal, lesion', 'caudal, control'})
+xlabel('stim condition');
+ylabel('recognition sigmoid');
+legend({'1','6','12','18'},'Location','best');
+figs(5).CurrentAxes.YLim = [0,...
+    max(recogByLayer_mean(:,1))+max(recogByLayer_sem(:,1))];
+
+saveas(figs(5),[saveFolder, '/recogByLayer_sigm_barweb'],'fig');
+saveas(figs(5),[saveFolder, '/recogByLayer_sigm_barweb'],'jpg');
+
+
 
 end
 

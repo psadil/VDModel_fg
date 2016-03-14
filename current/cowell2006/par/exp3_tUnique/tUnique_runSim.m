@@ -46,6 +46,9 @@ for sess = 1:p.nSess,
     p.nInpDims=p.numInputDims(1:p.layer);
         
     
+    p.recognition = zeros(p.nTrials(p.stimCond),1);
+    p.recognition_gauss = zeros(p.nTrials(p.stimCond),1);
+    
     %% say what about to happen
     fprintf('\n\nSESSION %d, RAT %d\n', sess, p.ratNum);
     

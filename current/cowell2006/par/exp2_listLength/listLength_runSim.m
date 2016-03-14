@@ -32,11 +32,7 @@ for sess = 1:p.nSess,
     
     %% load session based variables
     p.nRows = p.numRows;
-    
-    
-    % number of features picked up per fixation
-    p.nFeaturesToSample = p.numFeaturesToSample(p.layer);
-    
+        
     %number of grids in layer
     p.numGrids=p.nGrids(1:p.layer);
     
@@ -46,6 +42,7 @@ for sess = 1:p.nSess,
     
     p.recognition = zeros(p.nTrials(p.stimCond),1);
     p.recognition_gauss = zeros(p.nTrials(p.stimCond),1);
+    p.recogByLayer = zeros(p.nTrials(p.stimCond),p.layer);
     
     %% say what about to happen
     fprintf('\n\nSESSION %d, RAT %d\n', sess, p.ratNum);

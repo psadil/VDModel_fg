@@ -1,9 +1,9 @@
-function [W, initial_selec, p, pktot, initial_selec_gauss] = present_stimulus(stim, W, p, trial,pktot)
+function [W, initial_selec, p, initial_selec_gauss] = present_stimulus(stim, W, p, trial)
 
 inp_mat = repmat(reshape(stim,[1 1 length(stim)]), [p.nRows p.nRows 1]);
 
 initial_selec = zeros(p.numLayers,max(p.numGrids));
-initial_selec_gauss = zeros(p.numLayers,max(p.numGrids));
+initial_selec_gauss = zeros(size(initial_selec));
 
 
 %% Expose network to stimuli and update weights
@@ -26,7 +26,8 @@ for layer=1:p.layer
         
         for cycle=1:p.numEncodingCycles
             
-            [win_row, win_col, dist_mat] = findWinningNode(weights, input_mat, p.numInputDims(layer));
+            [win_row, win_col, dist_mat] = ...
+                findWinningNode(weights, input_mat, p.numInputDims(layer));
             
             
             p.winning(layer,grid,trial,1:2) = [win_row, win_col];
@@ -37,7 +38,7 @@ for layer=1:p.layer
             [f, selectivity, p, ~, ~, actGauss] = ...
                 calc_selectivity(win_row, win_col, dist_mat, p, p.numInputDims(layer));
             
-            if cycle==1,  %need to compare last set of weights of old grid to
+            if cycle==1,  
                 initial_selec(layer,grid) = selectivity;
                 initial_selec_gauss(layer,grid) = actGauss;
             end
