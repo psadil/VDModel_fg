@@ -1,23 +1,28 @@
-function[p] = listLength_runSim(p)
+function[p] = tUnique_runSim(p)
 
 p.root = [pwd, '\'];
-
 
 
 %% Initialise, pretrain, and save weight matrix
 [p,weights] = pretrain(p);
 
 
-%% create stim sequence
-[p, stims] = createListLengthStimuli(p);
-
-
 %% begin sessions
 
+% p.runningTime = zeros(1,p.nSess);
 fprintf ('\nThere will be %d sessions in total.\n', p.nSess);
+
+% create stim sequence
+[p, stims] = createTUniqueStimuli(p);
+
 
 startTime=GetSecs;
 for sess = 1:p.nSess,
+    % session order:
+        % 1) lesion, trial-unique
+        % 2) lesion, repeated stims
+        % 3) control, trial-unique
+        % 4) control, repeated stims
     
     
     if sess <= p.nSess/2;
@@ -27,12 +32,9 @@ for sess = 1:p.nSess,
         p.layer = 2;
         p.stimCond = sess - p.nSess/2;
     end
-    p.stimSet = 1;
-    
-    
+        
     %% load session based variables
     p.nRows = p.numRows;
-    
     
     % number of features picked up per fixation
     p.nFeaturesToSample = p.numFeaturesToSample(p.layer);
@@ -40,18 +42,15 @@ for sess = 1:p.nSess,
     %number of grids in layer
     p.numGrids=p.nGrids(1:p.layer);
     
-    % tally of activation by trial and layer
-    p.peak_act = zeros(p.nTrials(p.stimCond),2);
-    p.totalAct = zeros(p.nTrials(p.stimCond),2);
-    
-    p.recognition = zeros(p.nTrials(p.stimCond),1);
-    p.recognition_gauss = zeros(p.nTrials(p.stimCond),1);
+    % number of input dimensions to those grids
+    p.nInpDims=p.numInputDims(1:p.layer);
+        
     
     %% say what about to happen
     fprintf('\n\nSESSION %d, RAT %d\n', sess, p.ratNum);
     
     %% execute model code
-    p = listLengthModel(p,stims,weights);
+    p = tUniqueModel(p,stims,weights);
     
     
     %% save it up

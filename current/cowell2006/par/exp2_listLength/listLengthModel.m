@@ -7,10 +7,6 @@ function p = listLengthModel(p,stims,weights_before)
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Represent the SOFM as a 2-D grid of x,y coordinates
-% i.e. 3 dimensions in all: Rows, Cols, Slices
-% 3rd-Dimension, slice 1: x-coords
-% 3rd-Dimension, slice 2: y-coords
 
 %% storage variables
 pktot.fin_act_peak = zeros(p.numLayers,max(p.numGrids));
@@ -23,7 +19,7 @@ pktot.init_act_total = zeros(p.numLayers,max(p.numGrids));
 
 %% Load the pretrained weights at beginning of visual discrimination task
 preTrainedWeights = weights_before;
-
+% preTrainedWeights = rand(size(weights_before));
 
 %% begin trial loop
 
@@ -31,13 +27,22 @@ for trial_present = 1:p.nTrials(p.stimCond)
     
     stimPair = squeeze(stims(trial_present,:,:,p.stimCond));
     
-    % present initial sample stimulus
-    [weights, ~, p, pktot,~] = ...
-        present_stimulus(stimPair(:,1), preTrainedWeights, p, trial_present, pktot);
+    % want fresh weights for only the first stim, but updated weights for
+    % stims after that
+    if trial_present == 1
+        % present initial sample stimulus
+        [weights, ~, p, pktot,~] = ...
+            present_stimulus(stimPair(:,1), preTrainedWeights, p, trial_present, pktot);
+    else
+        [weights, ~, p, pktot,~] = ...
+            present_stimulus(stimPair(:,1), weights, p, trial_present, pktot);
+    end
     
 end
 
 for trial_test = 1:p.nTrials(p.stimCond)
+    
+    stimPair = squeeze(stims(trial_test,:,:,p.stimCond));
     
     selec_forComp = zeros(p.numLayers,max(p.nGrids),2);
     actGauss = zeros(p.numLayers,max(p.nGrids),2);

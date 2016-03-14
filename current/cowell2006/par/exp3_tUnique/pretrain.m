@@ -20,7 +20,7 @@ for layer = 1:max(p.numLayers)
         % begin training cycle of newly generated grid
         %------------------------------------------------------------------
         
-        for cycle=1:p.numTrainCycles(layer),
+        for cycle=1:p.numTrainCycles,
             
             p.eta = cycle^(-p.A);		% Learning rate 
             p.G = 0.5 + 10*cycle^(-p.B);		% Gaussian width parameter
