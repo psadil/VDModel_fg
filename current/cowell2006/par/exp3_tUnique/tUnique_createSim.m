@@ -1,6 +1,23 @@
 function [] = tUnique_createSim(firstRat, lastRat, nOfFolder)
-%% Creates a run_sim file for a single, yoked-pair simulation.
+%%
 
+% inputs:
+%   firstRat: int -- First rat to run. Typically 1
+%   lastRat: int -- determines how many rats to run. for efficient use of
+%      cores available, should be in multiple of 4
+%   nOfFolder: char str -- name of folder to store sessions. to be loaded
+%      from when plotting recognition scores. saved in dir
+%      'graphsAndSession'
+
+% otuput:
+%   NA -- however, tUnique_createSim calls 'plotRecognition.m' which plots
+%   recognition scores in a few different ways, and saves those figures in
+%   nOfFolder.
+
+
+%% preliminary setup
+
+% clear old variables, generate folder to store sessions
 if exist('p', 'var')
     clear p
 end
@@ -13,6 +30,7 @@ end
 rng('shuffle');
 
 
+%% begin
 parfor rat = firstRat:lastRat
     
     p = struct();
@@ -22,13 +40,11 @@ parfor rat = firstRat:lastRat
     B = .3;
     train = 500;
     etaExp = train^-A;
-    sigma2 = .01;
     G_exp = .5+10*train^-B;
     k_expt = .08;
     p.eta_int = .05;
     
     
-    p.exptName = '12jan2016';
     p.nameOfFolder = nOfFolder;
     
     p.dataDir = strcat(pwd, '/graphsAndSession/', p.nameOfFolder);
@@ -40,10 +56,7 @@ parfor rat = firstRat:lastRat
     p.delayCycles = 200;
     p.nSess = length(p.delayCycles) * 4;
     
-    % even at 200 rows (possible 200^2 unique stimuli), that's not enough
-    % to contain the 16^4 possible part combinations
-    
-    p.numRows = 200; %variables with 'num' to denote number are used to define RUN_SIM matrix (and translated to another name before used in simulation)
+    p.numRows = 200;
     p.numLayers = 2;
     
     p.numGrids_Caudal = 4;
@@ -52,41 +65,29 @@ parfor rat = firstRat:lastRat
     p.maxNumGrids = max(p.nGrids);
     p.nStimFactors = 4; % number of levels for each dimension
     
-    p.nDimReps = 1;
     p.components = 8;
     p.numInputDims_Caudal = p.components/p.numGrids_Caudal;
     p.numInputDims_PRC = p.components;
     p.numInputDims = [p.numInputDims_Caudal, p.numInputDims_PRC];
     
     p.k_expt = k_expt;
-    p.A = A; % was 0.8 %% Pre-training parameter. The bigger A is, the faster ETA decreases, and the smaller the amount of learning on the weights for all units.
+    p.A = A;
     p.etaExp = etaExp;
-    p.sigma2 = sigma2;
-    %     p.a = 1.7159; % tanh param
-    %     p.b = 2/3; % also tanh
-    p.a = 150;
-    p.b = atanh(2/3);
-    p.B = B; %was .8 Pre-training parameter. The bigger B is, the faster G decreases, and the smaller the neighbourhood of the winner that gets updated.
+    p.B = B;
     p.G_exp = G_exp;
     p.numTrainCycles = train;
-    p.numEncodingCycles = 20; % now better described as encoding cycles per fixation [LA, HA]
-    p.numFeaturesToSample = [p.numGrids_Caudal,p.numGrids_Caudal]; % first == lesion, second == control
+    p.numEncodingCycles = 20;
     p.sizeOfPeak = 5;
-    p.filtPeak = p.numRows+1;
-    p.nameOfFolder = p.nameOfFolder;
     
-    p.totalInpDimsConditions = 2; %%Once with small DIMS for caudal, once each with small and large DIMS for intact
     
     p.nMismatch = 30;
     p.nMatch = 30;
-    
     p.nTrials = p.nMismatch+p.nMatch;
     
-    %%Make the grid_matrix for calculating city-block distance later.
+    % Make the grid_matrix for calculating city-block distance later.
     [cols, rows] = meshgrid(1:p.numRows);
     p.gridMat = cat(3, rows, cols);
     fprintf('Creating a new experiment...\n');
-    p.expt = p.exptName;
     
     
     %% create stimuli for use
@@ -96,3 +97,6 @@ parfor rat = firstRat:lastRat
 end
 
 plotRecognition(1, lastRat, nOfFolder);
+
+
+end

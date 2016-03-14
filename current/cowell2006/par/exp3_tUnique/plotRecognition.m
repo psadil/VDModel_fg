@@ -3,6 +3,8 @@ function [] = plotRecognition(firstRat, lastRat, folderName)
 
 % scrsz = get(groot, 'ScreenSize');
 
+
+%%
 saveFolder = [pwd,'/graphsAndSession/', folderName];
 
 % load sample data file to get size of parameters
@@ -11,8 +13,11 @@ load(fileName)
 
 numRats = lastRat-firstRat+1;
 
-recognition = zeros(numRats,p.nSess/2,2,p.nTrials);
+recog = zeros(numRats,p.nSess/2,2,p.nTrials/2);
+recogByLayer = zeros(numRats,p.nSess,2,p.nTrials/2);
 
+
+%%
 for rat = firstRat:lastRat
     for session = 1:p.nSess
         
@@ -25,10 +30,12 @@ for rat = firstRat:lastRat
         % collect all trial-wise selectivity of choice phase
         %------------------------------------------------------------------
         
-        if session <= p.nSess/2 % lesion trials
-            recognition(rat,session,1,:) = p.recognition;
-        else % control trials
-            recognition(rat,session-p.nSess/2,2,:) = p.recognition;
+        recogByLayer(rat,session,1,:) = p.recogByLayer(:,1);
+        if p.layer == 1
+            recog(rat,p.stimCond,1,:) = p.recognition;
+        else
+            recogByLayer(rat,session,2,:) = p.recogByLayer(:,2);
+            recog(rat,p.stimCond,2,:) = p.recognition;
         end
     end
 end
@@ -36,35 +43,37 @@ end
 %%
 
 % first average across trial, then across rats
-meanRecog = squeeze(mean(squeeze(mean(recognition,4)),1));
+recog_mean = squeeze(mean(squeeze(mean(recog,4)),1));
 
 % take mean of 4 trials (4th dim), then std across rats, and divide by
 % sqrt(numRats)
-recog_sem = squeeze(std(squeeze(mean(recognition,4)),1,1))./sqrt(numRats);
+recog_sem = squeeze(std(squeeze(mean(recog,4)),1,1))./sqrt(numRats);
 
+% -------------------------------------------------------------------------
+% by layer
+% -------------------------------------------------------------------------
 
-% convert to table for writting to csv
-% recogT = table( squeeze(mean(recognition),1));
-% recogT.Properties.VariableNames
+recogByLayer_mean = squeeze(mean(squeeze(mean(recogByLayer,4)),1));
 
-% write that table as csv
+% take mean of 4 trials (4th dim), then std across rats, and divide by
+% sqrt(numRats)
+recogByLayer_sem = squeeze(std(squeeze(mean(recogByLayer,4)),1,1))./sqrt(numRats);
+
 
 %%
 close all
 
-
-
-figs(4) = figure;
-barweb([meanRecog(:,2),meanRecog(:,1)], [recog_sem(:,2),recog_sem(:,1)], [], {'trial unique','repeating'})
+figs(1) = figure;
+barweb([recog_mean(:,2),recog_mean(:,1)], [recog_sem(:,2),recog_sem(:,1)], [], {'trial unique','repeating'})
 xlabel('stim condition');
 ylabel('recognition');
 legend({'control', 'lesion'},'Location','best');
-figs(4).CurrentAxes.YLim = [min(meanRecog(:,2))-max(recog_sem(:,2)),...
-    max(meanRecog(:,2))+max(recog_sem(:,2))];
+figs(1).CurrentAxes.YLim = [min(recog_mean(:,2))-max(recog_sem(:,2)),...
+    max(recog_mean(:,2))+max(recog_sem(:,2))];
 
-saveas(figs(4),[saveFolder, '/recog_barweb'],'fig');
-saveas(figs(4),[saveFolder, '/recog_barweb'],'jpg');
+saveas(figs(1),[saveFolder, '/recog_barweb'],'fig');
+saveas(figs(1),[saveFolder, '/recog_barweb'],'jpg');
+
 
 
 end
-

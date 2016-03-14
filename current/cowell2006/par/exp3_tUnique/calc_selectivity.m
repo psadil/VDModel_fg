@@ -1,4 +1,4 @@
-function [f_out, selectivity, p, act_peak, act_total, actGauss] = calc_selectivity(win_row, win_col, dist_mat,p, nInpDims)
+function [f_out, selectivity, p, act_peak, act_total] = calc_selectivity(win_row, win_col, dist_mat,p, nInpDims)
 
 %% Function called from VD_present_stimulus.m. Calculates grid_dist matrix, then
 %% calculates all units' activities and selectivity of activation peak.
@@ -34,7 +34,7 @@ act_out = 1./(1+exp(-p.k_expt*act_out)); %squashing function
 
 
 %%% initialise array and record winner for all situations
-winners = zeros(9,2);
+winners = zeros(25,2);
 winners(1,:) = [win_row win_col];
 %city block distance 1 neighbours
 winners(2,:) = [win_row win_col+1];
@@ -88,11 +88,6 @@ end
 
 act_total = sum(act_out(:));
 selectivity = act_peak/act_total;
-
-% for outputting gaussian acdtivation function
-gauss = exp(-(grid_dist.^2)./(2*p.sigma2));
-tmp = gauss.*(p.a*tanh(p.b*(1-min(dist_mat(:)))));
-actGauss = sum(tmp(:));
 
 
 end

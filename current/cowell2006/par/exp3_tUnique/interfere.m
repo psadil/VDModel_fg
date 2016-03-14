@@ -1,23 +1,27 @@
 function [ p, weights ] = interfere( p, weights )
-%delay_interfere simulates intereference during delay cycles
-%   Detailed explanation goes here
+%interfere simulates intereference during delay cycles
 
-fprintf('\n%d interference cycles being executed...', p.delayCycles(1));
+%%
+% flag for calc_act_fast to indicate that we're using the learning rate for
+% interference cycles
 interefere = 1;
 
+
+%%
 for layer = 1:max(p.numLayers)
     for grid = 1:p.nGrids(layer),
         
-        % put the variable 'weights' into the format previously accepted by the model.
         w = squeeze(weights(layer,:,:,1:p.numInputDims(layer),grid));
         
-        for cycle=1:p.delayCycles(1),
+        for cycle=1:p.delayCycles,
                         
-                        
-            inp_mat = gen_limited_input(p.numInputDims(layer)/p.nDimReps,p); %generate an input vector
+            %--------------------------------------------------------------            
+            % generate interfering stim
+            %--------------------------------------------------------------
+            inp_mat = gen_limited_input(p.numInputDims(layer),p); 
             
             %--------------------------------------------------------------
-            % Find winning node
+            % find node that best matches generated stim
             %--------------------------------------------------------------
             [win_row, win_col, dist_mat] = findWinningNode(w, inp_mat, p.numInputDims(layer));
             
@@ -25,13 +29,19 @@ for layer = 1:max(p.numLayers)
             %--------------------------------------------------------------
             % Calculate each unit's distance from winner, for use in
             % updating
+            %--------------------------------------------------------------
             [f, ~] = calc_act_fast(win_row, win_col, dist_mat,layer,p, interefere);
-                        
-            %%% Update Weights
+             
+            %--------------------------------------------------------------
+            % Update Weights
+            %--------------------------------------------------------------
             w = w + f.*(inp_mat-w);
             
             
         end
+        %------------------------------------------------------------------
+        % store new weights in original weight array
+        %------------------------------------------------------------------
         weights(layer,:,:,1:p.numInputDims(layer),grid) = w;
     end
     
@@ -39,4 +49,3 @@ for layer = 1:max(p.numLayers)
 end 
 
 end
-

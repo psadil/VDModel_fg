@@ -1,8 +1,8 @@
 function [inp_matrix] = gen_limited_input(numInputDims,p)
 
-nSimpleConj = (p.numInputDims_Caudal / p.nDimReps) ^ p.nStimFactors;
+nSimpleConj = (p.numInputDims_Caudal) ^ p.nStimFactors;
 count=1;
-avail_features = zeros(nSimpleConj, p.numInputDims_Caudal / p.nDimReps);
+avail_features = zeros(nSimpleConj, p.numInputDims_Caudal);
 for inp1 = 1:p.numGrids_Caudal,
     for inp2 = 1:p.nStimFactors,
         avail_features(count,:) = [inp1 inp2];

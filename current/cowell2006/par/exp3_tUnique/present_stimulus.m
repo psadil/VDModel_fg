@@ -1,4 +1,4 @@
-function [W, initial_selec, p, pktot] = present_stimulus(stim, W, p, trial,pktot, forTrain)
+function [W, initial_selec, p] = present_stimulus(stim, W, p, trial, forTrain)
 
 inp_mat = repmat(reshape(stim,[1 1 length(stim)]), [p.nRows p.nRows 1]);
 initial_selec = zeros(p.numLayers,max(p.numGrids));
