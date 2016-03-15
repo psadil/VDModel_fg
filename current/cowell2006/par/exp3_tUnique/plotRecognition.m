@@ -43,11 +43,12 @@ end
 %%
 
 % first average across trial, then across rats
+% gives stimCond x layer
 recog_mean = squeeze(mean(squeeze(mean(recog,4)),1));
 
 % take mean of 4 trials (4th dim), then std across rats, and divide by
 % sqrt(numRats)
-recog_sem = squeeze(std(squeeze(mean(recog,4)),1,1))./sqrt(numRats);
+recog_sem = squeeze(std(squeeze(mean(recog,4)),1))./sqrt(numRats);
 
 % -------------------------------------------------------------------------
 % by layer
@@ -57,23 +58,58 @@ recogByLayer_mean = squeeze(mean(squeeze(mean(recogByLayer,4)),1));
 
 % take mean of 4 trials (4th dim), then std across rats, and divide by
 % sqrt(numRats)
-recogByLayer_sem = squeeze(std(squeeze(mean(recogByLayer,4)),1,1))./sqrt(numRats);
+recogByLayer_sem = squeeze(std(squeeze(mean(recogByLayer,4)),1))./sqrt(numRats);
 
 
 %%
 close all
 
 figs(1) = figure;
-barweb([recog_mean(:,2),recog_mean(:,1)], [recog_sem(:,2),recog_sem(:,1)], [], {'trial unique','repeating'})
+hold on
+plot(1:2,recog_mean(:,1), '--ok', 'MarkerSize',10)
+plot(1:2,recog_mean(:,2),'-ok','MarkerFaceColor','k', 'MarkerSize',10)
+ax = gca;
+ax.XTick = 1:2;
+legend('Lesion','Control')
+legend('boxoff')
+
+saveas(figs(1),[saveFolder, '/recog'],'fig');
+saveas(figs(1),[saveFolder, '/recog'],'jpg');
+
+% barplot, to put error bars easily
+figs(2) = figure;
+barweb([recog_mean(:,2),recog_mean(:,1)],...
+    [recog_sem(:,2),recog_sem(:,1)], [], {'trial unique','repeating'})
 xlabel('stim condition');
 ylabel('recognition');
 legend({'control', 'lesion'},'Location','best');
-figs(1).CurrentAxes.YLim = [min(recog_mean(:,2))-max(recog_sem(:,2)),...
-    max(recog_mean(:,2))+max(recog_sem(:,2))];
+figs(2).CurrentAxes.YLim = [min(recog_mean(:))-max(recog_sem(:)),...
+    max(recog_mean(:))+max(recog_sem(:))];
 
-saveas(figs(1),[saveFolder, '/recog_barweb'],'fig');
-saveas(figs(1),[saveFolder, '/recog_barweb'],'jpg');
+saveas(figs(2),[saveFolder, '/recog_barweb'],'fig');
+saveas(figs(2),[saveFolder, '/recog_barweb'],'jpg');
 
+% by layer
+figs(3) = figure;
+subplot(1,2,1)
+barweb([recogByLayer_mean(1:2,2),recogByLayer_mean(3:4,2)]',...
+    [recogByLayer_sem(1:2,2),recogByLayer_sem(3:4,2)]', [], {'PRC, lesion', 'PRC, control'})
+xlabel('stim condition');
+ylabel('recognition sigmoid');
+legend({'trial unique', 'repitition'},'Location','best');
+figs(3).CurrentAxes.YLim = [min(recog_mean(:))-max(recog_sem(:)),...
+    max(recogByLayer_mean(:))+max(recogByLayer_sem(:))];
 
+subplot(1,2,2)
+barweb([recogByLayer_mean(1:2,1),recogByLayer_mean(3:4,1)]',...
+    [recogByLayer_sem(1:2,1),recogByLayer_sem(3:4,1)]', [], {'caudal, lesion', 'caudal, control'})
+xlabel('stim condition');
+ylabel('recognition sigmoid');
+legend({'trial unique', 'repitition'},'Location','best');
+figs(3).CurrentAxes.YLim = [min(recog_mean(:))-max(recog_sem(:)),...
+    max(recogByLayer_mean(:))+max(recogByLayer_sem(:))];
+
+saveas(figs(3),[saveFolder, '/recogByLayer_barweb'],'fig');
+saveas(figs(3),[saveFolder, '/recogByLayer_barweb'],'jpg');
 
 end

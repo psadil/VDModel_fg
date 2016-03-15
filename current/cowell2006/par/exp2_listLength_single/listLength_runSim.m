@@ -40,10 +40,8 @@ for sess = 1:p.nSess,
     p.peak_act = zeros(p.nTrials(p.stimCond),2);
     p.totalAct = zeros(p.nTrials(p.stimCond),2);
     
-    p.recognition = zeros(p.nTrials(p.stimCond),p.nStimSets);
-    p.recognition_gauss = zeros(size(p.recognition));
-    p.recogByLayer = zeros(p.nTrials(p.stimCond),p.layer,p.nStimSets);
-    p.recogByLayer_gauss = zeros(size(p.recogByLayer));
+    p.recognition = zeros(p.nTrials(p.stimCond),1);
+    p.recogByLayer = zeros(p.nTrials(p.stimCond),p.layer);
     
     %% say what about to happen
     fprintf('\n\nSESSION %d, RAT %d\n', sess, p.ratNum);

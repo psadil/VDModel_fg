@@ -16,7 +16,7 @@ fprintf('\nSetting new seed by clock.\n');
 rng('shuffle');
 
 
-for rat = firstRat:lastRat
+parfor rat = firstRat:lastRat
     
     p = struct();
     p.ratNum = rat;
@@ -30,7 +30,7 @@ for rat = firstRat:lastRat
     
     p.nameOfFolder = ['eta', num2str(etaExp), '_g', num2str(G_exp), ...
         '_K', num2str(k_expt), '_A', num2str(A) ,'_B', num2str(B), '_20enc20_', num2str(train), ...
-        'trn_','1stimSets'];
+        'trn'];
     
     p.dataDir = strcat(pwd, '/graphsAndSession/', p.nameOfFolder);
     if ~exist(p.dataDir, 'dir'),
@@ -44,7 +44,6 @@ for rat = firstRat:lastRat
     % different number of stimuli list lengths
     p.nMismatch = [1,6,12,18];
     p.nTrials = p.nMismatch;
-    p.nStimSets = 1;
     
     p.nSess = length(p.nTrials) * p.numLayers;
     

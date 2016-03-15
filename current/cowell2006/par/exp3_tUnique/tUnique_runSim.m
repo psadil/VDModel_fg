@@ -6,15 +6,13 @@ p.root = [pwd, '\'];
 %% Initialise, pretrain, and save weight matrix
 [p,weights] = pretrain(p);
 
-
-%% begin sessions
-
-% p.runningTime = zeros(1,p.nSess);
-fprintf ('\nThere will be %d sessions in total.\n', p.nSess);
-
 % create stim sequence
 [p, stims] = createTUniqueStimuli(p);
 
+
+%% begin sessions
+
+fprintf ('\nThere will be %d sessions in total.\n', p.nSess);
 
 startTime=GetSecs;
 for sess = 1:p.nSess,
@@ -36,14 +34,13 @@ for sess = 1:p.nSess,
     %% load session based variables
     p.nRows = p.numRows;
         
-    %number of grids in layer
+    % number of grids in layer
     p.numGrids=p.nGrids(1:p.layer);
             
-    
     p.recognition = zeros(p.nTrials/2,1);
     p.recognitionByLayer = zeros(p.nTrials/2,2);
     
-    %% say what about to happen
+    % say what about to happen
     fprintf('\n\nSESSION %d, RAT %d\n', sess, p.ratNum);
     
     %% execute model code

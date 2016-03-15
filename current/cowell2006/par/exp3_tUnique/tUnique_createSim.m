@@ -62,7 +62,6 @@ parfor rat = firstRat:lastRat
     p.numGrids_Caudal = 4;
     p.numGrids_PRC = 1;
     p.nGrids = [p.numGrids_Caudal, p.numGrids_PRC];
-    p.maxNumGrids = max(p.nGrids);
     p.nStimFactors = 4; % number of levels for each dimension
     
     p.components = 8;

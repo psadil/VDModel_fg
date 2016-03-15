@@ -58,14 +58,14 @@ for trial = 1:(p.nTrials/2),
     % simulate delay for appropriate cycles (always 200)
     [p, weights] = interfere(p, weights);
     
-    forTrain = 1; % allow stimuli to accumulate interference
+    forTrain = 0; % allow stimuli to accumulate interference
     selec_forComp = zeros(p.numLayers,max(p.nGrids),2);
     % re-present initial sample stimulus
-    [weights, selec_forComp(:,:,1), p, pktot] = ...
+    [~, selec_forComp(:,:,1), p, pktot] = ...
         present_stimulus(stimPair(:,1), weights, p, trial, pktot, forTrain);
     
     % present initial novel stimulus
-    [weights, selec_forComp(:,:,2), p, pktot] = ...
+    [~, selec_forComp(:,:,2), p, pktot] = ...
         present_stimulus(stimPair(:,2), weights, p, trial, pktot, forTrain);
     
     % calc recognition score

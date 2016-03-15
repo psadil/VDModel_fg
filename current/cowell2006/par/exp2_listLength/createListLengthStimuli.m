@@ -47,80 +47,83 @@ for feature = 1:nStimsPerCond
 end
 
 %%
-stims = zeros(max(p.nTrials), p.components,2,length(p.nMismatch));
-for stimCond = 1:length(p.nMismatch)
-    
-    nMatchingLA = 0;
-    tryAgain = 1;
-    while tryAgain
-        breakOut = 0;
+stims = zeros(max(p.nTrials), p.components,2,length(p.nMismatch),p.nStimSets);
+
+for stimSet = 1:p.nStimSets;
+    for stimCond = 1:length(p.nMismatch)
         
-        % use these values to pull unique stimuli
-        trials_LA = reshape(randsample(size(final,1),p.nMismatch(stimCond)),...
-            [p.nMismatch(stimCond),1]);
-        trials_LA_misMatch1 = trials_LA(:,1);
-        trials_LA_misMatch2 = zeros(size(trials_LA_misMatch1));
-        
-        % grab match for LA
-        used = trials_LA(:); % the stims that we've already used
-        for stim = 1:p.nMismatch(stimCond)
-            if breakOut
-                break
-            end
-            probeWith = first(trials_LA_misMatch1(stim),:);
+        nMatchingLA = 0;
+        tryAgain = 1;
+        while tryAgain
+            breakOut = 0;
             
-            row_randIdx = randperm(size(first,1));
-            for row = 1:size(first,1)
+            % use these values to pull unique stimuli
+            trials_LA = reshape(randsample(size(final,1),p.nMismatch(stimCond)),...
+                [p.nMismatch(stimCond),1]);
+            trials_LA_misMatch1 = trials_LA(:,1);
+            trials_LA_misMatch2 = zeros(size(trials_LA_misMatch1));
+            
+            % grab match for LA
+            used = trials_LA(:); % the stims that we've already used
+            for stim = 1:p.nMismatch(stimCond)
+                if breakOut
+                    break
+                end
+                probeWith = first(trials_LA_misMatch1(stim),:);
                 
-                % don't try this row if we've already used it somewhere
-                if ismember(row_randIdx(row),used)
-                    continue
+                row_randIdx = randperm(size(first,1));
+                for row = 1:size(first,1)
+                    
+                    % don't try this row if we've already used it somewhere
+                    if ismember(row_randIdx(row),used)
+                        continue
+                    end
+                    
+                    probed = first(row_randIdx(row),:);
+                    if sum(probeWith == probed) == nMatchingLA
+                        
+                        % grab this stim from the pre-tmp
+                        trials_LA_misMatch2(stim) = row_randIdx(row);
+                        
+                        % declare that row as used
+                        used = [used;row_randIdx(row)];
+                        
+                        % stop searching for a matching stim
+                        break % the row loop
+                    end
+                    
+                    % if we've reached the end of all rows
+                    if row == size(first,1)
+                        breakOut = 1;
+                    end
                 end
                 
-                probed = first(row_randIdx(row),:);
-                if sum(probeWith == probed) == nMatchingLA
-                    
-                    % grab this stim from the pre-tmp
-                    trials_LA_misMatch2(stim) = row_randIdx(row);
-                    
-                    % declare that row as used
-                    used = [used;row_randIdx(row)];
-                    
-                    % stop searching for a matching stim
-                    break % the row loop
+                % for when we broke out of the rows
+                if breakOut
+                    break
                 end
                 
-                % if we've reached the end of all rows
-                if row == size(first,1)
-                    breakOut = 1;
-                end
             end
             
-            % for when we broke out of the rows
+            % for when we've broken out of the stim loop
             if breakOut
-                break
+                continue
             end
+            
+            % but, if we've made it this far..
+            tryAgain=0;
             
         end
         
-        % for when we've broken out of the stim loop
-        if breakOut
-            continue
-        end
         
-        % but, if we've made it this far..
-        tryAgain=0;
+        %% classify as features
+        
+        % grab all of the trial unique stims for the trial-unique pairs
+        stims(1:p.nMismatch(stimCond),:,1,stimCond,stimSet) = final(trials_LA_misMatch1,:);
+        stims(1:p.nMismatch(stimCond),:,2,stimCond,stimSet) = final(trials_LA_misMatch2,:);
         
     end
     
-    
-    %% classify as features
-    
-    % grab all of the trial unique stims for the trial-unique pairs
-    stims(1:p.nMismatch(stimCond),:,1,stimCond) = final(trials_LA_misMatch1,:);
-    stims(1:p.nMismatch(stimCond),:,2,stimCond) = final(trials_LA_misMatch2,:);
-    
 end
-
 
 end
