@@ -1,4 +1,4 @@
-function [W, initial_selec, p] = present_stimulus(stim, W, p, trial)
+function [W, initial_selec, p, initial_selec_gauss] = present_stimulus(stim, W, p, trial)
 % present_stimulus -- present entire network (rat) with a single stimulus,
 % and update weights accordingly
 
@@ -17,7 +17,8 @@ function [W, initial_selec, p] = present_stimulus(stim, W, p, trial)
 %      grid) of model for stim. To be given to calc_recognition. Calculated
 %      with logisitic activation
 %   p: output because it contains, now, p.winning.
-
+%      initial_selec_gauss: same as initial selectivity, but calculated from
+%      gaussian filter.
 
 %% prelim
 
@@ -67,13 +68,14 @@ for layer=1:p.layer
             % grab selectivity of this grid to stim, and calc the amount
             % that needs to be updated.
             %--------------------------------------------------------------
-            [selectivity, ~, ~] = ...
+            [selectivity, ~, ~, actGauss] = ...
                 calc_selectivity(win_row, win_col, dist_mat, p);
             
             % because we don't update weights during the choice phase, grab
             % the selectivity only with the fresh weights.
             if cycle==1,  
                 initial_selec(layer,grid) = selectivity;
+                initial_selec_gauss(layer,grid) = actGauss;
             end
             
             

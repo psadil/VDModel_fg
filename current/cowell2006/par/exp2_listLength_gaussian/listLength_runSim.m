@@ -13,6 +13,8 @@ function[p] = listLength_runSim(p)
 % output:
 %   NA -- could output p, but not used in the majority of cases
 
+
+
 %% set up
 
 % Initialise, pretrain, and save weight matrix
@@ -60,7 +62,9 @@ for sess = 1:p.nSess,
     % recognition scores are what we're, ultimately, after.
     %----------------------------------------------------------------------
     p.recognition = zeros(p.nTrials(p.stimCond),p.nStimSets);
+    p.recognition_gauss = zeros(size(p.recognition));
     p.recogByLayer = zeros(p.nTrials(p.stimCond),p.layer,p.nStimSets);
+    p.recogByLayer_gauss = zeros(size(p.recogByLayer));
     
     fprintf('\n\nSESSION %d, RAT %d\n', sess, p.ratNum);
     

@@ -1,4 +1,4 @@
-function [selectivity, act_peak, act_total] = calc_selectivity(win_row, win_col, dist_mat,p)
+function [selectivity, act_peak, act_total, actGauss] = calc_selectivity(win_row, win_col, dist_mat,p)
 % calc_selectivity -- calculates selectivity of grid to stimulus input.
 % Currently, calculates both in terms of classic logistic but also now new
 % guassian selectivity.
@@ -15,7 +15,9 @@ function [selectivity, act_peak, act_total] = calc_selectivity(win_row, win_col,
 %   selectivity: selectivity of this grid to the input
 %   act_peak: activation of the nodes determined to be in the peak
 %   act_total: total activation of entire grid
-
+%   act_gauss: activation after using gaussian selectivity and tanh. This,
+%      in effect, would also be the selectivity of the grid to the given
+%      stim, just calculated not as a ratio.
  
 
 %%
@@ -94,6 +96,27 @@ end
 act_total = sum(act_out(:));
 selectivity = act_peak/act_total;
 
+
+%% grab city-block distance of every node away from winning node
+
+% first, look at row and column distance. Because the grid 'wraps around'
+% into a toroid, there could be two possible lowest distances in each dim
+row_dist_mat(:,:,1) = abs(p.gridMat(:,:,1) - win_row);
+row_dist_mat(:,:,2) = p.numRows - abs(p.gridMat(:,:,1) - win_row);
+col_dist_mat(:,:,1) = abs(p.gridMat(:,:,2) - win_col);
+col_dist_mat(:,:,2) = p.numRows - abs(p.gridMat(:,:,2) - win_col);
+
+% find the minimum of the two possible distances for each row and col
+min_row_dist_mat = min(row_dist_mat,[],3);
+min_col_dist_mat = min(col_dist_mat,[],3);
+
+% Sum the two minimum distances to get overall city_block distance
+grid_dist = min_row_dist_mat + min_col_dist_mat;
+
+% for outputting gaussian acdtivation function
+gauss = exp(-(grid_dist.^2)./(2*p.sigma2));
+tmp = gauss.*(p.a*tanh(p.b*(1-min(dist_mat(:)))));
+actGauss = sum(tmp(:));
 
 
 end

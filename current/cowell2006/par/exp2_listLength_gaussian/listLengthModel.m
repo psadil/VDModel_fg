@@ -36,10 +36,10 @@ for stimSet = 1:p.nStimSets
         % want fresh weights for only the first stim, but updated weights for
         % stims after that
         if trial_study == 1
-            [weights, ~, p] = ...
+            [weights, ~, p,~] = ...
                 present_stimulus(stimPair(:,1), weights_before, p, trial_study);
         else
-            [weights, ~, p] = ...
+            [weights, ~, p,~] = ...
                 present_stimulus(stimPair(:,1), weights, p, trial_study);
         end
         
@@ -55,18 +55,25 @@ for stimSet = 1:p.nStimSets
         % studied, 2 == novel.
         selec_forComp = zeros(p.numLayers,max(p.nGrids),2);
         
+        % selectivity after using gaussian filter
+        actGauss = zeros(size(selec_forComp));
         % re-present initial sample stimulus
-        [~, selec_forComp(:,:,1), p] = ...
+        [~, selec_forComp(:,:,1), p, actGauss(:,:,1)] = ...
             present_stimulus(stimPair(:,1), weights, p, trial_test);
         
         % present initial novel stimulus
-        [~, selec_forComp(:,:,2), p] = ...
+        [~, selec_forComp(:,:,2), p, actGauss(:,:,2)] = ...
             present_stimulus(stimPair(:,2), weights, p, trial_test);
         
-
+        % gauss flag is used here as extra flag, alternative way to
+        % calculated selectivity.
+        gauss = 0;
         % calc recognition score
-        [p] = calc_recognition(p, selec_forComp, trial_test,stimSet);
-
+        [p] = calc_recognition(p, selec_forComp, trial_test, gauss,stimSet);
+        
+        gauss = 1;
+        % calc Guass
+        [p] = calc_recognition(p, actGauss, trial_test, gauss,stimSet);
     end
     
 end
