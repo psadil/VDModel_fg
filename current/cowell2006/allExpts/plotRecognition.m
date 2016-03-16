@@ -1,6 +1,10 @@
 function [] = plotRecognition(firstRat, lastRat)
 % analyze recognition
 
+% called by: sometimes createSim
+% calls: barweb, plotShaded
+
+
 % input:
 %    firstRat: first rat that was run (usually 1)
 %    lastRat: last rat that was run. The range of these two rats are what
@@ -74,6 +78,9 @@ end
 recog_mean = squeeze(mean(rats,1));
 recog_sem = squeeze(std(rats,1) ./ sqrt(numRats));
 
+shadedError = zeros(size(recog_mean,1),2,2);
+shadedError(:,:,1) = recog_mean - recog_sem;
+shadedError(:,:,2) = recog_mean + recog_sem;
 
 % -------------------------------------------------------------------------
 % recognition by layer
@@ -127,15 +134,35 @@ saveas(figs(1),[saveFolder, '/recog'],'fig');
 saveas(figs(1),[saveFolder, '/recog'],'jpg');
 
 
+% same as above, but with error
+figs(2) = figure;
+hold on
+plot(1:size(recog_mean,1),recog_mean(:,1), '--ok', 'MarkerSize',10)
+plot(1:size(recog_mean,1),recog_mean(:,2),'-ok','MarkerFaceColor','k', 'MarkerSize',10)
+
+plotshaded(1:size(recog_mean,1),[shadedError(:,1,1), shadedError(:,1,2)],'g')
+plotshaded(1:size(recog_mean,1),[shadedError(:,2,1), shadedError(:,2,2)],'r')
+
+ax = gca;
+ax.XTick = 1:size(recog_mean,1);
+legend('Lesion','Control')
+legend('boxoff')
+figs(2).CurrentAxes.YLim = [0,...
+    max(recog_mean(:))+max(recog_sem(:))];
+
+saveas(figs(2),[saveFolder, '/recog_shaded'],'fig');
+saveas(figs(2),[saveFolder, '/recog_shaded'],'jpg');
+
+
 
 % recognition, sigmoidal
-figs(2) = figure;
+figs(3) = figure;
 subplot(1,2,1)
 barweb(recog_mean(:,2), recog_sem(:,2), [], {'control'})
 xlabel('stim condition');
 ylabel('recognition');
 legend(condLabels,'Location','best');
-figs(2).CurrentAxes.YLim = [0,...
+figs(3).CurrentAxes.YLim = [0,...
     max(recog_mean(:))+max(recog_sem(:))];
 
 subplot(1,2,2)
@@ -143,24 +170,24 @@ barweb(recog_mean(:,1), recog_sem(:,1), [], {'lesion'})
 xlabel('stim condition');
 ylabel('recognition');
 legend(condLabels,'Location','best');
-figs(2).CurrentAxes.YLim = [0,...
+figs(3).CurrentAxes.YLim = [0,...
     max(recog_mean(:))+max(recog_sem(:))];
 
-saveas(figs(2),[saveFolder, '/recog_sigm_barweb'],'fig');
-saveas(figs(2),[saveFolder, '/recog_sigm_barweb'],'jpg');
+saveas(figs(3),[saveFolder, '/recog_sigm_barweb'],'fig');
+saveas(figs(3),[saveFolder, '/recog_sigm_barweb'],'jpg');
 
 
 %% recognition by layer
 
 % sigmoid
-figs(3) = figure;
+figs(4) = figure;
 subplot(1,2,1)
 barweb([recogByLayer_mean(1:size(recog_mean,1),2),recogByLayer_mean(size(recog_mean,1)+1:end,2)]',...
     [recogByLayer_sem(1:size(recog_mean,1),2),recogByLayer_sem(size(recog_mean,1)+1:end,2)]', [], {'PRC, lesion', 'PRC, control'})
 xlabel('stim condition');
 ylabel('recognition');
 legend(condLabels,'Location','best');
-figs(3).CurrentAxes.YLim = [0,...
+figs(4).CurrentAxes.YLim = [0,...
     max(recogByLayer_mean(:))+max(recogByLayer_sem(:))];
 
 subplot(1,2,2)
@@ -169,12 +196,11 @@ barweb([recogByLayer_mean(1:size(recog_mean,1),1),recogByLayer_mean(size(recog_m
 xlabel('stim condition');
 ylabel('recognition');
 legend(condLabels,'Location','best');
-figs(3).CurrentAxes.YLim = [0,...
+figs(4).CurrentAxes.YLim = [0,...
     max(recogByLayer_mean(:))+max(recogByLayer_sem(:))];
 
-saveas(figs(3),[saveFolder, '/recogByLayer_sigm_barweb'],'fig');
-saveas(figs(3),[saveFolder, '/recogByLayer_sigm_barweb'],'jpg');
+saveas(figs(4),[saveFolder, '/recogByLayer_sigm_barweb'],'fig');
+saveas(figs(4),[saveFolder, '/recogByLayer_sigm_barweb'],'jpg');
 
 
 end
-
