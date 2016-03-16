@@ -105,15 +105,15 @@ recogByLayer_sem = squeeze(std(rats_byLayer,1) ./ sqrt(numRats));
 
 %% expt specific plotting parameters
 
+f1 = @(x) sprintf('%d',x);
 if expt == 1
-    condLabels = {'0', '200', '400', '600', '800'};
+    condLabels = cellfun(f1, num2cell(p.delayCycles), 'UniformOutput', false);
 elseif expt == 2
-    condLabels = {'1','6','12','18'};
+    condLabels = cellfun(f1, num2cell(p.nMismatch), 'UniformOutput', false);
 elseif expt == 3
     condLabels = {'trial unique', 'repeating'};
-else
-    error('not valid experiment');
 end
+
 
 
 %%
@@ -125,6 +125,8 @@ plot(1:size(recog_mean,1),recog_mean(:,1), '--ok', 'MarkerSize',10)
 plot(1:size(recog_mean,1),recog_mean(:,2),'-ok','MarkerFaceColor','k', 'MarkerSize',10)
 ax = gca;
 ax.XTick = 1:size(recog_mean,1);
+xlabel('stim condition');
+ylabel('recognition');
 legend('Lesion','Control')
 legend('boxoff')
 figs(1).CurrentAxes.YLim = [0,...
@@ -145,6 +147,8 @@ plotshaded(1:size(recog_mean,1),[shadedError(:,2,1), shadedError(:,2,2)],'r')
 
 ax = gca;
 ax.XTick = 1:size(recog_mean,1);
+xlabel('stim condition');
+ylabel('recognition');
 legend('Lesion','Control')
 legend('boxoff')
 figs(2).CurrentAxes.YLim = [0,...

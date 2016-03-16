@@ -69,5 +69,5 @@ for sess = 1:p.nSess,
     
 end
 
-fprintf ('\nFinished running rat. \r');
+fprintf ('\nFinished running rat %d \r', p.ratNum);
 end
