@@ -35,7 +35,7 @@ end
 % repeat experiment once for each stimulus set
 for stimSet = 1:p.nStimSets
    
-    studyOrder = randperm(1:p.nTrials(p.stimCond));
+    studyOrder = randperm(p.nTrials(p.stimCond));
     
     %% study phase
     
