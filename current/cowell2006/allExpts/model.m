@@ -25,8 +25,7 @@ if p.expt == 3
         stimuli = stims.match;
     end
 else
-    stimuli = stims.misMatch;
-    
+    stimuli = stims.misMatch; 
 end
 % uncomment when randomizing initial weights
 % weights_before = rand(size(weights_before));
@@ -35,7 +34,8 @@ end
 
 % repeat experiment once for each stimulus set
 for stimSet = 1:p.nStimSets
-    
+   
+    studyOrder = randperm(1:p.nTrials(p.stimCond));
     
     %% study phase
     
@@ -45,7 +45,7 @@ for stimSet = 1:p.nStimSets
     for trial_study = 1:p.nTrials(p.stimCond)
         
         % grab pair of stimuli used in this trial
-        stimPair = squeeze(stimuli(trial_study,:,:,p.stimCond,stimSet));
+        stimPair = squeeze(stimuli(studyOrder(trial_study),:,:,p.stimCond,stimSet));
         
         % want fresh weights for only the first stim, but updated weights for
         % stims after that
@@ -74,7 +74,7 @@ for stimSet = 1:p.nStimSets
     % in test, use updated weights. However, do not update weights further.
     for trial_test = 1:p.nTrials(p.stimCond)
         
-        stimPair = squeeze(stimuli(trial_test,:,:,p.stimCond,stimSet));
+        stimPair = squeeze(stimuli(studyOrder(trial_test),:,:,p.stimCond,stimSet));
         
         % selectivity of network to each stim. Final dim == 2 because there
         % is a selectivity for both the studied and novel stim. 1 ==
