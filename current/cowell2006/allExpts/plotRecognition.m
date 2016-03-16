@@ -9,8 +9,6 @@ function [] = plotRecognition(firstRat, lastRat)
 %    firstRat: first rat that was run (usually 1)
 %    lastRat: last rat that was run. The range of these two rats are what
 %       will be plotted
-%   folderName: name of folder that the sessions for these rats can be
-%      found in. character string, same as stored in p.nameOfFolder
 
 % output:
 %   NA -- but a suite of graphs relating to summarizing the run of these
@@ -30,8 +28,6 @@ else
     error('not valid experiment');
 end
 
-
-
 folderName = input('\nEnter folder name (as char string) \n');
 
 saveFolder = [pwd,'\graphsAndSession\', exptFolder, '\', folderName];
@@ -40,11 +36,14 @@ saveFolder = [pwd,'\graphsAndSession\', exptFolder, '\', folderName];
 fileName = [saveFolder, '/Session', num2str(1), '_Rat', num2str(1)];
 load(fileName)
 
-numRats = lastRat-firstRat+1;
 
-recog = zeros(numRats,p.nSess/2,2,max(p.nTrials),p.nStimSets);
-recogByLayer = zeros(numRats,p.nSess,2,max(p.nTrials),p.nStimSets);
+%%
+nRats = lastRat-firstRat+1;
 
+recog = zeros(nRats,p.nSess/2,2,max(p.nTrials),p.nStimSets);
+recogByLayer = zeros(nRats,p.nSess,2,max(p.nTrials),p.nStimSets);
+
+%%
 for rat = firstRat:lastRat
     for session = 1:p.nSess
         
@@ -70,13 +69,13 @@ end
 %%
 
 % first, find the average for a rat in a given condition
-rats = zeros(numRats,length(p.nTrials),2);
+rats = zeros(nRats,length(p.nTrials),2);
 for stimCond = 1:length(p.nTrials)
-    rats(:,stimCond,:) = squeeze(mean(squeeze(mean(recog(:,stimCond,:,1:p.nTrials(stimCond),:),4)),3));
+    rats(:,stimCond,:) = squeeze(mean(mean(recog(:,stimCond,:,1:p.nTrials(stimCond),:),4),5));
     
 end
 recog_mean = squeeze(mean(rats,1));
-recog_sem = squeeze(std(rats,1) ./ sqrt(numRats));
+recog_sem = squeeze(std(rats,1) ./ sqrt(nRats));
 
 shadedError = zeros(size(recog_mean,1),2,2);
 shadedError(:,:,1) = recog_mean - recog_sem;
@@ -87,20 +86,20 @@ shadedError(:,:,2) = recog_mean + recog_sem;
 % -------------------------------------------------------------------------
 
 % sigmoid
-rats_byLayer = zeros(numRats,p.nSess,2);
+rats_byLayer = zeros(nRats,p.nSess,2);
 for sess = 1:p.nSess
     
     % fill up with recognition calculated from each layer. Will be some 0s,
     % since PRC was only available on sessions 5-8
     if sess <= length(p.nTrials)
-        rats_byLayer(:,sess,1) = squeeze(mean(recogByLayer(:,sess,1,1:p.nTrials(sess)),4));
+        rats_byLayer(:,sess,1) = squeeze(mean(mean(recogByLayer(:,sess,1,1:p.nTrials(sess),:),4),5));
     elseif sess > length(p.nTrials)
         idx = sess - length(p.nTrials);
-        rats_byLayer(:,sess,:) = squeeze(mean(squeeze(mean(recogByLayer(:,sess,:,1:p.nTrials(idx),:),4)),3));
+        rats_byLayer(:,sess,:) = squeeze(mean(mean(recogByLayer(:,sess,:,1:p.nTrials(idx),:),4),5));
     end
 end
 recogByLayer_mean = squeeze(mean(rats_byLayer,1));
-recogByLayer_sem = squeeze(std(rats_byLayer,1) ./ sqrt(numRats));
+recogByLayer_sem = squeeze(std(rats_byLayer,1) ./ sqrt(nRats));
 
 
 %% expt specific plotting parameters

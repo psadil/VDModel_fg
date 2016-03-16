@@ -2,8 +2,8 @@ function [ p, weights ] = interfere( p, weights )
 %delay_interfere simulates intereference during delay cycles
 %   Detailed explanation goes here
 
-% expt 3 has too many trials to make this info useful...
-if ~(p.expt==3)
+% expt 1 is delay expt
+if p.expt == 1
     fprintf('\n%d interference cycles being executed...', p.delayCycles(p.stimCond));
 end
 
@@ -44,4 +44,3 @@ for layer = 1:max(p.nLayers)
 end
 
 end
-

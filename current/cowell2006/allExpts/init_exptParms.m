@@ -73,9 +73,9 @@ p.gridMat = cat(3, rows, cols);
 
 if expt == 1 % delay
     
-    p.eta_int = 0.1;
+    p.eta_int = p.etaExp;
     
-    p.delayCycles = [0,200,400,600,800];
+    p.delayCycles = [0,200,400,600,800,1200,2400,4800];
     
     p.nSess = length(p.delayCycles) * 2;
     p.nMismatch = repelem(1,p.nSess / 2);
@@ -85,8 +85,8 @@ if expt == 1 % delay
     
 elseif expt == 2 % listLength
     
-    % different nber of stimuli list lengths
-    p.nMismatch = [1,6,12,18];
+    % different number of stimuli list lengths
+    p.nMismatch = [1,6,12,18,24,36,48,96];
     p.nMatch = 0;
     p.nStimSets = 4;
     
@@ -96,6 +96,7 @@ elseif expt == 2 % listLength
     
 elseif expt == 3 % tUnique
     
+    p.eta_int = p.etaExp;
     p.nMismatch = repelem(1,p.nSess / 2);
     p.nMatch = repelem(1,p.nSess / 2);
     
