@@ -1,4 +1,4 @@
-function [] = plotRecognition(firstRat, lastRat, folderName)
+function [] = plotRecognition(firstRat, lastRat)
 % analyze recognition
 
 % input:
@@ -14,7 +14,23 @@ function [] = plotRecognition(firstRat, lastRat, folderName)
 
 
 %%
-saveFolder = [pwd,'/graphsAndSession/', folderName];
+% request for experiment name
+expt = input('\nEnter experiment name: \n1 - delay, \n2 - listLength, \n3 - tUnique \n');
+if expt == 1
+    exptFolder = 'delay';
+elseif expt == 2
+    exptFolder = 'lsitLength';
+elseif expt == 3
+    exptFolder = 'tUnique';
+else
+    error('not valid experiment');
+end
+
+
+
+folderName = input('\nEnter folder name (as char string) \n');
+
+saveFolder = [pwd,'\graphsAndSession\', exptFolder, '\', folderName];
 
 % load sample data file to get size of parameters
 fileName = [saveFolder, '/Session', num2str(1), '_Rat', num2str(1)];
@@ -80,15 +96,28 @@ recogByLayer_mean = squeeze(mean(rats_byLayer,1));
 recogByLayer_sem = squeeze(std(rats_byLayer,1) ./ sqrt(numRats));
 
 
+%% expt specific plotting parameters
+
+if expt == 1
+    condLabels = {'0', '200', '400', '600', '800'};
+elseif expt == 2
+    condLabels = {'1','6','12','18'};
+elseif expt == 3
+    condLabels = {'trial unique', 'repeating'};
+else
+    error('not valid experiment');
+end
+
+
 %%
 close all
 
 figs(1) = figure;
 hold on
-plot(1:4,recog_mean(:,1), '--ok', 'MarkerSize',10)
-plot(1:4,recog_mean(:,2),'-ok','MarkerFaceColor','k', 'MarkerSize',10)
+plot(1:size(recog_mean,1),recog_mean(:,1), '--ok', 'MarkerSize',10)
+plot(1:size(recog_mean,1),recog_mean(:,2),'-ok','MarkerFaceColor','k', 'MarkerSize',10)
 ax = gca;
-ax.XTick = 1:4;
+ax.XTick = 1:size(recog_mean,1);
 legend('Lesion','Control')
 legend('boxoff')
 figs(1).CurrentAxes.YLim = [0,...
@@ -104,16 +133,16 @@ figs(2) = figure;
 subplot(1,2,1)
 barweb(recog_mean(:,2), recog_sem(:,2), [], {'control'})
 xlabel('stim condition');
-ylabel('recognition sigmoid');
-legend({'1','6','12','18'},'Location','best');
+ylabel('recognition');
+legend(condLabels,'Location','best');
 figs(2).CurrentAxes.YLim = [0,...
     max(recog_mean(:))+max(recog_sem(:))];
 
 subplot(1,2,2)
 barweb(recog_mean(:,1), recog_sem(:,1), [], {'lesion'})
 xlabel('stim condition');
-ylabel('recognition sigmoid');
-legend({'1','6','12','18'},'Location','best');
+ylabel('recognition');
+legend(condLabels,'Location','best');
 figs(2).CurrentAxes.YLim = [0,...
     max(recog_mean(:))+max(recog_sem(:))];
 
@@ -126,22 +155,22 @@ saveas(figs(2),[saveFolder, '/recog_sigm_barweb'],'jpg');
 % sigmoid
 figs(3) = figure;
 subplot(1,2,1)
-barweb([recogByLayer_mean(1:4,2),recogByLayer_mean(5:8,2)]',...
-    [recogByLayer_sem(1:4,2),recogByLayer_sem(5:8,2)]', [], {'PRC, lesion', 'PRC, control'})
+barweb([recogByLayer_mean(1:size(recog_mean,1),2),recogByLayer_mean(size(recog_mean,1)+1:end,2)]',...
+    [recogByLayer_sem(1:size(recog_mean,1),2),recogByLayer_sem(size(recog_mean,1)+1:end,2)]', [], {'PRC, lesion', 'PRC, control'})
 xlabel('stim condition');
-ylabel('recognition sigmoid');
-legend({'1','6','12','18'},'Location','best');
+ylabel('recognition');
+legend(condLabels,'Location','best');
 figs(3).CurrentAxes.YLim = [0,...
-    max(recogByLayer_mean(:,2))+max(recogByLayer_sem(:,2))];
+    max(recogByLayer_mean(:))+max(recogByLayer_sem(:))];
 
 subplot(1,2,2)
-barweb([recogByLayer_mean(1:4,1),recogByLayer_mean(5:8,1)]',...
-    [recogByLayer_sem(1:4,1),recogByLayer_sem(5:8,1)]', [], {'caudal, lesion', 'caudal, control'})
+barweb([recogByLayer_mean(1:size(recog_mean,1),1),recogByLayer_mean(size(recog_mean,1)+1:end,1)]',...
+    [recogByLayer_sem(1:size(recog_mean,1),1),recogByLayer_sem(size(recog_mean,1)+1:end,1)]', [], {'caudal, lesion', 'caudal, control'})
 xlabel('stim condition');
-ylabel('recognition sigmoid');
-legend({'1','6','12','18'},'Location','best');
+ylabel('recognition');
+legend(condLabels,'Location','best');
 figs(3).CurrentAxes.YLim = [0,...
-    max(recogByLayer_mean(:,1))+max(recogByLayer_sem(:,1))];
+    max(recogByLayer_mean(:))+max(recogByLayer_sem(:))];
 
 saveas(figs(3),[saveFolder, '/recogByLayer_sigm_barweb'],'fig');
 saveas(figs(3),[saveFolder, '/recogByLayer_sigm_barweb'],'jpg');

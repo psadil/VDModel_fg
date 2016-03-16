@@ -42,6 +42,7 @@ elseif expt == 3
 else
     error('not valid experiment');
 end
+fprintf('\nBeginning experiment, %s.\n', exptFolder);
 
 
 %%
