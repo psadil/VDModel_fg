@@ -1,4 +1,4 @@
-function [ p ] = initializeExptParms( expt )
+function [ p ] = init_exptParms( expt )
 %initializeExptParms -- initializes experimental specific parameters
 
 
@@ -10,28 +10,28 @@ p.expt = expt;
 % Archetecture of model
 %--------------------------------------------------------------------------
 
-% nodes in a row of grid (total grid is numRows x numRows)
-p.numRows = 200;
-p.numLayers = 2;
+% nodes in a row of grid (total grid is nRows x nRows)
+p.nRows = 200;
+p.nLayers = 2;
 
-p.numGrids_Caudal = 4;
-p.numGrids_PRC = 1;
-p.nGrids = [p.numGrids_Caudal, p.numGrids_PRC];
+p.nGrids_Caudal = 4;
+p.nGrids_PRC = 1;
+p.nGrids = [p.nGrids_Caudal, p.nGrids_PRC];
 
-p.components = 8; % num elemental features
-p.nStimFactors = 4; % number of levels for each dimension
-p.numInputDims_Caudal = p.components/p.numGrids_Caudal;
-p.numInputDims_PRC = p.components;
-p.numInputDims = [p.numInputDims_Caudal, p.numInputDims_PRC];
+p.components = 8; % n elemental features
+p.nStimFactors = 4; % nber of levels for each dimension
+p.nInputDims_Caudal = p.components/p.nGrids_Caudal;
+p.nInputDims_PRC = p.components;
+p.nInputDims = [p.nInputDims_Caudal, p.nInputDims_PRC];
 
 %--------------------------------------------------------------------------
 % pre-training parms
 %--------------------------------------------------------------------------
 
 % cycles to go through pretraining (NOTE: here's a place to fix in
-% future projects: don't cycle through a set number of times, cycle
+% future projects: don't cycle through a set nber of times, cycle
 % through until a set error has been reached.
-p.numTrainCycles = 500;
+p.nTrainCycles = 500;
 
 
 % The bigger A is, the faster ETA decreases, which makes for slower
@@ -48,23 +48,23 @@ p.B = .3;
 %--------------------------------------------------------------------------
 
 % width of gaussian neighborhood learning equation
-p.G_exp = .5+10*p.numTrainCycles^-p.B;
+p.G_exp = .5+10*p.nTrainCycles^-p.B;
 
 % rate of sigmoid activation function
 p.k_expt = .08;
 
 % learning rate. amount that winning node moves closer to input during
 % expt
-p.etaExp = p.numTrainCycles^-p.A;
+p.etaExp = p.nTrainCycles^-p.A;
 
 % encoding cycles per presentation of stimulus
-p.numEncodingCycles = 20;
+p.nEncodingCycles = 20;
 
 % define how many nodes to include in selectivity calculation
 p.sizeOfPeak = 5;
 
 % used for later calculation of city-block distance.
-[cols, rows] = meshgrid(1:p.numRows);
+[cols, rows] = meshgrid(1:p.nRows);
 p.gridMat = cat(3, rows, cols);
 
 
@@ -78,39 +78,36 @@ if expt == 1 % delay
     p.delayCycles = [0,200,400,600,800];
     
     p.nSess = length(p.delayCycles) * 2;
-    p.nMismatch = 4;
+    p.nMismatch = repelem(1,p.nSess / 2);
     p.nMatch = 0;
-    p.nStimSets = 1;
+    p.nStimSets = 4;
     
     
 elseif expt == 2 % listLength
     
-    % different number of stimuli list lengths
+    % different nber of stimuli list lengths
     p.nMismatch = [1,6,12,18];
-    p.nTrials = p.nMismatch;
     p.nMatch = 0;
     p.nStimSets = 4;
-    p.delayCycles = 0;
     
-    p.nSess = length(p.nTrials) * p.numLayers;
+    p.nSess = length(p.nMismatch) * p.nLayers;
+    p.delayCycles = repelem(0, p.nSess / 2);
     
     
 elseif expt == 3 % tUnique
     
-    p.nMismatch = 30;
-    p.nMatch = 30;
+    p.nMismatch = repelem(1,p.nSess / 2);
+    p.nMatch = repelem(1,p.nSess / 2);
     
-    p.delayCycles = 200;
     p.nStimSets = 1;
     
     p.nSess = 4;
+    p.delayCycles = repelem(200,p.nSess / 2);
     
 end
 
+p.nTrials = p.nMismatch;
 
-%% General parms again
-
-p.nTrials = p.nMismatch + p.nMatch;
 
 
 end

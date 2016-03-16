@@ -24,7 +24,7 @@ function [] = createSim(firstRat, lastRat)
 %% define output folder for session info
 
 % request for experiment name
-expt = input('\nEnter experiment name: \n1 - delay, \n2 - listLength, \n3 - tUnique ');
+expt = input('\nEnter experiment name: \n1 - delay, \n2 - listLength, \n3 - tUnique \n');
 
 
 % for cleanliness, expts get stored in this folder
@@ -37,7 +37,7 @@ if expt == 1
     exptFolder = 'delay';
 elseif expt == 2
     exptFolder = 'lsitLength';
-elseif epxt == 3
+elseif expt == 3
     exptFolder = 'tUnique';
 else
     error('not valid experiment');
@@ -53,27 +53,32 @@ rng('shuffle');
 parfor rat = firstRat:lastRat
     
     % initialzie main p, to be used by all expts
-    p = initializeExptParms(expt);
+    p = init_exptParms(expt);
     p.ratNum = rat;
+    
+    
+    
+    %% data directory information
     
     
     % tweak as necessary to reflect peculiarities in any given simulation
     p.nameOfFolder = ['eta', num2str(p.etaExp), '_g', num2str(p.G_exp), ...
         '_K', num2str(p.k_expt), '_A', num2str(p.A) ,'_B', num2str(p.B),...
-        '_20enc20_', num2str(p.numTrainCycles), 'trn_','1stimSetsTMP'];
+        num2str(p.nTrainCycles), 'trn_',num2str(p.nStimSets),'sSets'];
     
     p.dataDir = strcat(outerDir, '\', exptFolder, '\' ,p.nameOfFolder);
     if ~exist(p.dataDir, 'dir'),
         mkdir(p.dataDir);
     end
     
+       
     
-    fprintf('Creating a new experiment...\n %s \n', p.nameOfFolder);
+    fprintf('\n Creating a new experiment...\n %s \n', p.nameOfFolder);
     
     
     %% enter into runSim, which controls flow of sessions
     
-    [~] = listLength_runSim(p);
+    [~] = runSim(p);
     
 end
 
