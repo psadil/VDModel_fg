@@ -204,7 +204,7 @@ for stimSet = 1:p.nStimSets;
             % grab only the first and second stim generated from the repeating stims
             stims.match = zeros(size(stims.misMatch));
             stims.match(1:p.nMatch(stimCond),:,1,stimCond,stimSet) = final(trials_LA(:,2),:);
-            stims.match(1:p.nMatch(stimCond),:,1,stimCond,stimSet) = final(trials_LA(:,2),:);
+            stims.match(1:p.nMatch(stimCond),:,2,stimCond,stimSet) = final(trials_LA(:,2),:);
             
             
         end

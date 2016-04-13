@@ -35,14 +35,14 @@ dist_mse = dist_mat_sse/size(weights,3);
 dist_euclid = sqrt(dist_mat_sse);
 
 % find that winning node
-[win_row,win_col] = find(dist_euclid==min(min(dist_euclid)));
+[win_row,win_col] = find(dist_euclid==min(dist_euclid(:)));
 
 % incase two winning nodes were found, pick only one of them. Rarely, if
 % ever, happens
 if length(win_row) > 1
     rand_idx = ceil(length(win_row)*rand);
     win_row = win_row(rand_idx);
-    win_col = win_cols(rand_idx);
+    win_col = win_col(rand_idx);
 end
 
 end

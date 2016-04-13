@@ -36,7 +36,7 @@ end
 if expt == 1
     exptFolder = 'delay';
 elseif expt == 2
-    exptFolder = 'lsitLength';
+    exptFolder = 'listLength';
 elseif expt == 3
     exptFolder = 'tUnique';
 else
@@ -65,7 +65,8 @@ parfor rat = firstRat:lastRat
     % tweak as necessary to reflect peculiarities in any given simulation
     p.nameOfFolder = ['eta', num2str(p.etaExp), '_g', num2str(p.G_exp), ...
         '_K', num2str(p.k_expt), '_A', num2str(p.A) ,'_B', num2str(p.B),...
-        num2str(p.nTrainCycles), 'trn_',num2str(p.nStimSets),'sSets'];
+        num2str(p.nTrainCycles),'nTrnCyc_', num2str(p.nEncodingCycles),'enc_',...
+        num2str(p.nSess),'sess_',num2str(p.nGrids_Caudal),'cGrds'];
     
     p.dataDir = strcat(outerDir, '\', exptFolder, '\' ,p.nameOfFolder);
     if ~exist(p.dataDir, 'dir'),

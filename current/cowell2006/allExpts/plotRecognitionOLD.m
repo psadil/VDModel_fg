@@ -40,8 +40,8 @@ load(fileName)
 %%
 nRats = lastRat-firstRat+1;
 
-recog = zeros(nRats,p.nSess/2,2,max(p.nTrials),p.nStimSets);
-recogByLayer = zeros(nRats,p.nSess,2,max(p.nTrials),p.nStimSets);
+recog = zeros(nRats,p.nSess/2,2,max(p.nTrials));
+recogByLayer = zeros(nRats,p.nSess,2,max(p.nTrials));
 
 %%
 for rat = firstRat:lastRat
@@ -56,12 +56,12 @@ for rat = firstRat:lastRat
         % collect all trial-wise selectivity of choice phase
         %------------------------------------------------------------------
         
-        recogByLayer(rat,session,1,1:p.nTrials(p.stimCond),:) = p.recogByLayer(:,1,:);
+%         recogByLayer(rat,session,1,1:p.nTrials(p.stimCond),:) = p.recogByLayer(:,1,:);
         if p.layer == 1
-            recog(rat,p.stimCond,1,1:p.nTrials(p.stimCond),:) = p.recognition;
+            recog(rat,p.stimCond,1,1:p.nTrials(p.stimCond)) = p.recognition(:,1);
         else
-            recogByLayer(rat,session,2,1:p.nTrials(p.stimCond),:) = p.recogByLayer(:,2,:);
-            recog(rat,p.stimCond,2,1:p.nTrials(p.stimCond),:) = p.recognition ;
+%             recogByLayer(rat,session,2,1:p.nTrials(p.stimCond),:) = p.recogByLayer(:,2,:);
+            recog(rat,p.stimCond,2,1:p.nTrials(p.stimCond)) = p.recognition(:,1) ;
         end
     end
 end
@@ -71,8 +71,7 @@ end
 % first, find the average for a rat in a given condition
 rats = zeros(nRats,length(p.nTrials),2);
 for stimCond = 1:length(p.nTrials)
-    rats(:,stimCond,:) = squeeze(mean(mean(recog(:,stimCond,:,1:p.nTrials(stimCond),:),4),5));
-    
+    rats(:,stimCond,:) = squeeze(mean(recog(:,stimCond,:,1:p.nTrials),4));   
 end
 recog_mean = squeeze(mean(rats,1));
 recog_sem = squeeze(std(rats,1) ./ sqrt(nRats));
@@ -86,20 +85,20 @@ shadedError(:,:,2) = recog_mean + recog_sem;
 % -------------------------------------------------------------------------
 
 % sigmoid
-rats_byLayer = zeros(nRats,p.nSess,2);
-for sess = 1:p.nSess
-    
-    % fill up with recognition calculated from each layer. Will be some 0s,
-    % since PRC was only available on sessions 5-8
-    if sess <= length(p.nTrials)
-        rats_byLayer(:,sess,1) = squeeze(mean(mean(recogByLayer(:,sess,1,1:p.nTrials(sess),:),4),5));
-    elseif sess > length(p.nTrials)
-        idx = sess - length(p.nTrials);
-        rats_byLayer(:,sess,:) = squeeze(mean(mean(recogByLayer(:,sess,:,1:p.nTrials(idx),:),4),5));
-    end
-end
-recogByLayer_mean = squeeze(mean(rats_byLayer,1));
-recogByLayer_sem = squeeze(std(rats_byLayer,1) ./ sqrt(nRats));
+% rats_byLayer = zeros(nRats,p.nSess,2);
+% for sess = 1:p.nSess
+%     
+%     % fill up with recognition calculated from each layer. Will be some 0s,
+%     % since PRC was only available on sessions 5-8
+%     if sess <= length(p.nTrials)
+%         rats_byLayer(:,sess,1) = squeeze(mean(mean(recogByLayer(:,sess,1,1:p.nTrials(sess),:),4),5));
+%     elseif sess > length(p.nTrials)
+%         idx = sess - length(p.nTrials);
+%         rats_byLayer(:,sess,:) = squeeze(mean(mean(recogByLayer(:,sess,:,1:p.nTrials(idx),:),4),5));
+%     end
+% end
+% recogByLayer_mean = squeeze(mean(rats_byLayer,1));
+% recogByLayer_sem = squeeze(std(rats_byLayer,1) ./ sqrt(nRats));
 
 
 %% expt specific plotting parameters
@@ -182,28 +181,28 @@ saveas(figs(3),[saveFolder, '/recog_sigm_barweb'],'jpg');
 
 %% recognition by layer
 
-% sigmoid
-figs(4) = figure;
-subplot(1,2,1)
-barweb([recogByLayer_mean(1:size(recog_mean,1),2),recogByLayer_mean(size(recog_mean,1)+1:end,2)]',...
-    [recogByLayer_sem(1:size(recog_mean,1),2),recogByLayer_sem(size(recog_mean,1)+1:end,2)]', [], {'PRC, lesion', 'PRC, control'})
-xlabel('stim condition');
-ylabel('recognition');
-legend(condLabels,'Location','best');
-figs(4).CurrentAxes.YLim = [0,...
-    max(recogByLayer_mean(:))+max(recogByLayer_sem(:))];
-
-subplot(1,2,2)
-barweb([recogByLayer_mean(1:size(recog_mean,1),1),recogByLayer_mean(size(recog_mean,1)+1:end,1)]',...
-    [recogByLayer_sem(1:size(recog_mean,1),1),recogByLayer_sem(size(recog_mean,1)+1:end,1)]', [], {'caudal, lesion', 'caudal, control'})
-xlabel('stim condition');
-ylabel('recognition');
-legend(condLabels,'Location','best');
-figs(4).CurrentAxes.YLim = [0,...
-    max(recogByLayer_mean(:))+max(recogByLayer_sem(:))];
-
-saveas(figs(4),[saveFolder, '/recogByLayer_sigm_barweb'],'fig');
-saveas(figs(4),[saveFolder, '/recogByLayer_sigm_barweb'],'jpg');
+% % sigmoid
+% figs(4) = figure;
+% subplot(1,2,1)
+% barweb([recogByLayer_mean(1:size(recog_mean,1),2),recogByLayer_mean(size(recog_mean,1)+1:end,2)]',...
+%     [recogByLayer_sem(1:size(recog_mean,1),2),recogByLayer_sem(size(recog_mean,1)+1:end,2)]', [], {'PRC, lesion', 'PRC, control'})
+% xlabel('stim condition');
+% ylabel('recognition');
+% legend(condLabels,'Location','best');
+% figs(4).CurrentAxes.YLim = [0,...
+%     max(recogByLayer_mean(:))+max(recogByLayer_sem(:))];
+% 
+% subplot(1,2,2)
+% barweb([recogByLayer_mean(1:size(recog_mean,1),1),recogByLayer_mean(size(recog_mean,1)+1:end,1)]',...
+%     [recogByLayer_sem(1:size(recog_mean,1),1),recogByLayer_sem(size(recog_mean,1)+1:end,1)]', [], {'caudal, lesion', 'caudal, control'})
+% xlabel('stim condition');
+% ylabel('recognition');
+% legend(condLabels,'Location','best');
+% figs(4).CurrentAxes.YLim = [0,...
+%     max(recogByLayer_mean(:))+max(recogByLayer_sem(:))];
+% 
+% saveas(figs(4),[saveFolder, '/recogByLayer_sigm_barweb'],'fig');
+% saveas(figs(4),[saveFolder, '/recogByLayer_sigm_barweb'],'jpg');
 
 
 end

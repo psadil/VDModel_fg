@@ -7,14 +7,14 @@ p = struct();
 p.expt = expt;
 
 %--------------------------------------------------------------------------
-% Archetecture of model
+% Architecture of model
 %--------------------------------------------------------------------------
 
 % nodes in a row of grid (total grid is nRows x nRows)
 p.nRows = 200;
 p.nLayers = 2;
 
-p.nGrids_Caudal = 4;
+p.nGrids_Caudal = 2;
 p.nGrids_PRC = 1;
 p.nGrids = [p.nGrids_Caudal, p.nGrids_PRC];
 
@@ -58,7 +58,7 @@ p.k_expt = .08;
 p.etaExp = p.nTrainCycles^-p.A;
 
 % encoding cycles per presentation of stimulus
-p.nEncodingCycles = 20;
+p.nEncodingCycles = 500;
 
 % define how many nodes to include in selectivity calculation
 p.sizeOfPeak = 5;
@@ -75,34 +75,32 @@ if expt == 1 % delay
     
     p.eta_int = p.etaExp;
     
-    p.delayCycles = [0,200,400,600,800,1200,2400,4800];
+    p.delayCycles = [0,200,400,600,800];
     
     p.nSess = length(p.delayCycles) * 2;
     p.nMismatch = repelem(1,p.nSess / 2);
     p.nMatch = 0;
     p.nStimSets = 4;
     
-    
 elseif expt == 2 % listLength
     
     % different number of stimuli list lengths
-    p.nMismatch = [1,6,12,18,24,36,48,96];
+    p.nMismatch = [1,6,12,18];
     p.nMatch = 0;
     p.nStimSets = 4;
     
     p.nSess = length(p.nMismatch) * p.nLayers;
     p.delayCycles = repelem(0, p.nSess / 2);
     
-    
 elseif expt == 3 % tUnique
     
+    p.nSess = 4;
     p.eta_int = p.etaExp;
-    p.nMismatch = repelem(1,p.nSess / 2);
-    p.nMatch = repelem(1,p.nSess / 2);
+    p.nMismatch = repelem(30,p.nSess / 2);
+    p.nMatch = repelem(30,p.nSess / 2);
     
     p.nStimSets = 1;
     
-    p.nSess = 4;
     p.delayCycles = repelem(200,p.nSess / 2);
     
 end
