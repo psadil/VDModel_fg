@@ -18,7 +18,7 @@ p.nGrids_Caudal = 2;
 p.nGrids_PRC = 1;
 p.nGrids = [p.nGrids_Caudal, p.nGrids_PRC];
 
-p.components = 12; % n elemental features
+p.components = 14; % n elemental features
 p.nStimFactors = 4; % nber of levels for each dimension
 p.nInputDims_Caudal = p.components/p.nGrids_Caudal;
 p.nInputDims_PRC = p.components;
@@ -31,7 +31,7 @@ p.nInputDims = [p.nInputDims_Caudal, p.nInputDims_PRC];
 % cycles to go through pretraining (NOTE: here's a place to fix in
 % future projects: don't cycle through a set nber of times, cycle
 % through until a set error has been reached.
-p.nTrainCycles = 20;
+p.nTrainCycles = 500;
 
 
 % The bigger A is, the faster ETA decreases, which makes for slower
@@ -58,7 +58,7 @@ p.k_expt = .08;
 p.etaExp = p.nTrainCycles^-p.A;
 
 % encoding cycles per presentation of stimulus
-p.nEncodingCycles = 500;
+p.nEncodingCycles = 50;
 
 % define how many nodes to include in selectivity calculation
 p.sizeOfPeak = 5;

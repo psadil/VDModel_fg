@@ -25,7 +25,7 @@ nTotalDims = p.components;
 nCaudalGrids = p.nGrids_Caudal;
 nDimsCaudal = nTotalDims / nCaudalGrids;
 nStimFactors = p.nStimFactors;
-nSimpleConj = nDimsCaudal ^ nStimFactors;
+nSimpleConj = nStimFactors ^ nDimsCaudal;
 
 
 % number of features to use for stimuli (in some expts, this is reduced to
@@ -34,7 +34,7 @@ nStimsPerCond = nSimpleConj;
 
 
 % see: gen_limited_input
-availFeat = permn(1:p.nStimFactors,p.nInputDims_Caudal);
+availFeat = single(permn(1:p.nStimFactors,p.nInputDims_Caudal));
 
 availFeat(availFeat==1)=0.05;
 availFeat(availFeat==2)=0.35;
@@ -48,7 +48,7 @@ availFeat = Shuffle(availFeat,2);
 % first contains every possible combination of simple features. rows ==
 % total number of stimuli possible. cols == number of simple conjunctions
 % attended to by PRC layer.
-first = permn(1:nStimsPerCond,p.nInputDims_PRC/p.nInputDims_Caudal);
+first = int16(permn(1:nStimsPerCond,p.nInputDims_PRC/p.nInputDims_Caudal));
 
 % rows of first are defined in simple conjunctions. But, we'll need to be
 % able to define those simple conjunctions in terms of elemental features.
@@ -60,7 +60,7 @@ first = permn(1:nStimsPerCond,p.nInputDims_PRC/p.nInputDims_Caudal);
 % load 'final' such that every other column contains the elements of
 % 'first' That is, col1 of final == col1 of first, col2 of final == 0. col3
 % of final == col2 of first, etc.
-final = zeros(size(first,1),p.nInputDims_PRC);
+final = int16(zeros(size(first,1),p.nInputDims_PRC));
 firstIdx = 1;
 for col = 1:p.nInputDims_Caudal:p.nInputDims_PRC
     final(:,col) = first(:,firstIdx);
@@ -78,6 +78,8 @@ for feature = 1:nStimsPerCond
     final(idx+size(first,1))=availFeat(feature,2);
     
 end
+
+
 
 %% define the stimulus
 

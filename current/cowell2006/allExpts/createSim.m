@@ -51,7 +51,7 @@ rng('shuffle');
 
 
 %% begign running rats
-parfor rat = firstRat:lastRat
+for rat = firstRat:lastRat
     
     % initialzie main p, to be used by all expts
     p = init_exptParms(expt);

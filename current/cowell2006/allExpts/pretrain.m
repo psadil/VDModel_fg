@@ -29,7 +29,7 @@ delay = 0;
 % NOTE: this scheme means that much of this array will remain at 0. That
 %    is, since the PRC layer has only 1 grid, only its first grid dim will
 %    be used.
-weights = zeros(max(p.nLayers),p.nRows,p.nRows,max(p.nInputDims),max(p.nGrids));
+weights = single(zeros(max(p.nLayers),p.nRows,p.nRows,max(p.nInputDims),max(p.nGrids)));
 
 %% Perform pre-training of network
 
