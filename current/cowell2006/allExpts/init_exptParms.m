@@ -11,7 +11,7 @@ p.expt = expt;
 %--------------------------------------------------------------------------
 
 % nodes in a row of grid (total grid is nRows x nRows)
-p.nRows = 100;
+p.nRows = 200;
 p.nLayers = 2;
 
 p.nGrids_Caudal = 4;
