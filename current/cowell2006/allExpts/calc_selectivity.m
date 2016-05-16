@@ -92,7 +92,6 @@ for unit = 1:p.sizeOfPeak
 end
 
 
-% act_total = sum(act_out(:));
 selectivity = act_peak/(sum(act_out(:)));
 
 

@@ -67,10 +67,6 @@ p.sizeOfPeak = 5;
 [cols, rows] = meshgrid(1:p.nRows);
 p.gridMat = cat(3, rows, cols);
 
-% whether to calculate selectivity or correlation
-% 0 => recognition
-% 1 => correlation
-p.measure = 1;
 
 %% experiment specific parameters
 

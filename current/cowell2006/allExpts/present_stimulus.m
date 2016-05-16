@@ -1,4 +1,4 @@
-function [weights, initial_selec, p, acts] = present_stimulus(stimuli, weights, p, trial)
+function [weights, initial_selec, p] = present_stimulus(stimuli, weights, p, trial)
 % present_stimulus -- present entire network (rat) with a single stimulus,
 % and update weights accordingly
 
@@ -31,8 +31,6 @@ grandStim = repmat(reshape(stimuli,[1 1 length(stimuli)]), [p.nRows p.nRows 1]);
 
 % storage for selectivity. To be fed into calc_recognition
 initial_selec = zeros(p.nLayers,max(p.nGrids));
-
-acts = zeros(size(weights));
 
 %% Expose network to stimuli and update weights
 
@@ -74,14 +72,10 @@ for layer=1:p.layer
             % grab selectivity of this grid to stim, and calc the amount
             % that needs to be updated.
             %--------------------------------------------------------------
-            if cycle == p.nEncodingCycles
-                [selectivity, ~, acts_grid] = ...
-                    calc_selectivity(win_row, win_col, dist_mse, p);
-                acts(layer,:,:,1:p.nInputDims(layer),grid) = acts_grid;
-            else
-                [selectivity, ~, ~] = ...
-                    calc_selectivity(win_row, win_col, dist_mse, p);
-            end
+            
+            [selectivity, ~, ~] = ...
+                calc_selectivity(win_row, win_col, dist_mse, p);
+            
             
             % because we don't update weights during the choice phase, grab
             % the selectivity only with the fresh weights.
