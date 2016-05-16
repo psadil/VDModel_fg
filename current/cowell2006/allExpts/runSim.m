@@ -55,6 +55,8 @@ for sess = 1:p.nSess,
     %----------------------------------------------------------------------
     p.recognition = zeros(p.nTrials(p.stimCond),p.nStimSets);
     p.recogByLayer = zeros(p.nTrials(p.stimCond),p.layer,p.nStimSets);
+    p.corr = zeros(p.nTrials(p.stimCond),p.nStimSets);
+    p.corrByLayer = zeros(p.nTrials(p.stimCond),p.layer,p.nStimSets);
     
     fprintf('\n\nSESSION %d, RAT %d\n', sess, p.ratNum);
     

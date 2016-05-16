@@ -32,7 +32,7 @@ grandStim = repmat(reshape(stimuli,[1 1 length(stimuli)]), [p.nRows p.nRows 1]);
 % storage for selectivity. To be fed into calc_recognition
 initial_selec = zeros(p.nLayers,max(p.nGrids));
 
-acts = zeros(size(weights));
+acts = zeros(p.nLayers,p.nRows,p.nRows,max(p.nGrids));
 
 %% Expose network to stimuli and update weights
 
@@ -77,7 +77,7 @@ for layer=1:p.layer
             if cycle == p.nEncodingCycles
                 [selectivity, ~, acts_grid] = ...
                     calc_selectivity(win_row, win_col, dist_mse, p);
-                acts(layer,:,:,1:p.nInputDims(layer),grid) = acts_grid;
+                acts(layer,:,:,grid) = acts_grid;
             else
                 [selectivity, ~, ~] = ...
                     calc_selectivity(win_row, win_col, dist_mse, p);

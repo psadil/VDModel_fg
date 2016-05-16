@@ -1,4 +1,4 @@
-function [] = plotRecognition(firstRat, lastRat)
+function [] = plotMeasures(firstRat, lastRat)
 % analyze recognition
 
 % called by: sometimes createSim
@@ -43,6 +43,11 @@ nRats = lastRat-firstRat+1;
 recog = zeros(nRats,p.nSess/2,2,max(p.nTrials),p.nStimSets);
 recogByLayer = zeros(nRats,p.nSess,2,max(p.nTrials),p.nStimSets);
 
+
+corr = zeros(nRats,p.nSess/2,2,max(p.nTrials),p.nStimSets);
+corrByLayer = zeros(nRats,p.nSess,2,max(p.nTrials),p.nStimSets);
+
+
 %%
 for rat = firstRat:lastRat
     for session = 1:p.nSess
@@ -63,6 +68,20 @@ for rat = firstRat:lastRat
             recogByLayer(rat,session,2,1:p.nTrials(p.stimCond),:) = p.recogByLayer(:,2,:);
             recog(rat,p.stimCond,2,1:p.nTrials(p.stimCond),:) = p.recognition ;
         end
+        
+        
+        %------------------------------------------------------------------
+        % collect all trial-wise correlation of choice phase
+        %------------------------------------------------------------------
+        corrByLayer(rat,session,1,1:p.nTrials(p.stimCond),:) = p.corrByLayer(:,1,:);
+        if p.layer == 1
+            corr(rat,p.stimCond,1,1:p.nTrials(p.stimCond),:) = p.corr;
+        else
+            corrByLayer(rat,session,2,1:p.nTrials(p.stimCond),:) = p.corrByLayer(:,2,:);
+            corr(rat,p.stimCond,2,1:p.nTrials(p.stimCond),:) = p.corr ;
+        end
+        
+        
     end
 end
 
@@ -77,9 +96,9 @@ end
 recog_mean = squeeze(mean(rats,1));
 recog_sem = squeeze(std(rats,1) ./ sqrt(nRats));
 
-shadedError = zeros(size(recog_mean,1),2,2);
-shadedError(:,:,1) = recog_mean - recog_sem;
-shadedError(:,:,2) = recog_mean + recog_sem;
+shadedError_recog = zeros(size(recog_mean,1),2,2);
+shadedError_recog(:,:,1) = recog_mean - recog_sem;
+shadedError_recog(:,:,2) = recog_mean + recog_sem;
 
 % -------------------------------------------------------------------------
 % recognition by layer
@@ -100,6 +119,42 @@ for sess = 1:p.nSess
 end
 recogByLayer_mean = squeeze(mean(rats_byLayer,1));
 recogByLayer_sem = squeeze(std(rats_byLayer,1) ./ sqrt(nRats));
+
+
+
+%%
+
+% first, find the average for a rat in a given condition
+rats = zeros(nRats,length(p.nTrials),2);
+for stimCond = 1:length(p.nTrials)
+    rats(:,stimCond,:) = squeeze(mean(mean(corr(:,stimCond,:,1:p.nTrials(stimCond),:),4),5));
+end
+corr_mean = squeeze(mean(rats,1));
+corr_sem = squeeze(std(rats,1) ./ sqrt(nRats));
+
+shadedError_corr = zeros(size(corr_mean,1),2,2);
+shadedError_corr(:,:,1) = corr_mean - corr_sem;
+shadedError_corr(:,:,2) = corr_mean + corr_sem;
+
+% -------------------------------------------------------------------------
+% correlation by layer
+% -------------------------------------------------------------------------
+
+% sigmoid
+rats_byLayer = zeros(nRats,p.nSess,2);
+for sess = 1:p.nSess
+    
+    % fill up with recognition calculated from each layer. Will be some 0s,
+    % since PRC was only available on sessions 5-8
+    if sess <= length(p.nTrials)
+        rats_byLayer(:,sess,1) = squeeze(mean(mean(corrByLayer(:,sess,1,1:p.nTrials(sess),:),4),5));
+    elseif sess > length(p.nTrials)
+        idx = sess - length(p.nTrials);
+        rats_byLayer(:,sess,:) = squeeze(mean(mean(corrByLayer(:,sess,:,1:p.nTrials(idx),:),4),5));
+    end
+end
+corrByLayer_mean = squeeze(mean(rats_byLayer,1));
+corrByLayer_sem = squeeze(std(rats_byLayer,1) ./ sqrt(nRats));
 
 
 %% expt specific plotting parameters
@@ -141,8 +196,8 @@ hold on
 plot(1:size(recog_mean,1),recog_mean(:,1), '--ok', 'MarkerSize',10)
 plot(1:size(recog_mean,1),recog_mean(:,2),'-ok','MarkerFaceColor','k', 'MarkerSize',10)
 
-plotshaded(1:size(recog_mean,1),[shadedError(:,1,1), shadedError(:,1,2)],'g')
-plotshaded(1:size(recog_mean,1),[shadedError(:,2,1), shadedError(:,2,2)],'r')
+plotshaded(1:size(recog_mean,1),[shadedError_recog(:,1,1), shadedError_recog(:,1,2)],'g')
+plotshaded(1:size(recog_mean,1),[shadedError_recog(:,2,1), shadedError_recog(:,2,2)],'r')
 
 ax = gca;
 ax.XTick = 1:size(recog_mean,1);
@@ -204,6 +259,80 @@ figs(4).CurrentAxes.YLim = [0,...
 
 saveas(figs(4),[saveFolder, '/recogByLayer_sigm_barweb'],'fig');
 saveas(figs(4),[saveFolder, '/recogByLayer_sigm_barweb'],'jpg');
+
+
+
+
+
+%% Correlation
+
+figs(5) = figure;
+hold on
+plot(1:size(corr_mean,1),corr_mean(:,1), '--ok', 'MarkerSize',10)
+plot(1:size(corr_mean,1),corr_mean(:,2),'-ok','MarkerFaceColor','k', 'MarkerSize',10)
+
+plotshaded(1:size(corr_mean,1),[shadedError_corr(:,1,1), shadedError_corr(:,1,2)],'g')
+plotshaded(1:size(corr_mean,1),[shadedError_corr(:,2,1), shadedError_corr(:,2,2)],'r')
+
+ax = gca;
+ax.XTick = 1:size(corr_mean,1);
+xlabel('stim condition');
+ylabel('correlation');
+legend('Lesion','Control')
+legend('boxoff')
+figs(5).CurrentAxes.YLim = [0,...
+    max(corr_mean(:))+max(corr_sem(:))];
+
+saveas(figs(5),[saveFolder, '/corr_shaded'],'fig');
+saveas(figs(5),[saveFolder, '/corr_shaded'],'jpg');
+
+
+% correlation, sigmoidal
+figs(6) = figure;
+subplot(1,2,1)
+barweb(corr_mean(:,2), corr_sem(:,2), [], {'control'})
+xlabel('stim condition');
+ylabel('correlation');
+legend(condLabels,'Location','best');
+figs(6).CurrentAxes.YLim = [0,...
+    max(corr_mean(:))+max(corr_sem(:))];
+
+subplot(1,2,2)
+barweb(corr_mean(:,1), corr_sem(:,1), [], {'lesion'})
+xlabel('stim condition');
+ylabel('corrnition');
+legend(condLabels,'Location','best');
+figs(6).CurrentAxes.YLim = [0,...
+    max(corr_mean(:))+max(corr_sem(:))];
+
+saveas(figs(6),[saveFolder, '/corr_sigm_barweb'],'fig');
+saveas(figs(6),[saveFolder, '/corr_sigm_barweb'],'jpg');
+
+
+%% corrnition by layer
+
+% sigmoid
+figs(7) = figure;
+subplot(1,2,1)
+barweb([corrByLayer_mean(1:size(corr_mean,1),2),corrByLayer_mean(size(corr_mean,1)+1:end,2)]',...
+    [corrByLayer_sem(1:size(corr_mean,1),2),corrByLayer_sem(size(corr_mean,1)+1:end,2)]', [], {'PRC, lesion', 'PRC, control'})
+xlabel('stim condition');
+ylabel('correlation');
+legend(condLabels,'Location','best');
+figs(7).CurrentAxes.YLim = [0,...
+    max(corrByLayer_mean(:))+max(corrByLayer_sem(:))];
+
+subplot(1,2,2)
+barweb([corrByLayer_mean(1:size(corr_mean,1),1),corrByLayer_mean(size(corr_mean,1)+1:end,1)]',...
+    [corrByLayer_sem(1:size(corr_mean,1),1),corrByLayer_sem(size(corr_mean,1)+1:end,1)]', [], {'caudal, lesion', 'caudal, control'})
+xlabel('stim condition');
+ylabel('correlation');
+legend(condLabels,'Location','best');
+figs(7).CurrentAxes.YLim = [0,...
+    max(corrByLayer_mean(:))+max(corrByLayer_sem(:))];
+
+saveas(figs(7),[saveFolder, '/corrByLayer_sigm_barweb'],'fig');
+saveas(figs(7),[saveFolder, '/corrByLayer_sigm_barweb'],'jpg');
 
 
 end

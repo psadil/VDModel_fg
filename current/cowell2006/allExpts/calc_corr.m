@@ -1,4 +1,4 @@
-function [ p ] = calc_corr( p, acts, trial, stimSet)
+function [ p ] = calc_corr( p, acts_forComp, trial, stimSet)
 % calc_recognition: calcs recognition socres
 % NOTE: recognition is defined by equations 14-16 of cowell et al. 2006
 
@@ -23,19 +23,35 @@ function [ p ] = calc_corr( p, acts, trial, stimSet)
 % average across all available layers.
 if p.layer == 2
     
-    tmp_prc = squeeze(selec_forComp(2,1,:));
-    tmp_caudal = squeeze(mean(selec_forComp(1,:,:),2));
-    p.recogByLayer(trial,2,stimSet) = (tmp_prc(1) - tmp_prc(2)) / (tmp_prc(1) + tmp_prc(2));
-    selec = mean([tmp_prc,tmp_caudal],2);
+    tmp_prc = squeeze(acts_forComp(2,:,:,:,:));
+    first_prc = tmp_prc(:,:,:,1);
+    second_prc = tmp_prc(:,:,:,2);
     
-else
-    selec = squeeze(mean(selec_forComp(1,:,:),2));
+    % calculate correlation
+    rho_prc = corr(first_prc(:),second_prc(:), 'type','Pearson');
+    
+    % fisher transform
+    p.corrByLayer(trial,2,stimSet) = .5*log((1+rho_prc)/(1-rho_prc));
+    
+    
 end
 
 
-tmp_caudal = squeeze(mean(selec_forComp(1,:,:),2));
-p.recogByLayer(trial,1,stimSet) = ...
-    (tmp_caudal(1) - tmp_caudal(2)) / (tmp_caudal(1) + tmp_caudal(2));
-p.recognition(trial,stimSet) = (selec(1) - selec(2)) / (selec(1) + selec(2));
+% always calculate correlation for caudal layer
+tmp_caudal = squeeze(acts_forComp(1,:,:,:,:));
+first_caudal = tmp_caudal(:,:,:,1);
+second_caudal = tmp_caudal(:,:,:,2);
+
+rho_caudal = corr(first_caudal(:),second_caudal(:), 'type','Pearson');
+p.corrByLayer(trial,1,stimSet) = .5*log((1+rho_caudal)/(1-rho_caudal));
+
+
+% calculate correlation across all available layers
+first = acts_forComp(:,:,:,:,1);
+second = acts_forComp(:,:,:,:,2);
+
+rho = corr(first(:),second(:), 'type','Pearson');
+p.corr(trial,stimSet) = .5*log((1+rho)/(1-rho));
+
 
 end
