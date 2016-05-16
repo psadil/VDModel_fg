@@ -34,15 +34,15 @@ nStimsPerCond = nSimpleConj;
 
 
 % see: gen_limited_input
-availFeat = single(permn(1:p.nStimFactors,p.nInputDims_Caudal));
-
-availFeat(availFeat==1)=0.05;
-availFeat(availFeat==2)=0.35;
-availFeat(availFeat==3)=0.65;
-availFeat(availFeat==4)=0.95;
-
-% rearrangement necessary for when grabbing these inputs
-availFeat = Shuffle(availFeat,2);
+% availFeat = single(permn(1:p.nStimFactors,p.nInputDims_Caudal));
+% 
+% availFeat(availFeat==1)=0.05;
+% availFeat(availFeat==2)=0.35;
+% availFeat(availFeat==3)=0.65;
+% availFeat(availFeat==4)=0.95;
+% 
+% % rearrangement necessary for when grabbing these inputs
+% availFeat = Shuffle(availFeat,2);
 
 
 % first contains every possible combination of simple features. rows ==
@@ -56,29 +56,7 @@ first = int16(permn(1:nStimsPerCond,p.nInputDims_PRC/p.nInputDims_Caudal));
 % the columns are -- not simple conjunctions -- but actual features. As
 % such, 'final' is rows == total possible stims, cols == components per
 % feature.
-
-% load 'final' such that every other column contains the elements of
-% 'first' That is, col1 of final == col1 of first, col2 of final == 0. col3
-% of final == col2 of first, etc.
-final = int16(zeros(size(first,1),p.nInputDims_PRC));
-firstIdx = 1;
-for col = 1:p.nInputDims_Caudal:p.nInputDims_PRC
-    final(:,col) = first(:,firstIdx);
-    firstIdx=firstIdx+1;
-end
-
-% now that every other column of 'final' defines a simple conjunction
-% (1:16), fill in every column of 'final' with the actual features. After
-% this for loop, 'final' should be populated with feature pairs defined by
-% 'availFeat'
-for feature = 1:nStimsPerCond
-    idx = find(final==feature);
-    
-    final(idx)=availFeat(feature,1);
-    final(idx+size(first,1))=availFeat(feature,2);
-    
-end
-
+final = single(permn([0.05,0.35,0.65,0.95],p.components));
 
 
 %% define the stimulus
@@ -142,6 +120,7 @@ for stimSet = 1:p.nStimSets;
                 % To avoid from always pulling from the beginning of
                 % 'first,' we need a random row index
                 row_randIdx = randperm(size(first,1));
+%                 row_randIdx2 = randmat(1,size(first,1), size(first,1));
                 for row = 1:size(first,1)
                     
                     % don't try this row if we've already used it somewhere
@@ -217,3 +196,16 @@ for stimSet = 1:p.nStimSets;
 end
 
 end
+
+
+% 
+% function A=randmat(m,n,upper)
+% % (m x n) matrix, with elements from 1 to upper
+% % every row never have repeated elements
+% 
+% [~, A] = sort(rand(m,upper),2);
+% A(:,n+1:end)=[];
+% 
+% end % randmat
+
+

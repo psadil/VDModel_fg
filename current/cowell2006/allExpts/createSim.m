@@ -67,7 +67,8 @@ for rat = firstRat:lastRat
         '_K', num2str(p.k_expt), '_A', num2str(p.A) ,'_B', num2str(p.B),...
         '_',num2str(p.nTrainCycles),'nTrnCyc_', num2str(p.nEncodingCycles),'enc_',...
         num2str(p.nSess),'sess_',num2str(p.nGrids_Caudal),'cGrds',...
-        num2str(p.components),'nCmpts'];
+        num2str(p.components),'nCmpts_', ...
+        num2str(p.nRows),'rws'];
     
     p.dataDir = strcat(outerDir, '\', exptFolder, '\' ,p.nameOfFolder);
     if ~exist(p.dataDir, 'dir'),
@@ -86,7 +87,6 @@ for rat = firstRat:lastRat
 end
 
 % call following to make graphs
-
 % plotFamilDiffs(1, lastRat, p.nameOfFolder);
 
 end

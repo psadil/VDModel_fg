@@ -19,7 +19,7 @@ function [p,weights] = pretrain(p)
 
 
 %%
-fprintf('\ndelay_pretrain being executed...');
+fprintf('\npretrain being executed...');
 
 % flag to indicate whether weights will be updated with experimental eta or
 % with delay cycle eta
@@ -29,7 +29,13 @@ delay = 0;
 % NOTE: this scheme means that much of this array will remain at 0. That
 %    is, since the PRC layer has only 1 grid, only its first grid dim will
 %    be used.
+
+
 weights = single(zeros(max(p.nLayers),p.nRows,p.nRows,max(p.nInputDims),max(p.nGrids)));
+
+%weights = struct;
+%weights.prc = single(zeros(p.nRows,p.nRows,p.nInputDims_PRC,p.nGrids_PRC));
+%weights.caudal = single(zeros(p.nRows,p.nRows,p.nInputDims_Caudal,p.nGrids_Caudal));
 
 %% Perform pre-training of network
 

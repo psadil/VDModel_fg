@@ -1,4 +1,4 @@
-function [selectivity, act_peak, act_total] = calc_selectivity(win_row, win_col, dist_mse,p)
+function [selectivity, act_peak, act_out] = calc_selectivity(win_row, win_col, dist_mse,p)
 % calc_selectivity -- calculates selectivity of grid to stimulus input.
 % Currently, calculates both in terms of classic logistic but also now new
 % guassian selectivity.
@@ -92,8 +92,8 @@ for unit = 1:p.sizeOfPeak
 end
 
 
-act_total = sum(act_out(:));
-selectivity = act_peak/act_total;
+% act_total = sum(act_out(:));
+selectivity = act_peak/(sum(act_out(:)));
 
 
 

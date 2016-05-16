@@ -1,4 +1,4 @@
-function [weights, initial_selec, p] = present_stimulus(stimuli, weights, p, trial)
+function [weights, initial_selec, p, acts] = present_stimulus(stimuli, weights, p, trial)
 % present_stimulus -- present entire network (rat) with a single stimulus,
 % and update weights accordingly
 
@@ -32,6 +32,8 @@ grandStim = repmat(reshape(stimuli,[1 1 length(stimuli)]), [p.nRows p.nRows 1]);
 % storage for selectivity. To be fed into calc_recognition
 initial_selec = zeros(p.nLayers,max(p.nGrids));
 
+acts = zeros(size(weights));
+
 %% Expose network to stimuli and update weights
 
 for layer=1:p.layer
@@ -49,7 +51,7 @@ for layer=1:p.layer
         % will be entire stimulus.
         inp = grandStim(:,:,(firstFeatureToCheck(grid):lastFeatureToCheck(grid)));
         
-        % pull out just the weights of 1 single grid. 
+        % pull out just the weights of 1 single grid.
         w = squeeze(weights(layer,:,:,1:p.nInputDims(layer),grid));
         
         %% update weights on new stimuli for initial calc of selectivity
@@ -57,9 +59,12 @@ for layer=1:p.layer
         
         for cycle=1:p.nEncodingCycles
             
+            
+            
             % for this stim, find the given winning node, and calculate
             % every node's distance away from the input in mse
             [win_row, win_col, dist_mse] = findWinningNode(w, inp);
+            
             
             % for subsequent analysis, making sure that different nodes are
             % being declared as winners.
@@ -69,15 +74,21 @@ for layer=1:p.layer
             % grab selectivity of this grid to stim, and calc the amount
             % that needs to be updated.
             %--------------------------------------------------------------
-            [selectivity, ~, ~] = ...
-                calc_selectivity(win_row, win_col, dist_mse, p);
+            if cycle == p.nEncodingCycles
+                [selectivity, ~, acts_grid] = ...
+                    calc_selectivity(win_row, win_col, dist_mse, p);
+                acts(layer,:,:,1:p.nInputDims(layer),grid) = acts_grid;
+            else
+                [selectivity, ~, ~] = ...
+                    calc_selectivity(win_row, win_col, dist_mse, p);
+            end
             
             % because we don't update weights during the choice phase, grab
             % the selectivity only with the fresh weights.
-            if cycle==1,  
+            if cycle==1,
                 initial_selec(layer,grid) = selectivity;
             end
-                  
+            
             %--------------------------------------------------------------
             % Calculate each unit's distance from winner and resultant activation
             % f is gaussian neighborhood.
@@ -85,9 +96,9 @@ for layer=1:p.layer
             f = calc_neigh(win_row, win_col, layer, p, delay);
             
             % Update Weights
-            w = w + f.*(inp-w); 
+            w = w + f.*(inp-w);
             
-        end 
+        end
         
         % load updated weights back into full weight matrix.
         weights(layer,:,:,1:p.nInputDims(layer),grid) = w;

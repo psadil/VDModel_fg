@@ -11,14 +11,14 @@ p.expt = expt;
 %--------------------------------------------------------------------------
 
 % nodes in a row of grid (total grid is nRows x nRows)
-p.nRows = 200;
+p.nRows = 100;
 p.nLayers = 2;
 
 p.nGrids_Caudal = 4;
 p.nGrids_PRC = 1;
 p.nGrids = [p.nGrids_Caudal, p.nGrids_PRC];
 
-p.components = 12; % n elemental features
+p.components = 8; % n elemental features
 p.nStimFactors = 4; % nber of levels for each dimension
 p.nInputDims_Caudal = p.components/p.nGrids_Caudal;
 p.nInputDims_PRC = p.components;
@@ -58,7 +58,7 @@ p.k_expt = .08;
 p.etaExp = p.nTrainCycles^-p.A;
 
 % encoding cycles per presentation of stimulus
-p.nEncodingCycles = 50;
+p.nEncodingCycles = 1;
 
 % define how many nodes to include in selectivity calculation
 p.sizeOfPeak = 5;
@@ -67,7 +67,10 @@ p.sizeOfPeak = 5;
 [cols, rows] = meshgrid(1:p.nRows);
 p.gridMat = cat(3, rows, cols);
 
-
+% whether to calculate selectivity or correlation
+% 0 => recognition
+% 1 => correlation
+p.measure = 1;
 
 %% experiment specific parameters
 
