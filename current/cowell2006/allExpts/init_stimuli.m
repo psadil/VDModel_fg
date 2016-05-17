@@ -33,18 +33,6 @@ nSimpleConj = nStimFactors ^ nDimsCaudal;
 nStimsPerCond = nSimpleConj;
 
 
-% see: gen_limited_input
-% availFeat = single(permn(1:p.nStimFactors,p.nInputDims_Caudal));
-% 
-% availFeat(availFeat==1)=0.05;
-% availFeat(availFeat==2)=0.35;
-% availFeat(availFeat==3)=0.65;
-% availFeat(availFeat==4)=0.95;
-% 
-% % rearrangement necessary for when grabbing these inputs
-% availFeat = Shuffle(availFeat,2);
-
-
 % first contains every possible combination of simple features. rows ==
 % total number of stimuli possible. cols == number of simple conjunctions
 % attended to by PRC layer.
@@ -139,7 +127,7 @@ for stimSet = 1:p.nStimSets;
                         trials_LA_misMatch2(stim) = row_randIdx(row);
                         
                         % declare that row as used
-                        used = [used;row_randIdx(row)];
+                        used = [used;row_randIdx(row)]; %#ok<AGROW>
                         
                         % stop searching for a matching stim
                         break % the row loop

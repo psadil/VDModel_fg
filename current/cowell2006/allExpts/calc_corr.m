@@ -47,8 +47,8 @@ p.corrByLayer(trial,1,stimSet) = .5*log((1+rho_caudal)/(1-rho_caudal));
 
 
 % calculate correlation across all available layers
-first = acts_forComp(:,:,:,:,1);
-second = acts_forComp(:,:,:,:,2);
+first = acts_forComp(1:p.layer,:,:,:,1);
+second = acts_forComp(1:p.layer,:,:,:,2);
 
 rho = corr(first(:),second(:), 'type','Pearson');
 p.corr(trial,stimSet) = .5*log((1+rho)/(1-rho));

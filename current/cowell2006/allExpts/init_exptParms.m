@@ -11,7 +11,7 @@ p.expt = expt;
 %--------------------------------------------------------------------------
 
 % nodes in a row of grid (total grid is nRows x nRows)
-p.nRows = 100;
+p.nRows = 50;
 p.nLayers = 2;
 
 p.nGrids_Caudal = 4;
@@ -58,7 +58,7 @@ p.k_expt = .08;
 p.etaExp = p.nTrainCycles^-p.A;
 
 % encoding cycles per presentation of stimulus
-p.nEncodingCycles = 20;
+p.nEncodingCycles = 10;
 
 % define how many nodes to include in selectivity calculation
 p.sizeOfPeak = 5;

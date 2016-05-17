@@ -37,7 +37,7 @@ fileName = [saveFolder, '/Session', num2str(1), '_Rat', num2str(1)];
 load(fileName)
 
 
-%%
+%% storage variables
 nRats = lastRat-firstRat+1;
 
 recog = zeros(nRats,p.nSess/2,2,max(p.nTrials),p.nStimSets);
@@ -48,7 +48,7 @@ corr = zeros(nRats,p.nSess/2,2,max(p.nTrials),p.nStimSets);
 corrByLayer = zeros(nRats,p.nSess,2,max(p.nTrials),p.nStimSets);
 
 
-%%
+%% gather all raw data
 for rat = firstRat:lastRat
     for session = 1:p.nSess
         
@@ -85,76 +85,22 @@ for rat = firstRat:lastRat
     end
 end
 
-%%
+%% summarize
 
-% first, find the average for a rat in a given condition
-rats = zeros(nRats,length(p.nTrials),2);
-for stimCond = 1:length(p.nTrials)
-    rats(:,stimCond,:) = squeeze(mean(mean(recog(:,stimCond,:,1:p.nTrials(stimCond),:),4),5));
-    
-end
-recog_mean = squeeze(mean(rats,1));
-recog_sem = squeeze(std(rats,1) ./ sqrt(nRats));
+%--------------------------------------------------------------------------
+% recognition
+%--------------------------------------------------------------------------
 
-shadedError_recog = zeros(size(recog_mean,1),2,2);
-shadedError_recog(:,:,1) = recog_mean - recog_sem;
-shadedError_recog(:,:,2) = recog_mean + recog_sem;
-
-% -------------------------------------------------------------------------
-% recognition by layer
-% -------------------------------------------------------------------------
-
-% sigmoid
-rats_byLayer = zeros(nRats,p.nSess,2);
-for sess = 1:p.nSess
-    
-    % fill up with recognition calculated from each layer. Will be some 0s,
-    % since PRC was only available on sessions 5-8
-    if sess <= length(p.nTrials)
-        rats_byLayer(:,sess,1) = squeeze(mean(mean(recogByLayer(:,sess,1,1:p.nTrials(sess),:),4),5));
-    elseif sess > length(p.nTrials)
-        idx = sess - length(p.nTrials);
-        rats_byLayer(:,sess,:) = squeeze(mean(mean(recogByLayer(:,sess,:,1:p.nTrials(idx),:),4),5));
-    end
-end
-recogByLayer_mean = squeeze(mean(rats_byLayer,1));
-recogByLayer_sem = squeeze(std(rats_byLayer,1) ./ sqrt(nRats));
+[recog_mean, recog_sem, shadedError_recog, recogByLayer_mean, recogByLayer_sem] = ...
+    aggregate(recog, recogByLayer, p, nRats);
 
 
+%--------------------------------------------------------------------------
+% correlation
+%--------------------------------------------------------------------------
 
-%%
-
-% first, find the average for a rat in a given condition
-rats = zeros(nRats,length(p.nTrials),2);
-for stimCond = 1:length(p.nTrials)
-    rats(:,stimCond,:) = squeeze(mean(mean(corr(:,stimCond,:,1:p.nTrials(stimCond),:),4),5));
-end
-corr_mean = squeeze(mean(rats,1));
-corr_sem = squeeze(std(rats,1) ./ sqrt(nRats));
-
-shadedError_corr = zeros(size(corr_mean,1),2,2);
-shadedError_corr(:,:,1) = corr_mean - corr_sem;
-shadedError_corr(:,:,2) = corr_mean + corr_sem;
-
-% -------------------------------------------------------------------------
-% correlation by layer
-% -------------------------------------------------------------------------
-
-% sigmoid
-rats_byLayer = zeros(nRats,p.nSess,2);
-for sess = 1:p.nSess
-    
-    % fill up with recognition calculated from each layer. Will be some 0s,
-    % since PRC was only available on sessions 5-8
-    if sess <= length(p.nTrials)
-        rats_byLayer(:,sess,1) = squeeze(mean(mean(corrByLayer(:,sess,1,1:p.nTrials(sess),:),4),5));
-    elseif sess > length(p.nTrials)
-        idx = sess - length(p.nTrials);
-        rats_byLayer(:,sess,:) = squeeze(mean(mean(corrByLayer(:,sess,:,1:p.nTrials(idx),:),4),5));
-    end
-end
-corrByLayer_mean = squeeze(mean(rats_byLayer,1));
-corrByLayer_sem = squeeze(std(rats_byLayer,1) ./ sqrt(nRats));
+[corr_mean, corr_sem, shadedError_corr, corrByLayer_mean, corrByLayer_sem] = ...
+    aggregate(corr, corrByLayer, p, nRats);
 
 
 %% expt specific plotting parameters
@@ -170,27 +116,8 @@ end
 
 
 
-%%
+%% plot aggregated results
 close all
-
-figs(1) = figure;
-hold on
-plot(1:size(recog_mean,1),recog_mean(:,1), '--ok', 'MarkerSize',10)
-plot(1:size(recog_mean,1),recog_mean(:,2),'-ok','MarkerFaceColor','k', 'MarkerSize',10)
-ax = gca;
-ax.XTick = 1:size(recog_mean,1);
-xlabel('stim condition');
-ylabel('recognition');
-legend('Lesion','Control')
-legend('boxoff')
-figs(1).CurrentAxes.YLim = [0,...
-    max(recog_mean(:))+max(recog_sem(:))];
-
-saveas(figs(1),[saveFolder, '/recog'],'fig');
-saveas(figs(1),[saveFolder, '/recog'],'jpg');
-
-
-% same as above, but with error
 figs(2) = figure;
 hold on
 plot(1:size(recog_mean,1),recog_mean(:,1), '--ok', 'MarkerSize',10)
@@ -212,8 +139,7 @@ saveas(figs(2),[saveFolder, '/recog_shaded'],'fig');
 saveas(figs(2),[saveFolder, '/recog_shaded'],'jpg');
 
 
-
-% recognition, sigmoidal
+% recognition
 figs(3) = figure;
 subplot(1,2,1)
 barweb(recog_mean(:,2), recog_sem(:,2), [], {'control'})
@@ -235,7 +161,9 @@ saveas(figs(3),[saveFolder, '/recog_sigm_barweb'],'fig');
 saveas(figs(3),[saveFolder, '/recog_sigm_barweb'],'jpg');
 
 
-%% recognition by layer
+%--------------------------------------------------------------------------
+% recognition by layer
+%--------------------------------------------------------------------------
 
 % sigmoid
 figs(4) = figure;
@@ -262,8 +190,6 @@ saveas(figs(4),[saveFolder, '/recogByLayer_sigm_barweb'],'jpg');
 
 
 
-
-
 %% Correlation
 
 figs(5) = figure;
@@ -280,21 +206,21 @@ xlabel('stim condition');
 ylabel('correlation');
 legend('Lesion','Control')
 legend('boxoff')
-figs(5).CurrentAxes.YLim = [0,...
+figs(5).CurrentAxes.YLim = [-0.5,...
     max(corr_mean(:))+max(corr_sem(:))];
 
 saveas(figs(5),[saveFolder, '/corr_shaded'],'fig');
 saveas(figs(5),[saveFolder, '/corr_shaded'],'jpg');
 
 
-% correlation, sigmoidal
+% correlation
 figs(6) = figure;
 subplot(1,2,1)
 barweb(corr_mean(:,2), corr_sem(:,2), [], {'control'})
 xlabel('stim condition');
 ylabel('correlation');
 legend(condLabels,'Location','best');
-figs(6).CurrentAxes.YLim = [0,...
+figs(6).CurrentAxes.YLim = [-.5,...
     max(corr_mean(:))+max(corr_sem(:))];
 
 subplot(1,2,2)
@@ -302,16 +228,16 @@ barweb(corr_mean(:,1), corr_sem(:,1), [], {'lesion'})
 xlabel('stim condition');
 ylabel('corrnition');
 legend(condLabels,'Location','best');
-figs(6).CurrentAxes.YLim = [0,...
+figs(6).CurrentAxes.YLim = [-.5,...
     max(corr_mean(:))+max(corr_sem(:))];
 
 saveas(figs(6),[saveFolder, '/corr_sigm_barweb'],'fig');
 saveas(figs(6),[saveFolder, '/corr_sigm_barweb'],'jpg');
 
+%--------------------------------------------------------------------------
+% correlation by layer
+%--------------------------------------------------------------------------
 
-%% corrnition by layer
-
-% sigmoid
 figs(7) = figure;
 subplot(1,2,1)
 barweb([corrByLayer_mean(1:size(corr_mean,1),2),corrByLayer_mean(size(corr_mean,1)+1:end,2)]',...
@@ -319,7 +245,7 @@ barweb([corrByLayer_mean(1:size(corr_mean,1),2),corrByLayer_mean(size(corr_mean,
 xlabel('stim condition');
 ylabel('correlation');
 legend(condLabels,'Location','best');
-figs(7).CurrentAxes.YLim = [0,...
+figs(7).CurrentAxes.YLim = [-.5,...
     max(corrByLayer_mean(:))+max(corrByLayer_sem(:))];
 
 subplot(1,2,2)
@@ -328,11 +254,52 @@ barweb([corrByLayer_mean(1:size(corr_mean,1),1),corrByLayer_mean(size(corr_mean,
 xlabel('stim condition');
 ylabel('correlation');
 legend(condLabels,'Location','best');
-figs(7).CurrentAxes.YLim = [0,...
+figs(7).CurrentAxes.YLim = [-.5,...
     max(corrByLayer_mean(:))+max(corrByLayer_sem(:))];
 
 saveas(figs(7),[saveFolder, '/corrByLayer_sigm_barweb'],'fig');
 saveas(figs(7),[saveFolder, '/corrByLayer_sigm_barweb'],'jpg');
+
+
+end
+
+
+%%
+
+% aggregate whichever measure into an overall average and by layer average
+function [mn, sem, shadedError, mn_byLayer, sem_byLayer] = ...
+    aggregate(measure, measureByLayer, p, nRats)
+
+% first, find the average for a rat in a given condition
+rats = zeros(nRats,length(p.nTrials),2);
+for stimCond = 1:length(p.nTrials)
+    rats(:,stimCond,:) = squeeze(mean(mean(measure(:,stimCond,:,1:p.nTrials(stimCond),:),4),5));
+end
+mn = squeeze(mean(rats,1));
+sem = squeeze(std(rats,1) ./ sqrt(nRats));
+
+shadedError = zeros(size(mn,1),2,2);
+shadedError(:,:,1) = mn - sem;
+shadedError(:,:,2) = mn + sem;
+
+% -------------------------------------------------------------------------
+% by layer
+% -------------------------------------------------------------------------
+
+rats_byLayer = zeros(nRats,p.nSess,2);
+for sess = 1:p.nSess
+    
+    % fill up with recognition calculated from each layer. Will be some 0s,
+    % since PRC was only available on sessions 5-8
+    if sess <= length(p.nTrials)
+        rats_byLayer(:,sess,1) = squeeze(mean(mean(measureByLayer(:,sess,1,1:p.nTrials(sess),:),4),5));
+    elseif sess > length(p.nTrials)
+        idx = sess - length(p.nTrials);
+        rats_byLayer(:,sess,:) = squeeze(mean(mean(measureByLayer(:,sess,:,1:p.nTrials(idx),:),4),5));
+    end
+end
+mn_byLayer = squeeze(mean(rats_byLayer,1));
+sem_byLayer = squeeze(std(rats_byLayer,1) ./ sqrt(nRats));
 
 
 end
