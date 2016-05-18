@@ -69,17 +69,6 @@ for rat = firstRat:lastRat
         clear p
     end
     
-%     
-%     p.a = a; % lower bound
-%     p.k = k; % upper bound
-%     p.c = c; % typically 1
-%     p.q = q; % related to y(0)
-%     p.b = b; % growth rate
-%     p.v = v; % place of maximal growth
-%     
-    
-    % even at 200 rows (possible 200^2 unique stimuli), that's not enough
-    % to contain the 16^4 possible part combinations
     
     p.numRows = 200; %variables with 'num' to denote number are used to define RUN_SIM matrix (and translated to another name before used in simulation)
     p.numLayers = 2;

@@ -50,10 +50,10 @@ for stimSet = 1:p.nStimSets
         % want fresh weights for only the first stim, but updated weights for
         % stims after that
         if trial_study == 1
-            [weights, ~, p] = ...
+            [weights, ~, p, ~] = ...
                 present_stimulus(stimPair(:,1), weights_before, p, trial_study);
         else
-            [weights, ~, p] = ...
+            [weights, ~, p, ~] = ...
                 present_stimulus(stimPair(:,1), weights, p, trial_study);
         end
         
@@ -80,15 +80,6 @@ for stimSet = 1:p.nStimSets
         % is a selectivity for both the studied and novel stim. 1 ==
         % studied, 2 == novel.
         selec_forComp = zeros(p.nLayers,max(p.nGrids),2);
-<<<<<<< HEAD
-        
-        % re-present initial sample stimulus
-        [~, selec_forComp(:,:,1), p] = ...
-            present_stimulus(stimPair(:,1), weights, p, trial_test);
-        
-        % present initial novel stimulus
-        [~, selec_forComp(:,:,2), p] = ...
-=======
         acts_forComp = zeros(p.nLayers,p.nRows,p.nRows,max(p.nGrids),2);
         
         % re-present initial sample stimulus
@@ -97,18 +88,14 @@ for stimSet = 1:p.nStimSets
         
         % present initial novel stimulus
         [~, selec_forComp(:,:,2), p, acts_forComp(:,:,:,:,2)] = ...
->>>>>>> corr
             present_stimulus(stimPair(:,2), weights, p, trial_test);
         
         % calc recognition score
         [p] = calc_recognition(p, selec_forComp, trial_test, stimSet);
         
-<<<<<<< HEAD
-=======
         % calc correlation score
         [p] = calc_corr(p, acts_forComp, trial_test, stimSet);
         
->>>>>>> corr
     end
     
 end

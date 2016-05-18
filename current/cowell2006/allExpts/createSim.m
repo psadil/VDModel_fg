@@ -51,7 +51,7 @@ rng('shuffle');
 
 
 %% begign running rats
-for rat = firstRat:lastRat
+parfor rat = firstRat:lastRat
     
     % initialzie main p, to be used by all expts
     p = init_exptParms(expt);
@@ -61,14 +61,13 @@ for rat = firstRat:lastRat
     
     %% data directory information
     
-    
     % tweak as necessary to reflect peculiarities in any given simulation
     p.nameOfFolder = ['eta', num2str(p.etaExp), '_g', num2str(p.G_exp), ...
         '_K', num2str(p.k_expt), '_A', num2str(p.A) ,'_B', num2str(p.B),...
         '_',num2str(p.nTrainCycles),'nTrnCyc_', num2str(p.nEncodingCycles),'enc_',...
         num2str(p.nSess),'sess_',num2str(p.nGrids_Caudal),'cGrds',...
         num2str(p.components),'nCmpts_', ...
-        num2str(p.nRows),'rws'];
+        num2str(p.nRows),'rws_', 'wCor'];
     
     p.dataDir = strcat(outerDir, '\', exptFolder, '\' ,p.nameOfFolder);
     if ~exist(p.dataDir, 'dir'),

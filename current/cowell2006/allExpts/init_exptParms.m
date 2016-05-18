@@ -58,7 +58,7 @@ p.k_expt = .08;
 p.etaExp = p.nTrainCycles^-p.A;
 
 % encoding cycles per presentation of stimulus
-p.nEncodingCycles = 1;
+p.nEncodingCycles = 500;
 
 % define how many nodes to include in selectivity calculation
 p.sizeOfPeak = 5;
@@ -74,7 +74,7 @@ if expt == 1 % delay
     
     p.eta_int = p.etaExp;
     
-    p.delayCycles = [0,200,400,600,800];
+    p.delayCycles = [0,2000,4000,6000,8000];
     
     p.nSess = length(p.delayCycles) * 2;
     p.nMismatch = repelem(1,p.nSess / 2);

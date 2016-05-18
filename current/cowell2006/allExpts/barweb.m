@@ -151,6 +151,7 @@ else
         x = bsxfun(@plus, handles.bars(i).XData, [handles.bars(i).XOffset]');
         handles.errors(i) = errorbar(x, barvalues(:,i), errors(:,i), 'k', 'linestyle', 'none', 'linewidth', 1);
         ymax = max([ymax; barvalues(:,i)+errors(:,i)]);
+        ymin = min([ymax; barvalues(:,i)+errors(:,i)]);
     end
     % 	for i = 1:numbars
     % 		x =get(get(handles.bars(i),'children'), 'xdata');
@@ -163,7 +164,7 @@ else
         set(gca,'children', flipud(get(gca,'children')));
     end
     
-    ylim([0 ymax*1.1]);
+    ylim([ymin ymax*1.1]);
     xlim([0.5 numgroups-change_axis+0.5]);
     
     if strcmp(legend_type, 'axis')
