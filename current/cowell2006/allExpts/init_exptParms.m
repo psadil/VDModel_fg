@@ -11,7 +11,7 @@ p.expt = expt;
 %--------------------------------------------------------------------------
 
 % nodes in a row of grid (total grid is nRows x nRows)
-p.nRows = 50;
+p.nRows = 200;
 p.nLayers = 2;
 
 p.nGrids_Caudal = 4;
@@ -58,7 +58,7 @@ p.k_expt = .08;
 p.etaExp = p.nTrainCycles^-p.A;
 
 % encoding cycles per presentation of stimulus
-p.nEncodingCycles = 10;
+p.nEncodingCycles = 500;
 
 % define how many nodes to include in selectivity calculation
 p.sizeOfPeak = 5;
@@ -78,7 +78,7 @@ if expt == 1 % delay
     
     p.eta_int = p.etaExp;
     
-    p.delayCycles = [0,200,400,600,800];
+    p.delayCycles = [0,2000,4000,6000,8000];
     
     p.nSess = length(p.delayCycles) * 2;
     p.nMismatch = repelem(1,p.nSess / 2);
