@@ -125,20 +125,7 @@ for trial = 1:p.nTrials,
     %stop_sampling: 1 = mismatch, 0 = match (note: tType==1 is Mismatch; tType==2 is Match)
     p.answer(trial) = stop_sampling; % answer=1 is mismatch; answer=0 is match
     p.correct(trial) = abs(p.answer(trial)-(p.tType(trial)-1)); % correct=1 is correct; correct=0 is incorrect
-    
-    
-    %----------------------------------------------------------------------
-    %%% Analyze the trial information
-    
-    % need the (1) because double [0 0] occasionally appear.
-    %     p.famil_difference(trial)=trial_info.famil_difference(1);
-    
-    %     p.correlation(trial,:) = trial_info.correlation;
-    %     p.selectivity_prev(trial) = trial_info.selectivity_prev;
-    %     p.selectivity_new(trial) = trial_info.selectivity_new;
-    %     p.activations_new(1:p.layer,:,:,:,trial) = trial_info.activations;
-    %     p.activations_prev(1:p.layer,:,:,:,trial) = trial_info.prevStimActs;
-    
+        
     
     [p] = determineCriterion(p ,trial);
     
