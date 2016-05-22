@@ -48,9 +48,6 @@ p.ratNum = rat;
 
 startTime=GetSecs;
 for sess = 2:size(RUN_SIM, 1),
-    if sess == 4
-        2;
-    end
     
     % create stim sequence
     [p] = VD_createStimOrder(p);

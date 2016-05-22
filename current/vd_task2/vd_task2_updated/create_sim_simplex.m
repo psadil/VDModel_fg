@@ -1,68 +1,23 @@
-% function dPrimePredictions = create_sim_simplex(firstRat, lastRat, etaExp, G_exp)
-
 function [] = create_sim_simplex(firstRat, lastRat)
 
 global consts
 
-
-% name of folder containing stimuli to use
-
-
-
-% data is in DIFFERENCE of dPrime, from first to second half of trials.
-% order of [caudal_LA, caudal_HA, PRC_LA, PRC_HA]
-% want data: caudal LA => no diff
-%            caudal HA => dPrime at 2, then 0 (diff of 2?)
-%            PRC LA => no diff
-%            PRC HA => no diff     
-% data = [0, -1.5, 0, 0];
-
-% initialize starting value of parameters
-% etaExp
-% G_exp 
-%%% numTrainCycles
-%%% numEncodingCycles
-% startParms = [ .01 , .8 ]; % .09
-% startParms = [ .7 , 20 ];
-A = .6; % .7
-B = .3; % .6
+A = .6; 
+B = .3; 
 train = 500;
 eta = train^-A;
 g = .5+10*train^-B;
 k = .08;
 noise = 1e-6;
 leng = 6;
-startCrit = .5e-5;
-
-%% parameters for generalized logistic function activation
-% 
-% a = 0; % lower bound
-% k = 1; % upper bound
-% c = 1; % typically 1
-% q = 10; % related to y(0)
-% b = 1; % growth rate
-% v = 1; % place of maximal growth
-
-%%
-
-% next, try actually working with 1000 training cycles...
-
-startParms = [ eta , g, k ];
-
-etaExp = startParms(1);
-G_exp = startParms(2);
-k_expt = startParms(3);
+startCrit = noise*2;
 
 
 consts.exptName = 'october31_2015';
 consts.nameOfFolder = ['eta', num2str(eta), '_g', num2str(g), ...
     '_K', num2str(k), '_A', num2str(A) ,'_B', num2str(B), '_20enc20_', num2str(train), ...
     'trn_', '0setTrain_','5pk_20Fix_6stm_1finAct_' num2str(noise), 'noisThresh_', num2str(startCrit),'stCrt_', ...
-    num2str(leng),'leng', '_0accuLearn100']; %_genLog', '_a', num2str(a), ...
-   % '_b', num2str(b), '_v', num2str(v)];
-%% Creates a run_sim file for a single, yoked-pair simulation.
-
-%% Set all variables to default values, which can be overwritten subsequently.
+    num2str(leng),'leng', '_0accuLearn100']; 
 
 
 for rat = firstRat:lastRat
@@ -70,15 +25,6 @@ for rat = firstRat:lastRat
     if exist('p', 'var')
         clear p
     end
-    
-%     
-%     p.a = a; % lower bound
-%     p.k = k; % upper bound
-%     p.c = c; % typically 1
-%     p.q = q; % related to y(0)
-%     p.b = b; % growth rate
-%     p.v = v; % place of maximal growth
-%     
     
     
     
@@ -100,12 +46,12 @@ for rat = firstRat:lastRat
     p.maxFixations = [20, 25]; % should it be based on empirical data? total # saccades on match trials = 20
     % first == low ambig, second == high ambig
     % should be [20 25]
-    p.k_expt = k_expt;
+    p.k_expt = k;
     p.A = A; % was 0.8 %% Pre-training parameter. The bigger A is, the faster ETA decreases, and the smaller the amount of learning on the weights for all units.
 %     p.A_encoding = .1; % was 2
-    p.etaExp = etaExp; % was 10, go back to .3?
+    p.etaExp = eta; % was 10, go back to .3?
     p.B = B; %was .8 Pre-training parameter. The bigger B is, the faster G decreases, and the smaller the neighbourhood of the winner that gets updated.
-    p.G_exp = G_exp; % next, lower to .1?
+    p.G_exp = g; % next, lower to .1?
     %     p.sigma = .1;  % currently, these don't change anything...
     %     p.eta = .01; % currently, these don't change anything...
     p.numTrainCycles = [train, train];

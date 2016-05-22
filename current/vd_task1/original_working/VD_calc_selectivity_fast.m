@@ -3,8 +3,6 @@ function [f_out, act_out, selectivity, p, act_peak, act_total] = VD_calc_selecti
 %% Function called from VD_present_stimulus.m. Calculates grid_dist matrix, then
 %% calculates all units' activities and selectivity of activation peak.
 
-%%% Calculate city-block distance from winner in grid, with wraparound 
-sizeOfPeak = p.sizeOfPeak;
 
 
 %%find distance of each unit from winner (using gridMat, which stores the position of each unit in the grid) 
@@ -40,8 +38,6 @@ grid_dist = min_row_dist_mat + min_col_dist_mat;
 f_1dim = p.etaExp .* exp(-(grid_dist/p.G_exp).^2);
 f_1dim = f_1dim .* (grid_dist < p.filtPeak);
 
-% MAYBE BRING THIS BACK!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-% f_out = repmat(f_1dim,[1,1,nInpDims]);
 
 f_out=zeros(p.numRows,p.numRows,nInpDims);
 for dim=1:nInpDims
@@ -50,24 +46,11 @@ end
 
 act_out = log(ones(p.nRows,p.nRows) ./ dist_mat);   % create this ln thing that deals with distance of nodes away from original stimulus vector 
 %                                                   (not winning node, because this is used for 'recognition' ratio ((S_samp-S_nov)/(S_samp+S_nov)))
-% surf(act_out)
-% max(max(act_out))
-% close all
-
-
-% act_out = p.a + ((p.k - p.a)./ ((p.c + p.q * exp(-p.b*act_out)).^(1/p.v)));
 
 
 act_out = 1./(1+exp(-p.k_expt*act_out)); %squashing function   (why squash?)
-% 
-% surf(act_out)
-% max(act_out)
-% close all
 
-%may make sense to go back to version where we 'cap' the distance (because then the dynamic range of
-%outputs starts at 0 rather than 0.5)
 
-% surf(act_out);
 
 %%% initialise array and record winner for all situations
 winners = zeros(9,2);
@@ -102,7 +85,7 @@ winners(23,:) = [win_row win_col-3];
 winners(24,:) = [win_row+3 win_col];
 winners(25,:) = [win_row-3 win_col];
 
-for win_unit = 1:sizeOfPeak %% however many winners in peak
+for win_unit = 1:p.sizeOfPeak %% however many winners in peak
     if winners(win_unit,1) > p.nRows,
         winners(win_unit,1) = winners(win_unit,1) - p.nRows;
     elseif winners(win_unit,1) <= 0,
@@ -115,21 +98,14 @@ for win_unit = 1:sizeOfPeak %% however many winners in peak
     end
 end
 
-% if any(isnan(act_out))
-%    act_out(isnan(act_out))=0; 
-% end
 
 act_peak = 0;
-for unit = 1:sizeOfPeak
+for unit = 1:p.sizeOfPeak
     act_peak = act_peak + act_out(winners(unit,1), winners(unit,2));
 end
 
-% p.act_peak(trial,layer) = act_peak;
 
 act_total = sum(sum(act_out));
 selectivity = act_peak/act_total;
     
-% % if isnan(selectivity)
-% %    2; 
-% end
-% p.totalAct(trial,layer) = act_total;
+end
