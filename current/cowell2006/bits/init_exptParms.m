@@ -14,11 +14,11 @@ p.expt = expt;
 p.nRows = 50;
 p.nLayers = 2;
 
-p.nGrids_Caudal = 2;
+p.nGrids_Caudal = 10;
 p.nGrids_PRC = 1;
 p.nGrids = [p.nGrids_Caudal, p.nGrids_PRC];
 
-p.components = 10; % n elemental features
+p.components = 20; % n elemental features
 p.features = [0,1]; % what those features might look like
 p.nStimFactors = length(p.features); % nber of levels for each dimension
 p.nInputDims_Caudal = p.components/p.nGrids_Caudal;
@@ -37,11 +37,11 @@ p.nTrainCycles = 0;
 
 % The bigger A is, the faster ETA decreases, which makes for slower
 % learning that occurs during pretraining
-p.A = .6;
+p.A = 0;
 
 % The bigger B is, the faster G decreases, and the smaller the
 % neighborhood of the winner that gets updated.
-p.B = .3;
+p.B = 0;
 
 
 %--------------------------------------------------------------------------
@@ -53,15 +53,15 @@ p.B = .3;
 
 % width of gaussian neighborhood learning equation
 % p.G_exp = .5+10*p.nTrainCycles^-p.B;
-p.G_exp = .25;
+p.G_exp = 2;
 
 % rate of sigmoid activation function
-p.k_expt = .01;
+p.k_expt = 2;
 
 % learning rate. amount that winning node moves closer to input during
 % expt
 % p.etaExp = p.nTrainCycles^-p.A;
-p.etaExp = 1;
+p.etaExp = .1;
 
 % encoding cycles per presentation of stimulus
 p.nEncodingCycles = 1; % try with only 100 encoding cycles, but many more

@@ -16,36 +16,30 @@ nTotalDims = p.components;
 nCaudalGrids = p.numGrids_Caudal;
 nDimsCaudal = nTotalDims / nCaudalGrids;
 nStimFactors = p.nStimFactors;
-nSimpleConj = nDimsCaudal ^ nStimFactors;
+nSimpleConj = nStimFactors ^ nDimsCaudal;
+
 
 
 % number of features to use for stimuli (less then total)
-nStimsPerCond = 6;
+nStimsPerCond = nSimpleConj;
 
 LA_misMatch = zeros(p.nMismatch,nTotalDims,2); %one col for stim1, one col for stim2
 LA_match = zeros(p.nMatch,nTotalDims,2);
 HA_misMatch = zeros(p.nMismatch,nTotalDims,2); %one col for stim1, one col for stim2
 HA_match = zeros(p.nMatch,nTotalDims,2);
 
-count=1;
-availFeat = zeros(nSimpleConj, nDimsCaudal);
-for inp1 = 1:nCaudalGrids,
-    for inp2 = 1:nStimFactors,
-        availFeat(count,:) = [inp1 inp2];
-        %     availFeat(count) = inp2;
-        count=count+1;
-    end
-end
+% count=1;
+% availFeat = zeros(nSimpleConj, nDimsCaudal);
+% for inp1 = 1:nCaudalGrids,
+%     for inp2 = 1:nStimFactors,
+%         availFeat(count,:) = [inp1 inp2];
+%         count=count+1;
+%     end
+% end
+availFeat = permn(p.features,nDimsCaudal);
 
-% availFeat(availFeat==1)=0.05;
-% availFeat(availFeat==2)=0.35;
-% availFeat(availFeat==3)=0.65;
-% availFeat(availFeat==4)=0.95;
-
-availFeat(availFeat==1)=0.05;
-availFeat(availFeat==2)=0.35;
-availFeat(availFeat==3)=0.65;
-availFeat(availFeat==4)=0.95;
+% availFeat(availFeat==1)=0;
+% availFeat(availFeat==2)=1;
 
 features = availFeat; %[repmat(availFeat(:,1),[1 3]) repmat(availFeat(:,2),[1 3])]; throwback to when each input dimension was replicated 3 times
 
@@ -104,18 +98,17 @@ while notUnique
     notUnique=0;
     breakOut = 0;
     for item = 1:p.nMismatch-1
-        %         items = item+1:p.nMismatch;
-        %         items(item)=[];
         for trial = item+1:p.nMismatch
-            
-            %             if isequal(stimuli1(item,:,:),(stimuli1(trial,:,:)))
             if stimuli1(item,:,:) == (stimuli1(trial,:,:))
                 notUnique = 1;
                 breakOut = 1;
                 break;
-                %             elseif isequal(stimuli2(item,:,:),(stimuli2(trial,:,:)))
             elseif stimuli2(item,:,:) == (stimuli2(trial,:,:))
                 notUnique=1;
+                breakOut = 1;
+                break;
+            elseif stimuli1(item,:,:) == (stimuli2(trial,:,:))
+                notUnique = 1;
                 breakOut = 1;
                 break;
             end
@@ -148,19 +141,13 @@ while notUnique
                     nEqual = nEqual + 1;
                 end
             end
-            %             if nEqual > 1
-            %                 nEqual
-            %             end
+            
             if nEqual == (nCaudalGrids - 1)
                 %                 break
-                2;
             else
                 nEqual = 0;
             end
         end
-        
-        %         stimuli1(stimPair,:,1) = features(chosenFeat(:,1),:);
-        %         stimuli2(stimPair,:,2) = features(chosenFeat(:,2),:);
         
         for grid = 1:nCaudalGrids
             %first stim in pair
@@ -171,9 +158,6 @@ while notUnique
         
         
     end
-    
-    % number of stimuli that will have too few features identical
-    %         nWrongStims = sum((sum(stimuli1(:,:,1)==stimuli1(:,:,2),2)>=6)==0)
     
     
     %then create Match pairs
@@ -197,19 +181,19 @@ while notUnique
     stimuli1 = HA_misMatch;
     stimuli2 = HA_match;
     
-    %     notUnique=0;
+    
     for item = 1:p.nMismatch-1
-        %         items = item+1:p.nMismatch;
-        %         items(item)=[];
+        
         for trial = item+1:p.nMismatch
-            
-            %             if isequal(stimuli1(item,:,:),(stimuli1(trial,:,:)))
             if stimuli1(item,:,:) == (stimuli1(trial,:,:))
                 notUnique=1;
                 breakOut = 1;
                 break;
-                %             elseif isequal(stimuli2(item,:,:),(stimuli2(trial,:,:)))
             elseif stimuli2(item,:,:) == (stimuli2(trial,:,:))
+                notUnique=1;
+                breakOut = 1;
+                break;
+            elseif stimuli1(item,:,:) == (stimuli2(trial,:,:))
                 notUnique=1;
                 breakOut = 1;
                 break;
@@ -219,7 +203,7 @@ while notUnique
             break;
         end
     end
-
+    
     
     %save stimuli
     if ~exist(strcat(ROOT,exptDir,'condition2'),'dir')

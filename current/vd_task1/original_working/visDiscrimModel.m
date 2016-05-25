@@ -21,21 +21,25 @@ global ROOT
 % weights=zeros(p.layer,p.nRows,p.nRows,p.components,p.numInputDims(p.numLayers),p.numGrids(p.layer));
 weights=zeros(p.layer,p.nRows,p.nRows,p.numInputDims(p.numLayers),p.numGrids(1));
 
-for layer=1:p.layer
-    nInpDims=p.numInputDims(layer);
-    for grid=1:p.nGrids(layer)
-        if ~p.setPre
-            location = strcat(ROOT,'rats/rat', num2str(p.ratNum), '/pretrainedW__layer', num2str(layer), 'grid', num2str(grid),'.mat');
-            load(location);
-            weights(layer,:,:,1:nInpDims,grid)=w;
-            fclose('all');
-            
-        else
-            weights = rand(size(weights));
+if p.numTrainCycles > 0
+    for layer=1:p.layer
+        nInpDims=p.numInputDims(layer);
+        for grid=1:p.nGrids(layer)
+            if ~p.setPre
+                location = strcat(ROOT,'rats/rat', num2str(p.ratNum), '/pretrainedW__layer', num2str(layer), 'grid', num2str(grid),'.mat');
+                load(location);
+                weights(layer,:,:,1:nInpDims,grid)=w;
+                fclose('all');
+                
+            else
+                weights = rand(size(weights));
+            end
         end
     end
-end
+else
+    weights=rand([p.layer,p.nRows,p.nRows,p.numInputDims(p.numLayers),p.numGrids(1)]);
 
+end
 
 % Get stimuli from stimulus files in '/p.expt/conditionXX/' directory.
 location = strcat(ROOT, p.expt, '/condition', num2str(p.stimCond),'/stimuli.mat');
@@ -105,7 +109,7 @@ for trial = 1:p.nTrials,
     elseif tType==2,
         tTypeStr='Match';
     end
-%     fprintf('\n\nTrial %d: Stim Cond %d, %s Trial, Rat %d.\n',trial, p.stimCond, tTypeStr, p.ratNum);
+    %     fprintf('\n\nTrial %d: Stim Cond %d, %s Trial, Rat %d.\n',trial, p.stimCond, tTypeStr, p.ratNum);
     
     %----------------------------------------------------------------------
     %%% Get the two stimuli for this simultaneous visual discrimination trial
@@ -125,7 +129,7 @@ for trial = 1:p.nTrials,
     %stop_sampling: 1 = mismatch, 0 = match (note: tType==1 is Mismatch; tType==2 is Match)
     p.answer(trial) = stop_sampling; % answer=1 is mismatch; answer=0 is match
     p.correct(trial) = abs(p.answer(trial)-(p.tType(trial)-1)); % correct=1 is correct; correct=0 is incorrect
-        
+    
     
     [p] = determineCriterion(p ,trial);
     

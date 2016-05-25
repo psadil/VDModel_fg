@@ -113,7 +113,7 @@ while ((p.fixations(trial) < p.maxFix) && stopSampling == 0) || (keepSampling &&
     pktot.init_act_peak = zeros(p.numLayers,max(p.numGrids));
     pktot.init_act_total = zeros(p.numLayers,max(p.numGrids));
     
-    [weights, selectivity, initial_selec, p, pktot, usePRC, acts, initial_acts] = VD_present_stimulus(stimulus, weights, p, features_sampled, trial, pktot);
+    [weights, selectivity, initial_selec, p, pktot, usePRC, acts, ~] = VD_present_stimulus(stimulus, weights, p, features_sampled, trial, pktot);
     
     % after completing within-stimulus fixations, some fixations can land,
     % not on the other stimulus, but outside of both

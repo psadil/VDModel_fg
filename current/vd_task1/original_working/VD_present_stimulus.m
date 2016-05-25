@@ -11,8 +11,6 @@ function [W, selec, initial_selec, p, pktot, usePRC, act_out, initial_acts] = VD
 % processing), since not looking at them directly right now.
 
 inp_mat = repmat(reshape(stim,[1 1 length(stim)]), [p.nRows p.nRows 1]);
-% normalize
-inp_mat = inp_mat ./ sqrt(sum(inp_mat.^2,3));
 
 act_out = zeros(p.layer,p.nRows,p.nRows,p.maxNumGrids); % 5 grids (only 1 stimulus)
 initial_acts = zeros(p.layer,p.nRows,p.nRows,p.maxNumGrids);
@@ -75,9 +73,6 @@ for layer=1:p.layer
                        
             % Update Weights
             weights = weights + f.*(input_mat-weights);  % update based on spire around winning node
-
-            % normalize
-            weights = weight ./ sum(weights.^2,2).^0.5;
         end %%% Go to next cycle (if switchRatio is low enough)
         
         

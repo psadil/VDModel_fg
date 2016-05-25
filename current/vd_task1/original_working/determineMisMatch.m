@@ -64,9 +64,6 @@ for layer_prev = 1:p.numLayers
             whichCaudal = whichCaudal(1);
         end
         
-        if isempty(whichCaudal)
-            2;
-        end
         
         p.meanSelectivity_caudal_prev(trial) = meanSelectivity_caudal_prev(whichCaudal);
         p.meanSelectivity_caudal_new(trial) = meanSelectivity_caudal_new(whichCaudal);
@@ -86,18 +83,6 @@ end
 % sure that the average is having some amount of noise...)
 
 
-% if ~p.diffEncode
-%
-%     % only use PRC layer if p.numGrids_Caudal features were sampled for both stimuli
-%     if (all(p.usePRC(:,trial))) && (p.which_gp_layer==2)
-%         familDiff = p.familDiff_PRC(trial);
-%         thresh = p.famil_diff_thresh(p.numThresh,:);
-%     else
-%         familDiff = p.familDiff_caudal(trial);
-%         thresh = p.famil_diff_thresh(1,:);
-%     end
-%
-% else
 
 % going to need a noisy caudal threshold, regardless
 noise = p.decision_noise;
@@ -110,16 +95,6 @@ thresh_caudal = lower_caudal_thresh + (upper_caudal_thresh - lower_caudal_thresh
 
 familDiff_caudal = p.familDiff_caudal(trial);
 
-% lower_caudal = familDiff_caudal - noise;
-% upper_caudal = familDiff_caudal + noise;
-% 
-% familDiff_caudal = lower_caudal + (upper_caudal - lower_caudal)*rand;
-
-% % the following was modified to keep threshold above 0
-% threshold_caudal = -1;
-% while threshold_caudal < 0
-%     threshold_caudal = lower_caudal + (upper_caudal - lower_caudal)*rand;
-% end
 
 if p.layer == 2
     thresh_PRC = mean(p.famil_diff_thresh(p.numThresh,:));
@@ -131,28 +106,13 @@ if p.layer == 2
     
     
     familDiff_PRC = p.familDiff_PRC(trial);
-%     lower_PRC = familDiff_PRC - noise;
-%     upper_PRC = familDiff_PRC + noise;
-%     
-%     familDiff_PRC = lower_PRC + (upper_PRC - lower_PRC)*rand;
-     
-%     % the following was modified to keep threshold above 0
-%     threshold_PRC = -1;
-%     while threshold_PRC < 0
-%         threshold_PRC = lower_PRC + (upper_PRC - lower_PRC)*rand;
-%     end
 
     
     % the following should be uncommented when noise loads on to thresh
     familDiffs_temp = [familDiff_caudal - thresh_caudal, familDiff_PRC - thresh_PRC];
     
     [~, whichFamilDiff] = max(familDiffs_temp);
-    
-%     if trial >= 40
-%         2;
-%     end
-    
-    
+        
     if whichFamilDiff == 2
         familDiff = familDiff_PRC;
         thresh = thresh_PRC;

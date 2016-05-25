@@ -37,8 +37,11 @@ load SIM_PARAMS.mat p;
 
 
 %% Initialise, pretrain, and save weight matrix
-[p] = VD_pretrain(p, rat);
-
+if p.numTrainCycles > 0
+    [p] = VD_pretrain(p, rat);
+else
+    
+end
 
 %% begin sessions
 
