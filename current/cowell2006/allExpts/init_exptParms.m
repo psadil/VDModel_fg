@@ -58,7 +58,7 @@ p.k_expt = .08;
 p.etaExp = p.nTrainCycles^-p.A;
 
 % encoding cycles per presentation of stimulus
-p.nEncodingCycles = 500;
+p.nEncodingCycles = 1000;
 
 % define how many nodes to include in selectivity calculation
 p.sizeOfPeak = 5;
