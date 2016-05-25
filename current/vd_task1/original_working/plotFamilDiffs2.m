@@ -1,4 +1,4 @@
-function [] = plotFamilDiffs(firstRat, lastRat, folderName, onlyFigure)
+function [] = plotFamilDiffs2(firstRat, lastRat, folderName, onlyFigure)
 % analyze familiarity differences
 
 % now called directly from create_sim
@@ -381,39 +381,40 @@ for rat = firstRat:lastRat
         
         
         % adjust by adding to all
-        %         hitRate_first_adj_all(rat,session) = (sum(p.answer(1:p.nTrials/2).*(p.tType(1:p.nTrials/2)==1)) + 1/(2*sum((p.tType(1:p.nTrials/2)==1))))/(sum(p.tType(1:p.nTrials/2)==1)+1);
-        %         FARate_first_adj_all(rat,session) = (sum(p.answer(1:p.nTrials/2).*(p.tType(1:p.nTrials/2)==2)) + 1/(2*sum((p.tType(1:p.nTrials/2)==2))))/(sum(p.tType(1:p.nTrials/2)==2)+1);
-        %
-        %         hitRate_second_adj_all(rat,session) = (sum(p.answer(p.nTrials/2+1:end).*(p.tType(p.nTrials/2+1:end)==1)) + 1/(2*sum((p.tType(1:p.nTrials/2)==1))))/(sum(p.tType(p.nTrials/2+1:end)==1)+1);  % a 'yes' (mismatch judgement) on trials that were mismatches (ie, p.tType==1)
-        %         FARate_second_adj_all(rat,session) = (sum(p.answer(p.nTrials/2+1:end).*(p.tType(p.nTrials/2+1:end)==2)) + 1/(2*sum((p.tType(1:p.nTrials/2)==2))))/(sum(p.tType(p.nTrials/2+1:end)==2)+1); % a 'yes' on matching trials
-        %
-        hitRate_first_adj_all(rat,session) = (sum(p.answer(1:p.nTrials/2).*(p.tType(1:p.nTrials/2)==1)) + .5)/(sum(p.tType(1:p.nTrials/2)==1)+1);
-        FARate_first_adj_all(rat,session) = (sum(p.answer(1:p.nTrials/2).*(p.tType(1:p.nTrials/2)==2)) + .5)/(sum(p.tType(1:p.nTrials/2)==2)+1);
+        hitRate_first_adj_all(rat,session) = (sum(p.answer(1:p.nTrials/2).*(p.tType(1:p.nTrials/2)==1)) + 1/(2*sum((p.tType(1:p.nTrials/2)==1))))/(sum(p.tType(1:p.nTrials/2)==1)+1);
+        FARate_first_adj_all(rat,session) = (sum(p.answer(1:p.nTrials/2).*(p.tType(1:p.nTrials/2)==2)) + 1/(2*sum((p.tType(1:p.nTrials/2)==2))))/(sum(p.tType(1:p.nTrials/2)==2)+1);
         
-        hitRate_second_adj_all(rat,session) = (sum(p.answer(p.nTrials/2+1:end).*(p.tType(p.nTrials/2+1:end)==1)) + .5)/(sum(p.tType(p.nTrials/2+1:end)==1)+1);  % a 'yes' (mismatch judgement) on trials that were mismatches (ie, p.tType==1)
-        FARate_second_adj_all(rat,session) = (sum(p.answer(p.nTrials/2+1:end).*(p.tType(p.nTrials/2+1:end)==2)) + .5)/(sum(p.tType(p.nTrials/2+1:end)==2)+1); % a 'yes' on matching trials
-        
-        
+        hitRate_second_adj_all(rat,session) = (sum(p.answer(p.nTrials/2+1:end).*(p.tType(p.nTrials/2+1:end)==1)) + 1/(2*sum((p.tType(1:p.nTrials/2)==1))))/(sum(p.tType(p.nTrials/2+1:end)==1)+1);  % a 'yes' (mismatch judgement) on trials that were mismatches (ie, p.tType==1)
+        FARate_second_adj_all(rat,session) = (sum(p.answer(p.nTrials/2+1:end).*(p.tType(p.nTrials/2+1:end)==2)) + 1/(2*sum((p.tType(1:p.nTrials/2)==2))))/(sum(p.tType(p.nTrials/2+1:end)==2)+1); % a 'yes' on matching trials
         
         % adjust by adding to only trials
-        % THIS IS THE ADJUSTMENT FROM BARENSE ET AL.
         hitRate_first_adj_some(rat,session) = hitRate_first(rat,session);
-        hitRate_first_adj_some(hitRate_first_adj_some==0) = 1/(2*sum((p.tType(1:p.nTrials/2)==1)));
-        hitRate_first_adj_some(hitRate_first_adj_some==1) = 1 - 1/(2*sum((p.tType(1:p.nTrials/2)==1)));
+        if hitRate_first_adj_some(rat,session) == 1
+            hitRate_first_adj_some(rat,session) = hitRate_first_adj_some(rat,session) - 1/(2*sum((p.tType(1:p.nTrials/2)==1)));
+        elseif hitRate_first_adj_some(rat,session) == 0
+            hitRate_first_adj_some(rat,session) = hitRate_first_adj_some(rat,session) + 1/(2*sum((p.tType(1:p.nTrials/2)==1)));
+        end
         
         FARate_first_adj_some(rat,session) = FARate_first(rat,session);
-        FARate_first_adj_some(FARate_first_adj_some==0) = 1/(2*sum((p.tType(1:p.nTrials/2)==2)));
-        FARate_first_adj_some(FARate_first_adj_some==1) = 1 - 1/(2*sum((p.tType(1:p.nTrials/2)==2)));
+        if FARate_first_adj_some(rat,session) == 1
+            FARate_first_adj_some(rat,session) = FARate_first_adj_some(rat,session) - 1/(2*sum((p.tType(1:p.nTrials/2)==2)));
+        elseif FARate_first_adj_some(rat,session) == 0
+            FARate_first_adj_some(rat,session) = FARate_first_adj_some(rat,session) + 1/(2*sum((p.tType(1:p.nTrials/2)==2)));
+        end
         
         hitRate_second_adj_some(rat,session) = hitRate_second(rat,session);
-        hitRate_second_adj_some(hitRate_second_adj_some==0) = 1/(2*sum((p.tType(1+p.nTrials/2:end)==1)));
-        hitRate_second_adj_some(hitRate_second_adj_some==1) = 1 - 1/(2*sum((p.tType(1+p.nTrials/2:end)==1)));
+        if hitRate_second_adj_some(rat,session) == 1
+            hitRate_second_adj_some(rat,session) = hitRate_second_adj_some(rat,session) - 1/(2*sum((p.tType(1:p.nTrials/2)==1)));
+        elseif hitRate_second_adj_some(rat,session) == 0
+            hitRate_second_adj_some(rat,session) = hitRate_second_adj_some(rat,session) + 1/(2*sum((p.tType(1:p.nTrials/2)==1)));
+        end
         
-        FARate_second_adj_some = FARate_second;
-        FARate_second_adj_some(FARate_second_adj_some==0) = 1/(2*sum((p.tType(1+p.nTrials/2:end)==2)));
-        FARate_second_adj_some(FARate_second_adj_some==1) = 1 - 1/(2*sum((p.tType(1+p.nTrials/2:end)==2)));
-        
-        
+        FARate_second_adj_some(rat,session) = FARate_second(rat,session);
+        if FARate_second_adj_some(rat,session) == 1
+            FARate_second_adj_some(rat,session) = FARate_second_adj_some(rat,session) - 1/(2*sum((p.tType(1:p.nTrials/2)==2)));
+        elseif FARate_second_adj_some(rat,session) == 0
+            FARate_second_adj_some(rat,session) = FARate_second_adj_some(rat,session) + 1/(2*sum((p.tType(1:p.nTrials/2)==2)));
+        end
         
         
         acc_firstHalf(rat,session) = p.Acc_firstHalf;
@@ -430,8 +431,6 @@ for rat = firstRat:lastRat
         %         totalAct(rat,session,:,:) = p.totalAct;
     end
 end
-
-
 
 %%
 
@@ -803,13 +802,6 @@ for session = 1:4
 end
 
 
-% put in csv
-% fName = 'results.csv';
-% fileToWrite = fopen(fName,'w');
-%
-% fprintf()
-%
-
 
 % squareroot those variances to get the standard deviation
 familDiffs_misMatch_caudal_std = sqrt(familDiffs_misMatch_caudal_var_toSqr);
@@ -829,79 +821,37 @@ familDiffs_match_PRC_err = [familDiffs_match_PRC_mean + familDiffs_match_PRC_sem
 familDiffs_misMatch_PRC_err = [familDiffs_misMatch_PRC_mean + familDiffs_misMatch_PRC_sem; familDiffs_misMatch_PRC_mean - familDiffs_misMatch_PRC_sem];
 
 
-%% looking at more raw hit and FA rats
+%%
 
-hitRate_first_mean = mean(hitRate_first);
-hitRate_second_mean = mean(hitRate_second);
-FARate_first_mean = mean(FARate_first);
-FARate_second_mean = mean(FARate_second);
-
-hitRate_first_std = std(hitRate_first);
-hitRate_first_sem = hitRate_first_std/sqrt(numRats);
-
-FARate_first_std = std(FARate_first);
-FARate_first_sem = FARate_first_std/sqrt(numRats);
-
-hitRate_second_std = std(hitRate_second);
-hitRate_second_sem = hitRate_second_std/sqrt(numRats);
-
-FARate_second_std = std(FARate_second);
-FARate_second_sem = FARate_second_std/sqrt(numRats);
-
-% dPrime_first_raw = norminv(hitRate_first_mean) - norminv(FARate_first_mean);
-% dPrime_second_raw = norminv(hitRate_second_mean) - norminv(FARate_second_mean);
-
-dPrime_first_raw = norminv(hitRate_first) - norminv(FARate_first);
-dPrime_second_raw = norminv(hitRate_second) - norminv(FARate_second);
-
-dPrime_first_raw_mean = mean(dPrime_first_raw);
-dPrime_second_raw_mean= mean(dPrime_second_raw);
-
-first_std = std(dPrime_first_raw);
-first_sem = first_std/sqrt(numRats);
-
-second_std = std(dPrime_second_raw);
-second_sem = second_std/sqrt(numRats);
-
-dPrime_first_err = first_sem;
-dPrime_second_err = second_sem;
-
-if any(isnan(dPrime_first_err))
-    dPrime_first_err(:) = 0;
+syms dp
+dPrime_first_adj_all = zeros(size(hitRate_first_adj_all));
+for i = 1:size(hitRate_first_adj_all,1)
+    for j = 1:size(hitRate_first_adj_all,2)
+        H = hitRate_first_adj_all(i,j);
+        k = sqrt(2).*norminv(FARate_first_adj_all(i,j)/2);
+        eqn = H == normcdf((k+dp)/sqrt(2)) + normcdf((k-dp)/sqrt(2));
+        
+        dPrime_first_adj_all(i,j) = abs(solve(eqn,dp));
+    end
 end
 
-if any(isnan(dPrime_second_err))
-    dPrime_second_err(:) = 0;
+dPrime_second_adj_all = zeros(size(hitRate_second_adj_all));
+for i = 1:size(hitRate_second_adj_all,1)
+    for j = 1:size(hitRate_second_adj_all,2)
+        H = hitRate_second_adj_all(i,j);
+        k = sqrt(2).*norminv(FARate_second_adj_all(i,j)/2);
+        eqn = H == normcdf((k+dp)/sqrt(2)) + normcdf((k-dp)/sqrt(2));
+        
+        dPrime_second_adj_all(i,j) = abs(solve(eqn,dp));
+        
+    end
 end
 
 
-% dPrime_first_err = abs(norminv(hitRate_first_sem) - norminv(FARate_first_sem));
-% dPrime_second_err = abs(norminv(hitRate_second_sem) - norminv(FARate_second_sem));
-
-
-% work out adjusted, adding to all
-
-% hitRate_first_adj_all_mean = mean(hitRate_first_adj_all);
-% hitRate_second_adj_all_mean = mean(hitRate_second_adj_all);
-%
-% FARate_first_adj_all_mean = mean(FARate_first_adj_all);
-% FARate_second_adj_all_mean = mean(FARate_second_adj_all);
-
-% hitRate_first_adj_all_std = std(hitRate_first_adj_all);
-% hitRate_first_adj_all_sem = hitRate_first_adj_all_std/sqrt(numRats);
-
-% FARate_first_adj_all_std = std(FARate_first_adj_all);
-% FARate_first_adj_all_sem = FARate_first_adj_all_std/sqrt(numRats);
-%
-% hitRate_second_adj_all_std = std(hitRate_second_adj_all);
-% hitRate_second_adj_all_sem = hitRate_second_adj_all_std/sqrt(numRats);
-%
-% FARate_second_adj_all_std = std(FARate_second_adj_all);
-% FARate_second_adj_all_sem = FARate_second_adj_all_std/sqrt(numRats);
-
-dPrime_first_adj_all = norminv(hitRate_first_adj_all) - norminv(FARate_first_adj_all);
-dPrime_second_adj_all = norminv(hitRate_second_adj_all) - norminv(FARate_second_adj_all);
-
+% 
+% dPrime_first_adj_all = norminv(hitRate_first_adj_all) - norminv(FARate_first_adj_all);
+% dPrime_second_adj_all = norminv(hitRate_second_adj_all) - norminv(FARate_second_adj_all);
+% 
 dPrime_first_adj_all_mean = mean(dPrime_first_adj_all);
 dPrime_second_adj_all_mean = mean(dPrime_second_adj_all);
 
@@ -915,28 +865,11 @@ dPrime_first_adj_all_err = first_adj_all_sem;
 dPrime_second_adj_all_err = second_adj_all_sem;
 
 
-% dPrime_first_adj_all_err = abs(dPrime_first_adj_all_mean - first_adj_all_sem);
-% dPrime_second_adj_all_err = abs(dPrime_second_adj_all_mean - second_adj_all_sem);
 
-% adjusting only rates equal to 0 or 1
-% hitRate_first_adj_some_mean = mean(hitRate_first_adj_some);
-% hitRate_second_adj_some_mean = mean(hitRate_second_adj_some);
-%
-% FARate_first_adj_some_mean = mean(FARate_first_adj_some);
-% FARate_second_adj_some_mean = mean(FARate_second_adj_some);
-%
-% hitRate_first_adj_some_std = std(hitRate_first_adj_some);
-% hitRate_first_adj_some_sem = hitRate_first_adj_some_std/sqrt(numRats);
-%
-% FARate_first_adj_some_std = std(FARate_first_adj_some);
-% FARate_first_adj_some_sem = FARate_first_adj_some_std/sqrt(numRats);
-%
-% hitRate_second_adj_some_std = std(hitRate_second_adj_some);
-% hitRate_second_adj_some_sem = hitRate_second_adj_some_std/sqrt(numRats);
-%
-% FARate_second_adj_some_std = std(FARate_second_adj_some);
-% FARate_second_adj_some_sem = FARate_second_adj_some_std/sqrt(numRats);
-%
+% -----------------------
+
+
+
 dPrime_first_adj_some = norminv(hitRate_first_adj_some) - norminv(FARate_first_adj_some);
 dPrime_second_adj_some = norminv(hitRate_second_adj_some) - norminv(FARate_second_adj_some);
 
@@ -953,58 +886,12 @@ dPrime_first_adj_some_err = first_adj_some_sem;
 dPrime_second_adj_some_err = second_adj_some_sem;
 
 
-% dPrime_first_adj_some_err = abs(dPrime_first_adj_some_mean - first_adj_some_sem);
-% dPrime_second_adj_some_err = abs(dPrime_second_adj_some_mean - second_adj_some_sem);
-
-% dPrime_first_adj_some = norminv(hitRate_first_adj_some_mean) - norminv(FARate_first_adj_some_mean);
-% dPrime_second_adj_some = norminv(hitRate_second_adj_some_mean) - norminv(FARate_second_adj_some_mean);
-
-%
-% dPrime_first_adj_some_err = abs(norminv(hitRate_first_adj_some_sem) - norminv(FARate_first_adj_some_sem));
-% dPrime_second_adj_some_err = abs(norminv(hitRate_second_adj_some_sem) - norminv(FARate_second_adj_some_sem));
-
-
-% outPut_dPrime = [hitRate_first, hitRate_second, FARate_first, FARate_second];
-% dlmwrite('hitFA.dat', outPut_dPrime, 'delimiter', ' ')
-% csvwrite('hitFA.csv', outPut_dPrime);
-%% Accuracy
-acc_match_first_avg = squeeze(mean(acc_match_first,1));
-acc_misMatch_first_avg = squeeze(mean(acc_misMatch_first,1));
-acc_match_second_avg = squeeze(mean(acc_match_second,1));
-acc_misMatch_second_avg = squeeze(mean(acc_misMatch_second,1));
-
-acc_match_bar = [acc_match_first_avg; acc_match_second_avg];
-acc_misMatch_bar = [acc_misMatch_first_avg; acc_misMatch_second_avg];
-
-
-
-%% dPRIME Bars
-
-acc_firstHalf_avg = mean(acc_firstHalf,1);
-acc_secondHalf_avg = mean(acc_secondHalf,1);
-
-
-acc_caudal = [acc_firstHalf_avg(1:2)', acc_secondHalf(1:2)'];
-acc_PRC = [acc_firstHalf_avg(3:4)', acc_secondHalf(3:4)'];
-
-acc_bar = [acc_caudal(:,1), acc_PRC(:,1); acc_caudal(:,2), acc_PRC(:,2)];
-
-% dPrime_match_bar_caudal = [dPrime_first_match(1:2), dPrime_second_match(1:2)];
-% dPrime_match_bar_PRC = [dPrime_first_match(3:4), dPrime_second_match(3:4)];
-% dPrime_misMatch_bar_caudal = [dPrime_first_misMatch(1:2), dPrime_second_misMatch(1:2)];
-% dPrime_misMatch_bar_PRC = [dPrime_first_misMatch(3:4), dPrime_second_misMatch(3:4)];
-%
-% dPrime_first_caudal = [dPrime_first_match(1:2),dPrime_first_misMatch(1:2)];
-% dPrime_second_caudal = [dPrime_second_match(1:2),dPrime_second_misMatch(1:2)];
-% dPrime_first_PRC = [dPrime_first_match(3:4),dPrime_first_misMatch(3:4)];
-% dPrime_second_PRC = [dPrime_second_match(3:4),dPrime_second_misMatch(3:4)];
-
-%% quick test
-familDiffs_match_caudal_mean = abs(familDiffs_match_caudal_mean);
-familDiffs_misMatch_caudal_mean = abs(familDiffs_misMatch_caudal_mean);
-
-familDiffs_match_PRC_mean = abs(familDiffs_match_PRC_mean);
-familDiffs_misMatch_PRC_mean = abs(familDiffs_misMatch_PRC_mean);
+% %% quick test
+% familDiffs_match_caudal_mean = abs(familDiffs_match_caudal_mean);
+% familDiffs_misMatch_caudal_mean = abs(familDiffs_misMatch_caudal_mean);
+% 
+% familDiffs_match_PRC_mean = abs(familDiffs_match_PRC_mean);
+% familDiffs_misMatch_PRC_mean = abs(familDiffs_misMatch_PRC_mean);
 
 
 %% Most important graphs!
@@ -1715,36 +1602,21 @@ if ~onlyFigure
     
     %% adjusted dPrime graphs
 end
-
-figs(21) = figure;
-subplot(1,2,1)
-barweb([dPrime_first_adj_all_mean(2), dPrime_second_adj_all_mean(2) ; dPrime_first_adj_all_mean(1), dPrime_second_adj_all_mean(1)]...
-    , [dPrime_first_adj_all_err(2), dPrime_second_adj_all_err(2) ; dPrime_first_adj_all_err(1), dPrime_second_adj_all_err(1)]...
-    , [] ...
-    , {'High', 'Low'}...
-    , {'Lesion'}...
-    , {'Stimulus Ambiguity'}...
-    , {'d'''});
-legend('First Half', 'Second Half','Location','NorthWest');
-legend BOXOFF
-set(gca,'fontsize',30)
-figs(21).CurrentAxes.YLim = [0, 5];
-set(findall(gcf,'type','text'),'FontSize',30,'fontWeight','bold')
-
-subplot(1,2,2)
-barweb([dPrime_first_adj_all_mean(4), dPrime_second_adj_all_mean(4) ; dPrime_first_adj_all_mean(3), dPrime_second_adj_all_mean(3)]...
-    , [dPrime_first_adj_all_err(4), dPrime_second_adj_all_err(4) ; dPrime_first_adj_all_err(3), dPrime_second_adj_all_err(3)]...
-    , [] ...
-    , {'High', 'Low'}...
-    , {'Control'}...
-    , {'Stimulus Ambiguity'}...
-    , {'d'''});
-legend('First Half', 'Second Half','Location','NorthWest');
-legend BOXOFF
-set(gca,'fontsize',30)
-figs(21).CurrentAxes.YLim = [0, 5];
-set(findall(gcf,'type','text'),'FontSize',30,'fontWeight','bold')
-
+%
+% figs(21) = figure;
+% subplot(1,2,1)
+% barweb([dPrime_first_adj_all_mean(2), dPrime_second_adj_all_mean(2) ; dPrime_first_adj_all_mean(1), dPrime_second_adj_all_mean(1)]...
+%     , [dPrime_first_adj_all_err(2), dPrime_second_adj_all_err(2) ; dPrime_first_adj_all_err(1), dPrime_second_adj_all_err(1)]...
+%     , [] ...
+%     , {'High', 'Low'}...
+%     , {'Lesion'}...
+%     , {'Stimulus Ambiguity'}...
+%     , {'d'''});
+% legend('First Half', 'Second Half','Location','NorthWest');
+% legend BOXOFF
+% set(gca,'fontsize',30)
+% figs(21).CurrentAxes.YLim = [0, 5];
+% set(findall(gcf,'type','text'),'FontSize',30,'fontWeight','bold')
 
 
 barvalues = [dPrime_first_adj_all_mean(4), dPrime_second_adj_all_mean(4) ; dPrime_first_adj_all_mean(3), dPrime_second_adj_all_mean(3)];
@@ -1762,7 +1634,7 @@ handles = barweb(barvalues...
 legend('First Half', 'Second Half','Lesion', 'Location', 'NorthWest');
 legend BOXOFF
 set(gca,'fontsize',30)
-figs(22).CurrentAxes.YLim = [0, 6];
+figs(22).CurrentAxes.YLim = [0, 6.5];
 set(findall(gcf,'type','text'),'FontSize',30,'fontWeight','bold')
 
 x1 = handles.bars(1).XOffset;
@@ -1789,8 +1661,8 @@ saveas(figs(22),[saveFolder, '/dPrime_adj'], 'jpg');
 % figs(21).CurrentAxes.YLim = [minY_dPrime, maxY_dPrime];
 
 
-saveas(figs(22),[saveFolder, '/dPrime_adj'], 'fig');
-saveas(figs(22),[saveFolder, '/dPrime_adj'], 'jpg');
+% saveas(figs(22),[saveFolder, '/dPrime_adj'], 'fig');
+% saveas(figs(22),[saveFolder, '/dPrime_adj'], 'jpg');
 %
 %
 % figs(22) = figure;
@@ -1840,4 +1712,3 @@ outPut.Properties.VariableNames{'Var5'} = 'ambiguity';
 writetable(outPut, 'dPrime.dat');
 
 end
-

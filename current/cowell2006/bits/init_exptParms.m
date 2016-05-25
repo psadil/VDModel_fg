@@ -14,11 +14,11 @@ p.expt = expt;
 p.nRows = 50;
 p.nLayers = 2;
 
-p.nGrids_Caudal = 10;
+p.nGrids_Caudal = 4;
 p.nGrids_PRC = 1;
 p.nGrids = [p.nGrids_Caudal, p.nGrids_PRC];
 
-p.components = 20; % n elemental features
+p.components = 16; % n elemental features
 p.features = [0,1]; % what those features might look like
 p.nStimFactors = length(p.features); % nber of levels for each dimension
 p.nInputDims_Caudal = p.components/p.nGrids_Caudal;
@@ -53,18 +53,18 @@ p.B = 0;
 
 % width of gaussian neighborhood learning equation
 % p.G_exp = .5+10*p.nTrainCycles^-p.B;
-p.G_exp = 2;
+p.G_exp = 1;
 
 % rate of sigmoid activation function
-p.k_expt = 2;
+p.k_expt = .01;
 
 % learning rate. amount that winning node moves closer to input during
 % expt
 % p.etaExp = p.nTrainCycles^-p.A;
-p.etaExp = .1;
+p.etaExp = 1;
 
 % encoding cycles per presentation of stimulus
-p.nEncodingCycles = 1; % try with only 100 encoding cycles, but many more
+p.nEncodingCycles = 10; % try with only 100 encoding cycles, but many more
                            % components to slow down PRC learning
 
 % define how many nodes to include in selectivity calculation

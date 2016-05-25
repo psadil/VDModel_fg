@@ -830,25 +830,6 @@ familDiffs_misMatch_PRC_err = [familDiffs_misMatch_PRC_mean + familDiffs_misMatc
 
 %% looking at more raw hit and FA rats
 
-hitRate_first_mean = mean(hitRate_first);
-hitRate_second_mean = mean(hitRate_second);
-FARate_first_mean = mean(FARate_first);
-FARate_second_mean = mean(FARate_second);
-
-hitRate_first_std = std(hitRate_first);
-hitRate_first_sem = hitRate_first_std/sqrt(numRats);
-
-FARate_first_std = std(FARate_first);
-FARate_first_sem = FARate_first_std/sqrt(numRats);
-
-hitRate_second_std = std(hitRate_second);
-hitRate_second_sem = hitRate_second_std/sqrt(numRats);
-
-FARate_second_std = std(FARate_second);
-FARate_second_sem = FARate_second_std/sqrt(numRats);
-
-% dPrime_first_raw = norminv(hitRate_first_mean) - norminv(FARate_first_mean);
-% dPrime_second_raw = norminv(hitRate_second_mean) - norminv(FARate_second_mean);
 
 dPrime_first_raw = norminv(hitRate_first) - norminv(FARate_first);
 dPrime_second_raw = norminv(hitRate_second) - norminv(FARate_second);
@@ -874,30 +855,6 @@ if any(isnan(dPrime_second_err))
 end
 
 
-% dPrime_first_err = abs(norminv(hitRate_first_sem) - norminv(FARate_first_sem));
-% dPrime_second_err = abs(norminv(hitRate_second_sem) - norminv(FARate_second_sem));
-
-
-% work out adjusted, adding to all
-
-% hitRate_first_adj_all_mean = mean(hitRate_first_adj_all);
-% hitRate_second_adj_all_mean = mean(hitRate_second_adj_all);
-%
-% FARate_first_adj_all_mean = mean(FARate_first_adj_all);
-% FARate_second_adj_all_mean = mean(FARate_second_adj_all);
-
-% hitRate_first_adj_all_std = std(hitRate_first_adj_all);
-% hitRate_first_adj_all_sem = hitRate_first_adj_all_std/sqrt(numRats);
-
-% FARate_first_adj_all_std = std(FARate_first_adj_all);
-% FARate_first_adj_all_sem = FARate_first_adj_all_std/sqrt(numRats);
-%
-% hitRate_second_adj_all_std = std(hitRate_second_adj_all);
-% hitRate_second_adj_all_sem = hitRate_second_adj_all_std/sqrt(numRats);
-%
-% FARate_second_adj_all_std = std(FARate_second_adj_all);
-% FARate_second_adj_all_sem = FARate_second_adj_all_std/sqrt(numRats);
-
 dPrime_first_adj_all = norminv(hitRate_first_adj_all) - norminv(FARate_first_adj_all);
 dPrime_second_adj_all = norminv(hitRate_second_adj_all) - norminv(FARate_second_adj_all);
 
@@ -914,30 +871,35 @@ dPrime_first_adj_all_err = first_adj_all_sem;
 dPrime_second_adj_all_err = second_adj_all_sem;
 
 
-% dPrime_first_adj_all_err = abs(dPrime_first_adj_all_mean - first_adj_all_sem);
-% dPrime_second_adj_all_err = abs(dPrime_second_adj_all_mean - second_adj_all_sem);
+% -----------------------
+syms dp
+dPrime_first_adj_some = zeros(size(hitRate_first_adj_some));
+for i = 1:size(hitRate_first_adj_some,1)
+    for j = 1:size(hitRate_first_adj_some,2)
+        H = hitRate_first_adj_some(i,j);
+        k = sqrt(2).*norminv(FARate_first_adj_some(i,j)/2);
+        eqn = H == normcdf((k+dp)/sqrt(2)) + normcdf((k-dp)/sqrt(2));
+        
+        dPrime_first_adj_some(i,j) = abs(solve(eqn,dp));
+    end
+end
 
-% adjusting only rates equal to 0 or 1
-% hitRate_first_adj_some_mean = mean(hitRate_first_adj_some);
-% hitRate_second_adj_some_mean = mean(hitRate_second_adj_some);
-%
-% FARate_first_adj_some_mean = mean(FARate_first_adj_some);
-% FARate_second_adj_some_mean = mean(FARate_second_adj_some);
-%
-% hitRate_first_adj_some_std = std(hitRate_first_adj_some);
-% hitRate_first_adj_some_sem = hitRate_first_adj_some_std/sqrt(numRats);
-%
-% FARate_first_adj_some_std = std(FARate_first_adj_some);
-% FARate_first_adj_some_sem = FARate_first_adj_some_std/sqrt(numRats);
-%
-% hitRate_second_adj_some_std = std(hitRate_second_adj_some);
-% hitRate_second_adj_some_sem = hitRate_second_adj_some_std/sqrt(numRats);
-%
-% FARate_second_adj_some_std = std(FARate_second_adj_some);
-% FARate_second_adj_some_sem = FARate_second_adj_some_std/sqrt(numRats);
-%
-dPrime_first_adj_some = norminv(hitRate_first_adj_some) - norminv(FARate_first_adj_some);
-dPrime_second_adj_some = norminv(hitRate_second_adj_some) - norminv(FARate_second_adj_some);
+dPrime_second_adj_some = zeros(size(hitRate_second_adj_some));
+for i = 1:size(hitRate_second_adj_some,1)
+    for j = 1:size(hitRate_second_adj_some,2)
+        H = hitRate_second_adj_some(i,j);
+        k = sqrt(2).*norminv(FARate_second_adj_some(i,j)/2);
+        eqn = H == normcdf((k+dp)/sqrt(2)) + normcdf((k-dp)/sqrt(2));
+        
+        dpri = abs(solve(eqn,dp));
+        
+        if ~isempty(dpri)
+            dPrime_second_adj_some(i,j) = dpri;
+        else
+            dPrime_second_adj_some(i,j) = 0;
+        end
+    end
+end
 
 dPrime_first_adj_some_mean = mean(dPrime_first_adj_some);
 dPrime_second_adj_some_mean = mean(dPrime_second_adj_some);
@@ -951,16 +913,6 @@ second_adj_some_sem = second_adj_some_std/sqrt(numRats);
 dPrime_first_adj_some_err = first_adj_some_sem;
 dPrime_second_adj_some_err = second_adj_some_sem;
 
-
-% dPrime_first_adj_some_err = abs(dPrime_first_adj_some_mean - first_adj_some_sem);
-% dPrime_second_adj_some_err = abs(dPrime_second_adj_some_mean - second_adj_some_sem);
-
-% dPrime_first_adj_some = norminv(hitRate_first_adj_some_mean) - norminv(FARate_first_adj_some_mean);
-% dPrime_second_adj_some = norminv(hitRate_second_adj_some_mean) - norminv(FARate_second_adj_some_mean);
-
-%
-% dPrime_first_adj_some_err = abs(norminv(hitRate_first_adj_some_sem) - norminv(FARate_first_adj_some_sem));
-% dPrime_second_adj_some_err = abs(norminv(hitRate_second_adj_some_sem) - norminv(FARate_second_adj_some_sem));
 
 
 % outPut_dPrime = [hitRate_first, hitRate_second, FARate_first, FARate_second];
