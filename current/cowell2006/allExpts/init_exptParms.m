@@ -14,11 +14,11 @@ p.expt = expt;
 p.nRows = 200;
 p.nLayers = 2;
 
-p.nGrids_Caudal = 4;
+p.nGrids_Caudal = 2;
 p.nGrids_PRC = 1;
 p.nGrids = [p.nGrids_Caudal, p.nGrids_PRC];
 
-p.components = 8; % n elemental features
+p.components = 10; % n elemental features
 p.nStimFactors = 4; % nber of levels for each dimension
 p.nInputDims_Caudal = p.components/p.nGrids_Caudal;
 p.nInputDims_PRC = p.components;
@@ -31,7 +31,7 @@ p.nInputDims = [p.nInputDims_Caudal, p.nInputDims_PRC];
 % cycles to go through pretraining (NOTE: here's a place to fix in
 % future projects: don't cycle through a set nber of times, cycle
 % through until a set error has been reached.
-p.nTrainCycles = 500;
+p.nTrainCycles = 200;
 
 
 % The bigger A is, the faster ETA decreases, which makes for slower
