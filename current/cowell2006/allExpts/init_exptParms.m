@@ -18,8 +18,9 @@ p.nGrids_Caudal = 2;
 p.nGrids_PRC = 1;
 p.nGrids = [p.nGrids_Caudal, p.nGrids_PRC];
 
+p.features = [0.05,0.35,0.65,0.95];
 p.components = 10; % n elemental features
-p.nStimFactors = 4; % nber of levels for each dimension
+p.nStimFactors = length(p.features); % nber of levels for each dimension
 p.nInputDims_Caudal = p.components/p.nGrids_Caudal;
 p.nInputDims_PRC = p.components;
 p.nInputDims = [p.nInputDims_Caudal, p.nInputDims_PRC];
