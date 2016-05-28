@@ -28,7 +28,7 @@ expt = input('\nEnter experiment name: \n1 - delay, \n2 - listLength, \n3 - tUni
 
 
 % for cleanliness, expts get stored in this folder
-outerDir = strcat(pwd, '/graphsAndSession');
+outerDir = strcat(pwd, '/graphsAndSession/all');
 if ~exist(outerDir, 'dir'),
     mkdir(outerDir);
 end

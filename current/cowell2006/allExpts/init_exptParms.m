@@ -14,12 +14,13 @@ p.expt = expt;
 p.nRows = 200;
 p.nLayers = 2;
 
-p.nGrids_Caudal = 4;
+p.nGrids_Caudal = 2;
 p.nGrids_PRC = 1;
 p.nGrids = [p.nGrids_Caudal, p.nGrids_PRC];
 
-p.components = 8; % n elemental features
-p.nStimFactors = 4; % nber of levels for each dimension
+p.features = [0.05,0.35,0.65,0.95];
+p.components = 6; % n elemental features
+p.nStimFactors = length(p.features); % nber of levels for each dimension
 p.nInputDims_Caudal = p.components/p.nGrids_Caudal;
 p.nInputDims_PRC = p.components;
 p.nInputDims = [p.nInputDims_Caudal, p.nInputDims_PRC];
