@@ -30,7 +30,10 @@ load_data <- function(path) {
 ## NOTE: although rats will come out as only being from 1-6, each rat 1 is slightly different (indicated by how many dims it had to deal with during input
 
 
-p <- file.path('D:','documents', 'uMass', 'firstYear', 'VDModel_fg', 'current', 'cowell2006', 'allExpts', 'graphsAndSession', 'listLength', 'all')
+# p <- file.path('D:','documents', 'uMass', 'firstYear', 'VDModel_fg', 'current', 'cowell2006', 'allExpts', 'graphsAndSession', 'listLength', 'all')
+
+# load delay
+p <- paste(getwd(),'delay', sep = "/")
 
 d <- load_data(p) %>%
   rename(., rat = V5, dims=V6, sess1=V1, sess2=V2, sess3=V3, sess4=V4) %>%
@@ -54,25 +57,3 @@ group_by(d, dims, session) %>%
 ```
 
 
-
-```{r, test}
-
-# Add a primary key
-iris_normal <- mutate(iris, FlowerID = row_number(Species)) %>%
-# change layout to long-form
-  gather(key = variable, value = size, Sepal.Length:Petal.Width) %>%
-# Break "Sepal/Petal" & "Length/Width" into 2 columns
-  separate(variable, c("Structure", "dimension"))
-
-# Make a variable for length and width each  
-iris_long <- spread(iris_normal, dimension, size)
-
-
-
-iris_means <- iris_normal %>%
-  group_by(Species, Structure, dimension) %>%
-  summarise(avg = mean(size), SD = sd(size), N = n()) %>%
-  mutate(SEM = SD/sqrt(N),
-         upper = avg + SEM*qt(.975, N-1,lower.tail = F),
-         lower = avg - SEM*qt(.975, N-1,lower.tail = F))
-```

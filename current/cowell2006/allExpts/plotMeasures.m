@@ -91,9 +91,12 @@ end
 % recognition
 %--------------------------------------------------------------------------
 
-[recog_mean, recog_sem, shadedError_recog, recogByLayer_mean, recogByLayer_sem, matrixToSave] = ...
+[recog_mean, recog_sem, shadedError_recog, recogByLayer_mean, recogByLayer_sem, ...
+    matrixToSave_byLayer, matrixToSave_rats] = ...
     aggregate(recog, recogByLayer, p, nRats);
-csvwrite([saveFolder, '/recog_byLayer.csv'], matrixToSave);
+
+csvwrite([saveFolder, '/recog_byLayer.csv'], matrixToSave_byLayer);
+csvwrite([saveFolder, '/recog_rats.csv'], matrixToSave_rats);
 
 
 %--------------------------------------------------------------------------
@@ -268,7 +271,7 @@ end
 %%
 
 % aggregate whichever measure into an overall average and by layer average
-function [mn, sem, shadedError, mn_byLayer, sem_byLayer, matrixToSave] = ...
+function [mn, sem, shadedError, mn_byLayer, sem_byLayer, matrixToSave_byLayer, matrixToSave_rats] = ...
     aggregate(measure, measureByLayer, p, nRats)
 
 % first, find the average for a rat in a given condition
@@ -282,6 +285,12 @@ sem = squeeze(std(rats,1) ./ sqrt(nRats));
 shadedError = zeros(size(mn,1),2,2);
 shadedError(:,:,1) = mn - sem;
 shadedError(:,:,2) = mn + sem;
+
+matrixToSave = [rats(:,:,1); rats(:,:,2)];
+    
+% add rat tagging
+matrixToSave_rats = [matrixToSave, repmat(1:6,[1,2])'];
+
 
 % -------------------------------------------------------------------------
 % by layer
@@ -308,6 +317,6 @@ matrixToSave = [rats_byLayer(:,1:sess/2,1); rats_byLayer(:,(sess/2)+1:sess,2)];
 matrixToSave = [matrixToSave, repmat(1:6,[1,2])'];
 
 % add dimension tagging
-matrixToSave = [matrixToSave, repelem(p.nInputDims,nRats)'];
+matrixToSave_byLayer = [matrixToSave, repelem(p.nInputDims,nRats)'];
 
 end
