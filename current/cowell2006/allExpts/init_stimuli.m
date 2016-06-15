@@ -45,12 +45,8 @@ for stimSet = 1:p.nStimSets;
         % used in expt 3, when there are some matching trials
         if p.nMatch > 0
             
-            stimToPut = datasample(permn([0,1],p.components),p.nMismatch(stimCond), 'Replace',false);
+            stims.match  = datasample(permn(p.features,p.components),p.nMatch(stimCond), 'Replace',false);
 
-            % grab only the first and second stim generated from the repeating stims
-            stims.match = zeros(size(stims.misMatch));
-            stims.match(1:p.nMatch(stimCond),:,1,stimCond,stimSet) = stimToPut;
-            stims.match(1:p.nMatch(stimCond),:,2,stimCond,stimSet) = stimToPut;
         end
         
         

@@ -3,7 +3,7 @@ function [ p, weights ] = interfere( p, weights )
 %   Detailed explanation goes here
 
 % expt 1 is delay expt
-if p.expt == 1
+if p.expt == 1 || p.expt == 3
     fprintf('\n%d interference cycles being executed...', p.delayCycles(p.stimCond));
 end
 

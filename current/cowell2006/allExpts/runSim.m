@@ -53,16 +53,17 @@ for sess = 1:p.nSess,
     %----------------------------------------------------------------------
     % recognition scores are what we're, ultimately, after.
     %----------------------------------------------------------------------
-    p.recognition = zeros(p.nTrials(p.stimCond),p.nStimSets);
-    p.recogByLayer = zeros(p.nTrials(p.stimCond),p.layer,p.nStimSets);
-    p.corr = zeros(p.nTrials(p.stimCond),p.nStimSets);
-    p.corrByLayer = zeros(p.nTrials(p.stimCond),p.layer,p.nStimSets);
+    p.recognition = zeros(p.nMismatch,p.nStimSets);
+    p.recogByLayer = zeros(p.nMismatch,p.layer,p.nStimSets);
     
     fprintf('\n\nSESSION %d, RAT %d\n', sess, p.ratNum);
     
     %% execute model
-    p = model(p,stims,weights);
-    
+    if p.expt ~= 3
+        p = model(p,stims,weights);
+    else
+        p = model_exp3(p,stims,weights);
+    end
     
     %% save it up
     p.runningTime = GetSecs-startTime;

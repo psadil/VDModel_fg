@@ -14,12 +14,12 @@ p.expt = expt;
 p.nRows = 200;
 p.nLayers = 2;
 
-p.nGrids_Caudal = 2; % want dims 2, 3, 4, 6
+p.nGrids_Caudal = 4; 
 p.nGrids_PRC = 1;
 p.nGrids = [p.nGrids_Caudal, p.nGrids_PRC];
 
 p.features = [0.05,0.35,0.65,0.95];
-p.components = 12; % n elemental features 
+p.components = 8; % n elemental features 
 p.nStimFactors = length(p.features); % nber of levels for each dimension
 p.nInputDims_Caudal = p.components/p.nGrids_Caudal;
 p.nInputDims_PRC = p.components;
@@ -59,7 +59,7 @@ p.k_expt = .08;
 p.etaExp = p.nTrainCycles^-p.A;
 
 % encoding cycles per presentation of stimulus
-p.nEncodingCycles = 500;
+p.nEncodingCycles = 20;
 
 % define how many nodes to include in selectivity calculation
 p.sizeOfPeak = 5;
@@ -100,12 +100,14 @@ elseif expt == 3 % tUnique
     
     p.nSess = 4;
     p.eta_int = p.etaExp;
-    p.nMismatch = repelem(30,p.nSess / 2);
-    p.nMatch = repelem(30,p.nSess / 2);
-    
+%     p.nMismatch = repelem(30,p.nSess / 2);
+%     p.nMatch = repelem(30,p.nSess / 2);
+    p.nMismatch = 30; % non-repeating
+    p.nMatch = 2; % repeating
+
     p.nStimSets = 1;
     
-    p.delayCycles = repelem(200,p.nSess / 2);
+    p.delayCycles = repelem(8000,p.nSess / 2);
     
 end
 
