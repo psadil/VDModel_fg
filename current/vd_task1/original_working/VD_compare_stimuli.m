@@ -225,3 +225,6 @@ while ((p.fixations(trial) < p.maxFix) && stopSampling == 0) || (keepSampling &&
     first_stim_sampled = 0; %to indicate that we are no longer on the first stim being sampled (so a comparison should be made from now on)
     
 end
+
+p.comparison(trial)=comparison;
+end

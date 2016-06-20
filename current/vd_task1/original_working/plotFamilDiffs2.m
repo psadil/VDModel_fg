@@ -1652,6 +1652,40 @@ saveas(figs(22),[saveFolder, '/dPrime_adj'], 'fig');
 saveas(figs(22),[saveFolder, '/dPrime_adj'], 'jpg');
 
 
+%------------
+
+barvalues = [dPrime_first_adj_some_mean(4), dPrime_second_adj_some_mean(4) ; dPrime_first_adj_some_mean(3), dPrime_second_adj_some_mean(3)];
+errors = [dPrime_first_adj_some_err(4), dPrime_second_adj_some_err(4) ; dPrime_first_adj_some_err(3), dPrime_second_adj_some_err(3)];
+
+figs(22) = figure;
+handles = barweb(barvalues...
+    , errors...
+    , [] ...
+    , {'High', 'Low'}...
+    , {'Simulation 1'}...
+    , {'Stimulus Ambiguity'}...
+    , {'d'''}...
+    , [rgb('Chocolate') ; rgb('Goldenrod')]);
+legend('First Half', 'Second Half','Lesion', 'Location', 'NorthWest');
+legend BOXOFF
+set(gca,'fontsize',30)
+figs(22).CurrentAxes.YLim = [0, 6.5];
+set(findall(gcf,'type','text'),'FontSize',30,'fontWeight','bold')
+
+x1 = handles.bars(1).XOffset;
+x2 = handles.bars(2).XOffset;
+
+barvalues = [dPrime_first_adj_some_mean(2), dPrime_second_adj_some_mean(2) ; dPrime_first_adj_some_mean(1), dPrime_second_adj_some_mean(1)];
+errors = [dPrime_first_adj_some_err(2), dPrime_second_adj_some_err(2) ; dPrime_first_adj_some_err(1), dPrime_second_adj_some_err(1)];
+
+hold on
+hand1 = errorbar([1+x1, 1+x2], barvalues(1,:), errors(1,:), '-kx', 'MarkerSize', 10,'linewidth', 2);
+hand2 = errorbar([2+x1, 2+x2], barvalues(2,:), errors(2,:), '-kx', 'MarkerSize', 10,'linewidth', 2);
+% legend('High Ambiguity', 'Low Ambiguity', 'Location','NorthWest');
+
+saveas(figs(22),[saveFolder, '/dPrime_adj_some'], 'fig');
+saveas(figs(22),[saveFolder, '/dPrime_adj_some'], 'jpg');
+
 
 % barweb([dPrime_first_adj_all_mean(4), dPrime_second_adj_all_mean(4) ; dPrime_first_adj_all_mean(3), dPrime_second_adj_all_mean(3)], [dPrime_first_adj_all_err(4), dPrime_second_adj_all_err(4) ; dPrime_first_adj_all_err(3), dPrime_second_adj_all_err(3)], [], {'high', 'low'})
 % xlabel('stim ambiguity');

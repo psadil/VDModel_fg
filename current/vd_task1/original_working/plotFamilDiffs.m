@@ -333,7 +333,7 @@ for rat = firstRat:lastRat
                         temp_prev_match = temp_prev_match + p.featsSampedByComparison(1,trial,comparison);
                         count_prev_match = count_prev_match + 1;
                     end
-                    if p.featsSampedByComparison(2,trial,comparison);
+                    if p.featsSampedByComparison(2r,trial,comparison);
                         temp_new_match = temp_new_match + p.featsSampedByComparison(2,trial,comparison);
                         count_new_match = count_new_match + 1;
                     end
