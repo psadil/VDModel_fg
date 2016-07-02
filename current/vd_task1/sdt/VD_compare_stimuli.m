@@ -33,7 +33,7 @@ while ((p.fixations(trial) < p.maxFix) && stopSampling == 0) || (keepSampling &&
     
     % HUH..,MAYBE THIS NEEDS TO BE COMMENTED OUT: FIXATIONS ARE ONLY
     % ENCODING CYCLES...
-%     p.fixations(trial) = p.fixations(trial) + 1; %% total fixations across both stimuli
+    %     p.fixations(trial) = p.fixations(trial) + 1; %% total fixations across both stimuli
     
     if ~first_stim_sampled %force at least one feature in newly sampled stim to
         % be compared with features samped from prev
@@ -126,7 +126,7 @@ while ((p.fixations(trial) < p.maxFix) && stopSampling == 0) || (keepSampling &&
         %         p.fixations(trial) = fixations;
         
         
-       
+        
         %------------------------------------------------------------------
         % compile structure for determining mismatch
         %------------------------------------------------------------------
@@ -151,12 +151,12 @@ while ((p.fixations(trial) < p.maxFix) && stopSampling == 0) || (keepSampling &&
         [stopSampling, p, whichCaudal] = determineMisMatch(judging, p, trial);
         
         
-         %------------------------------------------------------------------
+        %------------------------------------------------------------------
         % look at grids
         %------------------------------------------------------------------
-%         if p.layer == 2 && ~mod(trial,10)
-%             plotTempActs(prevStimActs, initial_acts, p.layer,trial, whichCaudal, p.tType(trial))
-%         end
+        %         if p.layer == 2 && ~mod(trial,10)
+        %             plotTempActs(prevStimActs, initial_acts, p.layer,trial, whichCaudal, p.tType(trial))
+        %         end
         
         
         
@@ -206,7 +206,7 @@ while ((p.fixations(trial) < p.maxFix) && stopSampling == 0) || (keepSampling &&
     pktot.prevStimInit_act_peak = pktot.init_act_peak;
     pktot.prevStimInit_act_total = pktot.init_act_total;
     
-%     prevStimActs = acts;
+    %     prevStimActs = acts;
     
     % first row is always previous stim
     p.usePRC(stim,trial) = usePRC;
@@ -224,4 +224,6 @@ while ((p.fixations(trial) < p.maxFix) && stopSampling == 0) || (keepSampling &&
     end
     first_stim_sampled = 0; %to indicate that we are no longer on the first stim being sampled (so a comparison should be made from now on)
     
+end
+p.comparison(trial)=comparison;
 end

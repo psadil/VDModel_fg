@@ -103,7 +103,6 @@ if p.layer == 2
     familDiff_PRC = p.familDiff_PRC(trial);
 
     
-    % the following should be uncommented when noise loads on to thresh
     familDiffs_temp = [familDiff_caudal - thresh_caudal, familDiff_PRC - thresh_PRC];
     
     [~, whichFamilDiff] = max(familDiffs_temp);

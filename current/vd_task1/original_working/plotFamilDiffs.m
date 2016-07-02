@@ -31,15 +31,6 @@ familDifferences_misMatch_PRC = zeros(numRats,4,p.nTrials);
 
 answer = zeros(numRats,4,p.nTrials);
 correct = zeros(numRats,4,p.nTrials);
-acc_firstHalf = zeros(numRats,4);
-acc_secondHalf = zeros(numRats,4);
-acc_match_first = zeros(numRats,4);
-acc_misMatch_first = zeros(numRats,4);
-acc_match_second = zeros(numRats,4);
-acc_misMatch_second = zeros(numRats,4);
-
-dPrime_first = zeros(numRats,4);
-dPrime_second = zeros(numRats,4);
 
 hitRate_first = zeros(numRats,4);
 hitRate_second = zeros(numRats,4);
@@ -53,15 +44,7 @@ meanSelectivity_PRC_new = zeros(numRats,4,p.nTrials);
 
 familDiff_used = zeros(numRats,4,p.nTrials);
 
-meanSelectivity_caudal_prev_misMatch = zeros(numRats,4,p.nTrials);
-meanSelectivity_caudal_prev_match = zeros(numRats,4,p.nTrials);
-meanSelectivity_caudal_new_misMatch = zeros(numRats,4,p.nTrials);
-meanSelectivity_caudal_new_match = zeros(numRats,4,p.nTrials);
 
-meanSelectivity_PRC_prev_misMatch = zeros(numRats,4,p.nTrials);
-meanSelectivity_PRC_prev_match = zeros(numRats,4,p.nTrials);
-meanSelectivity_PRC_new_misMatch = zeros(numRats,4,p.nTrials);
-meanSelectivity_PRC_new_match = zeros(numRats,4,p.nTrials);
 
 comparedFeat = zeros(numRats,4,p.nTrials,p.numGrids_Caudal);
 
@@ -78,27 +61,12 @@ trial_match_PRC_if = zeros(numRats,4,p.nTrials);
 gridUsed_one_total = zeros(4,p.nTrials);
 gridUsed_one = zeros(numRats,4,p.nTrials);
 
-gridUsed_one_misMatch_total = zeros(4,p.nTrials);
-gridUsed_one_misMatch = zeros(numRats,4,p.nTrials);
-
-gridUsed_one_match_total = zeros(4,p.nTrials);
-gridUsed_one_match = zeros(numRats,4,p.nTrials);
-
-selectivity_caudal_prev_match_grid1 = zeros(numRats,4,p.nTrials);
-selectivity_caudal_prev_misMatch_grid1 = zeros(numRats,4,p.nTrials);
-selectivity_caudal_new_match_grid1 = zeros(numRats,4,p.nTrials);
-selectivity_caudal_new_misMatch_grid1 = zeros(numRats,4,p.nTrials);
-
 
 fixationByComparison_prev = zeros(numRats,4,p.nTrials);
 fixationByComparison_new = zeros(numRats,4,p.nTrials);
 
 fixByComp_prev_mean = zeros(numRats,4,p.nTrials,max(p.maxFixations));
 fixByComp_new_mean = zeros(numRats,4,p.nTrials,max(p.maxFixations));
-
-
-peakAct = zeros(numRats,4,p.nTrials,2);
-totalAct = zeros(numRats,4,p.nTrials,2);
 
 featSamplePerTrial = zeros(numRats,4,p.nTrials);
 featSamplePerTrial_misMatch = zeros(numRats,4,p.nTrials);
@@ -119,6 +87,8 @@ act_total_new_fin = zeros(numRats,4,2,p.nTrials);
 
 fixations_total = zeros(numRats,4,p.nTrials);
 threshUsed = zeros(numRats,4,p.nTrials);
+
+comparisons = zeros(numRats,4,p.nTrials);
 
 for rat = firstRat:lastRat
     for session = 1:4
@@ -333,7 +303,7 @@ for rat = firstRat:lastRat
                         temp_prev_match = temp_prev_match + p.featsSampedByComparison(1,trial,comparison);
                         count_prev_match = count_prev_match + 1;
                     end
-                    if p.featsSampedByComparison(2r,trial,comparison);
+                    if p.featsSampedByComparison(2,trial,comparison);
                         temp_new_match = temp_new_match + p.featsSampedByComparison(2,trial,comparison);
                         count_new_match = count_new_match + 1;
                     end
@@ -380,7 +350,7 @@ for rat = firstRat:lastRat
         FARate_second(rat,session) = sum(p.answer(p.nTrials/2+1:end).*(p.tType(p.nTrials/2+1:end)==2))/sum(p.tType(p.nTrials/2+1:end)==2); % a 'yes' on matching trials
         
         
-       % adjust by adding to all
+        % adjust by adding to all
         %         hitRate_first_adj_all(rat,session) = (sum(p.answer(1:p.nTrials/2).*(p.tType(1:p.nTrials/2)==1)) + 1/(2*sum((p.tType(1:p.nTrials/2)==1))))/(sum(p.tType(1:p.nTrials/2)==1)+1);
         %         FARate_first_adj_all(rat,session) = (sum(p.answer(1:p.nTrials/2).*(p.tType(1:p.nTrials/2)==2)) + 1/(2*sum((p.tType(1:p.nTrials/2)==2))))/(sum(p.tType(1:p.nTrials/2)==2)+1);
         %
@@ -409,25 +379,13 @@ for rat = firstRat:lastRat
         hitRate_second_adj_some(hitRate_second_adj_some==0) = 1/(2*sum((p.tType(1+p.nTrials/2:end)==1)));
         hitRate_second_adj_some(hitRate_second_adj_some==1) = 1 - 1/(2*sum((p.tType(1+p.nTrials/2:end)==1)));
         
-        FARate_second_adj_some = FARate_second;
+        FARate_second_adj_some(rat,session) = FARate_second(rat,session);
         FARate_second_adj_some(FARate_second_adj_some==0) = 1/(2*sum((p.tType(1+p.nTrials/2:end)==2)));
         FARate_second_adj_some(FARate_second_adj_some==1) = 1 - 1/(2*sum((p.tType(1+p.nTrials/2:end)==2)));
         
+        % track comparisons
+        comparisons(rat,session,:) = p.comparison;
         
-        
-        
-        acc_firstHalf(rat,session) = p.Acc_firstHalf;
-        acc_secondHalf(rat,session) = p.Acc_secondHalf;
-        
-        acc_match_first(rat,session) = sum(answer(rat,session,find(tType(rat,session,(1:p.nMismatch))==2))==0)/(sum(tType(rat,session,1:p.nMismatch)==2));
-        acc_match_second(rat,session) = sum(answer(rat,session,find(tType(rat,session,(p.nMismatch+1:p.nTrials))==2))==0)/(sum(tType(rat,session,p.nMismatch+1:p.nTrials)==2));
-        acc_misMatch_first(rat,session) = sum(answer(rat,session,find(tType(rat,session,(1:p.nMismatch))==1))==1)/(sum(tType(rat,session,1:p.nMismatch)==1));
-        acc_misMatch_second(rat,session) = sum(answer(rat,session,find(tType(rat,session,(p.nMismatch+1:p.nTrials))==1))==1)/(sum(tType(rat,session,p.nMismatch+1:p.nTrials)==1));
-        
-        
-        %         % divide selectivity by peak activation
-        %         peakAct(rat,session,:,:) = p.peak_act;
-        %         totalAct(rat,session,:,:) = p.totalAct;
     end
 end
 
@@ -435,10 +393,7 @@ end
 %%
 
 fixByComp_prev = squeeze(mean(fixationByComparison_prev,1));
-fixByComp_new = squeeze(mean(fixationByComparison_new,1));
 
-fixByComp_prev_mean_plot = squeeze(mean(fixByComp_prev_mean,1));
-fixByComp_new_mean_plot = squeeze(mean(fixByComp_new_mean,1));
 
 featSamplePerTrial_mean = squeeze(mean(featSamplePerTrial,1));
 %%
@@ -599,16 +554,16 @@ familDiff_used_match_avg = familDiff_used_match_count./tTypeCount_match;
 
 % threshold used
 
-thresh_misMatch  = threshUsed.*(tType==1);
-thresh_match  = threshUsed.*(tType==2);
+% thresh_misMatch  = threshUsed.*(tType==1);
+% thresh_match  = threshUsed.*(tType==2);
 
 thresh_avg = squeeze(mean(threshUsed,1));
 
-thresh_misMatch_count = squeeze(sum(thresh_misMatch,1));
-thresh_match_count = squeeze(sum(thresh_match,1));
+% thresh_misMatch_count = squeeze(sum(thresh_misMatch,1));
+% thresh_match_count = squeeze(sum(thresh_match,1));
 
-thresh_misMatch_avg = thresh_misMatch_count./tTypeCount_misMatch;
-thresh_match_avg = thresh_match_count./tTypeCount_match;
+% thresh_misMatch_avg = thresh_misMatch_count./tTypeCount_misMatch;
+% thresh_match_avg = thresh_match_count./tTypeCount_match;
 
 %% whether PRC used
 
@@ -757,6 +712,19 @@ fixations_PRC_match_temp = squeeze(sum(fixations_total.*(tType==2).*ifPRC_used,1
 fixations_PRC_match_mean = fixations_PRC_match_temp(:,:)./trial_match_PRC(:,:);
 
 
+%%
+
+meanComps_misMatch = (comparisons-1).*(tType==1);
+meanComps_misMatch_count = squeeze(sum(meanComps_misMatch,1));
+
+meanComps_misMatch_avg = meanComps_misMatch_count./tTypeCount_misMatch;
+
+meanComps_match = (comparisons-1).*(tType==2);
+meanComps_match_count = squeeze(sum(meanComps_match,1));
+
+meanComps_match_avg = meanComps_match_count./tTypeCount_match;
+
+
 %% STD of familDifferences
 
 familDiffs_misMatch_caudal_var_toSqr = zeros(4,p.nTrials);
@@ -800,14 +768,6 @@ for session = 1:4
         familDiffs_match_PRC_var_toSqr(session,trial) = familDiffs_match_PRC_std_temp / (trial_match_PRC(session,trial) -1);
     end
 end
-
-
-% put in csv
-% fName = 'results.csv';
-% fileToWrite = fopen(fName,'w');
-%
-% fprintf()
-%
 
 
 % squareroot those variances to get the standard deviation
@@ -872,34 +832,37 @@ dPrime_second_adj_all_err = second_adj_all_sem;
 
 
 % -----------------------
-syms dp
-dPrime_first_adj_some = zeros(size(hitRate_first_adj_some));
-for i = 1:size(hitRate_first_adj_some,1)
-    for j = 1:size(hitRate_first_adj_some,2)
-        H = hitRate_first_adj_some(i,j);
-        k = sqrt(2).*norminv(FARate_first_adj_some(i,j)/2);
-        eqn = H == normcdf((k+dp)/sqrt(2)) + normcdf((k-dp)/sqrt(2));
-        
-        dPrime_first_adj_some(i,j) = abs(solve(eqn,dp));
-    end
-end
+% syms dp
+% dPrime_first_adj_some = zeros(size(hitRate_first_adj_some));
+% for i = 1:size(hitRate_first_adj_some,1)
+%     for j = 1:size(hitRate_first_adj_some,2)
+%         H = hitRate_first_adj_some(i,j);
+%         k = sqrt(2).*norminv(FARate_first_adj_some(i,j)/2);
+%         eqn = H == normcdf((k+dp)/sqrt(2)) + normcdf((k-dp)/sqrt(2));
+%
+%         dPrime_first_adj_some(i,j) = abs(solve(eqn,dp));
+%     end
+% end
+%
+% dPrime_second_adj_some = zeros(size(hitRate_second_adj_some));
+% for i = 1:size(hitRate_second_adj_some,1)
+%     for j = 1:size(hitRate_second_adj_some,2)
+%         H = hitRate_second_adj_some(i,j);
+%         k = sqrt(2).*norminv(FARate_second_adj_some(i,j)/2);
+%         eqn = H == normcdf((k+dp)/sqrt(2)) + normcdf((k-dp)/sqrt(2));
+%
+%         dpri = abs(solve(eqn,dp));
+%
+%         if ~isempty(dpri)
+%             dPrime_second_adj_some(i,j) = dpri;
+%         else
+%             dPrime_second_adj_some(i,j) = 0;
+%         end
+%     end
+% end
 
-dPrime_second_adj_some = zeros(size(hitRate_second_adj_some));
-for i = 1:size(hitRate_second_adj_some,1)
-    for j = 1:size(hitRate_second_adj_some,2)
-        H = hitRate_second_adj_some(i,j);
-        k = sqrt(2).*norminv(FARate_second_adj_some(i,j)/2);
-        eqn = H == normcdf((k+dp)/sqrt(2)) + normcdf((k-dp)/sqrt(2));
-        
-        dpri = abs(solve(eqn,dp));
-        
-        if ~isempty(dpri)
-            dPrime_second_adj_some(i,j) = dpri;
-        else
-            dPrime_second_adj_some(i,j) = 0;
-        end
-    end
-end
+dPrime_first_adj_some = norminv(hitRate_first_adj_some) - norminv(FARate_first_adj_some);
+dPrime_second_adj_some = norminv(hitRate_second_adj_some) - norminv(FARate_second_adj_some);
 
 dPrime_first_adj_some_mean = mean(dPrime_first_adj_some);
 dPrime_second_adj_some_mean = mean(dPrime_second_adj_some);
@@ -915,50 +878,15 @@ dPrime_second_adj_some_err = second_adj_some_sem;
 
 
 
-% outPut_dPrime = [hitRate_first, hitRate_second, FARate_first, FARate_second];
-% dlmwrite('hitFA.dat', outPut_dPrime, 'delimiter', ' ')
-% csvwrite('hitFA.csv', outPut_dPrime);
-%% Accuracy
-acc_match_first_avg = squeeze(mean(acc_match_first,1));
-acc_misMatch_first_avg = squeeze(mean(acc_misMatch_first,1));
-acc_match_second_avg = squeeze(mean(acc_match_second,1));
-acc_misMatch_second_avg = squeeze(mean(acc_misMatch_second,1));
-
-acc_match_bar = [acc_match_first_avg; acc_match_second_avg];
-acc_misMatch_bar = [acc_misMatch_first_avg; acc_misMatch_second_avg];
-
-
-
-%% dPRIME Bars
-
-acc_firstHalf_avg = mean(acc_firstHalf,1);
-acc_secondHalf_avg = mean(acc_secondHalf,1);
-
-
-acc_caudal = [acc_firstHalf_avg(1:2)', acc_secondHalf(1:2)'];
-acc_PRC = [acc_firstHalf_avg(3:4)', acc_secondHalf(3:4)'];
-
-acc_bar = [acc_caudal(:,1), acc_PRC(:,1); acc_caudal(:,2), acc_PRC(:,2)];
-
-% dPrime_match_bar_caudal = [dPrime_first_match(1:2), dPrime_second_match(1:2)];
-% dPrime_match_bar_PRC = [dPrime_first_match(3:4), dPrime_second_match(3:4)];
-% dPrime_misMatch_bar_caudal = [dPrime_first_misMatch(1:2), dPrime_second_misMatch(1:2)];
-% dPrime_misMatch_bar_PRC = [dPrime_first_misMatch(3:4), dPrime_second_misMatch(3:4)];
-%
-% dPrime_first_caudal = [dPrime_first_match(1:2),dPrime_first_misMatch(1:2)];
-% dPrime_second_caudal = [dPrime_second_match(1:2),dPrime_second_misMatch(1:2)];
-% dPrime_first_PRC = [dPrime_first_match(3:4),dPrime_first_misMatch(3:4)];
-% dPrime_second_PRC = [dPrime_second_match(3:4),dPrime_second_misMatch(3:4)];
 
 %% quick test
-familDiffs_match_caudal_mean = abs(familDiffs_match_caudal_mean);
-familDiffs_misMatch_caudal_mean = abs(familDiffs_misMatch_caudal_mean);
+% familDiffs_match_caudal_mean = abs(familDiffs_match_caudal_mean);
+% familDiffs_misMatch_caudal_mean = abs(familDiffs_misMatch_caudal_mean);
+%
+% familDiffs_match_PRC_mean = abs(familDiffs_match_PRC_mean);
+% familDiffs_misMatch_PRC_mean = abs(familDiffs_misMatch_PRC_mean);
 
-familDiffs_match_PRC_mean = abs(familDiffs_match_PRC_mean);
-familDiffs_misMatch_PRC_mean = abs(familDiffs_misMatch_PRC_mean);
 
-
-%% Most important graphs!
 close all;
 %% famil difference
 
@@ -1054,27 +982,27 @@ if ~onlyFigure
     %--------------------------------------------------------------------------
     minY_dPrime = 0;
     maxY_dPrime = 5;
-    axisBounds_familDiffs = [0,p.nTrials,minY_dPrime,maxY_dPrime];
-    
+    %     axisBounds_familDiffs = [0,p.nTrials,minY_dPrime,maxY_dPrime];
     %
-    figs(3) = figure;
-    subplot(1,2,1)
-    barweb([dPrime_first_raw_mean(2), dPrime_second_raw_mean(2) ; dPrime_first_raw_mean(1), dPrime_second_raw_mean(1)], [dPrime_first_err(2), dPrime_second_err(2) ; dPrime_first_err(1), dPrime_second_err(1)], [], {'high', 'low'})
-    xlabel('stim ambiguity');
-    ylabel('d''');
-    legend('first Half', 'Second Half','Location','best');
-    title({'dPrime of Lesion'})
-    
-    subplot(1,2,2)
-    barweb([dPrime_first_raw_mean(4), dPrime_second_raw_mean(4) ; dPrime_first_raw_mean(3), dPrime_second_raw_mean(3)], [dPrime_first_err(4), dPrime_second_err(4) ; dPrime_first_err(3), dPrime_second_err(3)], [], {'high', 'low'})
-    xlabel('stim ambiguity');
-    ylabel('d''');
-    legend('first Half', 'Second Half','Location','best');
-    title({'dPrime of Control'})
-    
-    saveas(figs(3),[saveFolder, '/dPrime'], 'fig');
-    saveas(figs(3),[saveFolder, '/dPrime'], 'jpg');
-    
+    %     %
+    %     figs(3) = figure;
+    %     subplot(1,2,1)
+    %     barweb([dPrime_first_raw_mean(2), dPrime_second_raw_mean(2) ; dPrime_first_raw_mean(1), dPrime_second_raw_mean(1)], [dPrime_first_err(2), dPrime_second_err(2) ; dPrime_first_err(1), dPrime_second_err(1)], [], {'high', 'low'})
+    %     xlabel('stim ambiguity');
+    %     ylabel('d''');
+    %     legend('first Half', 'Second Half','Location','best');
+    %     title({'dPrime of Lesion'})
+    %
+    %     subplot(1,2,2)
+    %     barweb([dPrime_first_raw_mean(4), dPrime_second_raw_mean(4) ; dPrime_first_raw_mean(3), dPrime_second_raw_mean(3)], [dPrime_first_err(4), dPrime_second_err(4) ; dPrime_first_err(3), dPrime_second_err(3)], [], {'high', 'low'})
+    %     xlabel('stim ambiguity');
+    %     ylabel('d''');
+    %     legend('first Half', 'Second Half','Location','best');
+    %     title({'dPrime of Control'})
+    %
+    %     saveas(figs(3),[saveFolder, '/dPrime'], 'fig');
+    %     saveas(figs(3),[saveFolder, '/dPrime'], 'jpg');
+    %
     
     %% aboslute famil
     
@@ -1810,6 +1738,39 @@ outPut.Properties.VariableNames{'Var5'} = 'ambiguity';
 
 % save(['dPrime_', folderName, '.dat'], 'outPut');
 writetable(outPut, 'dPrime.dat');
+
+
+%% comparisons
+
+figs(24) = figure;
+subplot(1,2,1); hold on
+plot(meanComps_match_avg(1,:), 'color', 'g')
+plot(meanComps_match_avg(2,:), 'color', 'r')
+plot(meanComps_misMatch_avg(1,:), 'g', 'LineStyle', '--')
+plot(meanComps_misMatch_avg(2,:), 'color','r', 'LineStyle', '--')
+xlabel('trial');
+ylabel('familiarity difference');
+legend('match,low', 'match,high',...
+    'misMatch,low', 'misMatch,high','Location','best');
+title({'comparisons during LESION sessions'});
+axis([0,72,0,10]);
+
+subplot(1,2,2); hold on
+plot(meanComps_match_avg(3,:), 'color', 'g')
+plot(meanComps_match_avg(4,:), 'color', 'r')
+plot(meanComps_misMatch_avg(3,:), 'g', 'LineStyle', '--')
+plot(meanComps_misMatch_avg(4,:), 'color','r', 'LineStyle', '--')
+xlabel('trial');
+ylabel('familiarity difference');
+legend('match,low', 'match,high',...
+    'misMatch,low', 'misMatch,high','Location','best');
+title({'comparisons during LESION sessions'});
+axis([0,72,0,10]);
+
+
+saveas(figs(24),[saveFolder, '/comparisons_les'], 'fig');
+saveas(figs(24),[saveFolder, '/comparisons_les'], 'jpg');
+
 
 end
 

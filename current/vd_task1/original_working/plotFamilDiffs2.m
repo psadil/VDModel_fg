@@ -31,15 +31,6 @@ familDifferences_misMatch_PRC = zeros(numRats,4,p.nTrials);
 
 answer = zeros(numRats,4,p.nTrials);
 correct = zeros(numRats,4,p.nTrials);
-acc_firstHalf = zeros(numRats,4);
-acc_secondHalf = zeros(numRats,4);
-acc_match_first = zeros(numRats,4);
-acc_misMatch_first = zeros(numRats,4);
-acc_match_second = zeros(numRats,4);
-acc_misMatch_second = zeros(numRats,4);
-
-dPrime_first = zeros(numRats,4);
-dPrime_second = zeros(numRats,4);
 
 hitRate_first = zeros(numRats,4);
 hitRate_second = zeros(numRats,4);
@@ -53,15 +44,7 @@ meanSelectivity_PRC_new = zeros(numRats,4,p.nTrials);
 
 familDiff_used = zeros(numRats,4,p.nTrials);
 
-meanSelectivity_caudal_prev_misMatch = zeros(numRats,4,p.nTrials);
-meanSelectivity_caudal_prev_match = zeros(numRats,4,p.nTrials);
-meanSelectivity_caudal_new_misMatch = zeros(numRats,4,p.nTrials);
-meanSelectivity_caudal_new_match = zeros(numRats,4,p.nTrials);
 
-meanSelectivity_PRC_prev_misMatch = zeros(numRats,4,p.nTrials);
-meanSelectivity_PRC_prev_match = zeros(numRats,4,p.nTrials);
-meanSelectivity_PRC_new_misMatch = zeros(numRats,4,p.nTrials);
-meanSelectivity_PRC_new_match = zeros(numRats,4,p.nTrials);
 
 comparedFeat = zeros(numRats,4,p.nTrials,p.numGrids_Caudal);
 
@@ -78,27 +61,12 @@ trial_match_PRC_if = zeros(numRats,4,p.nTrials);
 gridUsed_one_total = zeros(4,p.nTrials);
 gridUsed_one = zeros(numRats,4,p.nTrials);
 
-gridUsed_one_misMatch_total = zeros(4,p.nTrials);
-gridUsed_one_misMatch = zeros(numRats,4,p.nTrials);
-
-gridUsed_one_match_total = zeros(4,p.nTrials);
-gridUsed_one_match = zeros(numRats,4,p.nTrials);
-
-selectivity_caudal_prev_match_grid1 = zeros(numRats,4,p.nTrials);
-selectivity_caudal_prev_misMatch_grid1 = zeros(numRats,4,p.nTrials);
-selectivity_caudal_new_match_grid1 = zeros(numRats,4,p.nTrials);
-selectivity_caudal_new_misMatch_grid1 = zeros(numRats,4,p.nTrials);
-
 
 fixationByComparison_prev = zeros(numRats,4,p.nTrials);
 fixationByComparison_new = zeros(numRats,4,p.nTrials);
 
 fixByComp_prev_mean = zeros(numRats,4,p.nTrials,max(p.maxFixations));
 fixByComp_new_mean = zeros(numRats,4,p.nTrials,max(p.maxFixations));
-
-
-peakAct = zeros(numRats,4,p.nTrials,2);
-totalAct = zeros(numRats,4,p.nTrials,2);
 
 featSamplePerTrial = zeros(numRats,4,p.nTrials);
 featSamplePerTrial_misMatch = zeros(numRats,4,p.nTrials);
@@ -119,6 +87,8 @@ act_total_new_fin = zeros(numRats,4,2,p.nTrials);
 
 fixations_total = zeros(numRats,4,p.nTrials);
 threshUsed = zeros(numRats,4,p.nTrials);
+
+comparisons = zeros(numRats,4,p.nTrials);
 
 for rat = firstRat:lastRat
     for session = 1:4
@@ -387,58 +357,60 @@ for rat = firstRat:lastRat
         hitRate_second_adj_all(rat,session) = (sum(p.answer(p.nTrials/2+1:end).*(p.tType(p.nTrials/2+1:end)==1)) + 1/(2*sum((p.tType(1:p.nTrials/2)==1))))/(sum(p.tType(p.nTrials/2+1:end)==1)+1);  % a 'yes' (mismatch judgement) on trials that were mismatches (ie, p.tType==1)
         FARate_second_adj_all(rat,session) = (sum(p.answer(p.nTrials/2+1:end).*(p.tType(p.nTrials/2+1:end)==2)) + 1/(2*sum((p.tType(1:p.nTrials/2)==2))))/(sum(p.tType(p.nTrials/2+1:end)==2)+1); % a 'yes' on matching trials
         
+        
+        
         % adjust by adding to only trials
+        % THIS IS THE ADJUSTMENT FROM BARENSE ET AL.
         hitRate_first_adj_some(rat,session) = hitRate_first(rat,session);
-        if hitRate_first_adj_some(rat,session) == 1
-            hitRate_first_adj_some(rat,session) = hitRate_first_adj_some(rat,session) - 1/(2*sum((p.tType(1:p.nTrials/2)==1)));
-        elseif hitRate_first_adj_some(rat,session) == 0
-            hitRate_first_adj_some(rat,session) = hitRate_first_adj_some(rat,session) + 1/(2*sum((p.tType(1:p.nTrials/2)==1)));
+        if hitRate_first_adj_some(rat,session) == 0
+            hitRate_first_adj_some(rat,session) = 1/(2*sum((p.tType(1:p.nTrials/2)==1)));
         end
+        if hitRate_first_adj_some(rat,session) == 1
+            hitRate_first_adj_some(hitRate_first_adj_some==1) = 1 - 1/(2*sum((p.tType(1:p.nTrials/2)==1)));
+        end
+        
         
         FARate_first_adj_some(rat,session) = FARate_first(rat,session);
-        if FARate_first_adj_some(rat,session) == 1
-            FARate_first_adj_some(rat,session) = FARate_first_adj_some(rat,session) - 1/(2*sum((p.tType(1:p.nTrials/2)==2)));
-        elseif FARate_first_adj_some(rat,session) == 0
-            FARate_first_adj_some(rat,session) = FARate_first_adj_some(rat,session) + 1/(2*sum((p.tType(1:p.nTrials/2)==2)));
+        
+        if FARate_first_adj_some(rat,session) == 0
+            FARate_first_adj_some(rat,session) = 1/(2*sum((p.tType(1:p.nTrials/2)==2)));
         end
         
+        if FARate_first_adj_some(rat,session) == 1
+            FARate_first_adj_some(rat,session) = 1 - 1/(2*sum((p.tType(1:p.nTrials/2)==2)));
+        end
+        
+        
         hitRate_second_adj_some(rat,session) = hitRate_second(rat,session);
+        
+        if hitRate_second_adj_some(rat,session) == 0
+            hitRate_second_adj_some(rat,session) = 1/(2*sum((p.tType(1+p.nTrials/2:end)==1)));
+        end
+        
         if hitRate_second_adj_some(rat,session) == 1
-            hitRate_second_adj_some(rat,session) = hitRate_second_adj_some(rat,session) - 1/(2*sum((p.tType(1:p.nTrials/2)==1)));
-        elseif hitRate_second_adj_some(rat,session) == 0
-            hitRate_second_adj_some(rat,session) = hitRate_second_adj_some(rat,session) + 1/(2*sum((p.tType(1:p.nTrials/2)==1)));
+            hitRate_second_adj_some(rat,session) = 1 - 1/(2*sum((p.tType(1+p.nTrials/2:end)==1)));
         end
         
         FARate_second_adj_some(rat,session) = FARate_second(rat,session);
+        
+        if FARate_second_adj_some(rat,session) == 0
+            FARate_second_adj_some(rat,session) = 1/(2*sum((p.tType(1+p.nTrials/2:end)==2)));
+        end
         if FARate_second_adj_some(rat,session) == 1
-            FARate_second_adj_some(rat,session) = FARate_second_adj_some(rat,session) - 1/(2*sum((p.tType(1:p.nTrials/2)==2)));
-        elseif FARate_second_adj_some(rat,session) == 0
-            FARate_second_adj_some(rat,session) = FARate_second_adj_some(rat,session) + 1/(2*sum((p.tType(1:p.nTrials/2)==2)));
+            FARate_second_adj_some(rat,session) = 1 - 1/(2*sum((p.tType(1+p.nTrials/2:end)==2)));
         end
         
+        % track comparisons
+        comparisons(rat,session,:) = p.comparison;
         
-        acc_firstHalf(rat,session) = p.Acc_firstHalf;
-        acc_secondHalf(rat,session) = p.Acc_secondHalf;
-        
-        acc_match_first(rat,session) = sum(answer(rat,session,find(tType(rat,session,(1:p.nMismatch))==2))==0)/(sum(tType(rat,session,1:p.nMismatch)==2));
-        acc_match_second(rat,session) = sum(answer(rat,session,find(tType(rat,session,(p.nMismatch+1:p.nTrials))==2))==0)/(sum(tType(rat,session,p.nMismatch+1:p.nTrials)==2));
-        acc_misMatch_first(rat,session) = sum(answer(rat,session,find(tType(rat,session,(1:p.nMismatch))==1))==1)/(sum(tType(rat,session,1:p.nMismatch)==1));
-        acc_misMatch_second(rat,session) = sum(answer(rat,session,find(tType(rat,session,(p.nMismatch+1:p.nTrials))==1))==1)/(sum(tType(rat,session,p.nMismatch+1:p.nTrials)==1));
-        
-        
-        %         % divide selectivity by peak activation
-        %         peakAct(rat,session,:,:) = p.peak_act;
-        %         totalAct(rat,session,:,:) = p.totalAct;
     end
 end
+
 
 %%
 
 fixByComp_prev = squeeze(mean(fixationByComparison_prev,1));
-fixByComp_new = squeeze(mean(fixationByComparison_new,1));
 
-fixByComp_prev_mean_plot = squeeze(mean(fixByComp_prev_mean,1));
-fixByComp_new_mean_plot = squeeze(mean(fixByComp_new_mean,1));
 
 featSamplePerTrial_mean = squeeze(mean(featSamplePerTrial,1));
 %%
@@ -599,16 +571,16 @@ familDiff_used_match_avg = familDiff_used_match_count./tTypeCount_match;
 
 % threshold used
 
-thresh_misMatch  = threshUsed.*(tType==1);
-thresh_match  = threshUsed.*(tType==2);
+% thresh_misMatch  = threshUsed.*(tType==1);
+% thresh_match  = threshUsed.*(tType==2);
 
 thresh_avg = squeeze(mean(threshUsed,1));
 
-thresh_misMatch_count = squeeze(sum(thresh_misMatch,1));
-thresh_match_count = squeeze(sum(thresh_match,1));
+% thresh_misMatch_count = squeeze(sum(thresh_misMatch,1));
+% thresh_match_count = squeeze(sum(thresh_match,1));
 
-thresh_misMatch_avg = thresh_misMatch_count./tTypeCount_misMatch;
-thresh_match_avg = thresh_match_count./tTypeCount_match;
+% thresh_misMatch_avg = thresh_misMatch_count./tTypeCount_misMatch;
+% thresh_match_avg = thresh_match_count./tTypeCount_match;
 
 %% whether PRC used
 
@@ -757,6 +729,30 @@ fixations_PRC_match_temp = squeeze(sum(fixations_total.*(tType==2).*ifPRC_used,1
 fixations_PRC_match_mean = fixations_PRC_match_temp(:,:)./trial_match_PRC(:,:);
 
 
+%%
+
+meanComps_misMatch = (comparisons-1).*(tType==1);
+meanComps_misMatch_count = squeeze(sum(meanComps_misMatch,1));
+
+meanComps_misMatch_avg = meanComps_misMatch_count./tTypeCount_misMatch;
+
+meanComps_match = (comparisons-1).*(tType==2);
+meanComps_match_count = squeeze(sum(meanComps_match,1));
+
+meanComps_match_avg = meanComps_match_count./tTypeCount_match;
+
+%%
+mnFixComps_misMatch = ((comparisons-1)./fixations_total).*(tType==1);
+mnFixComps_misMatch_count = squeeze(sum(mnFixComps_misMatch,1));
+
+mnFixComps_misMatch_avg = mnFixComps_misMatch_count./tTypeCount_misMatch;
+
+mnFixComps_match = ((comparisons-1)./fixations_total).*(tType==2);
+mnFixComps_match_count = squeeze(sum(mnFixComps_match,1));
+
+mnFixComps_match_avg = mnFixComps_match_count./tTypeCount_match;
+
+
 %% STD of familDifferences
 
 familDiffs_misMatch_caudal_var_toSqr = zeros(4,p.nTrials);
@@ -802,7 +798,6 @@ for session = 1:4
 end
 
 
-
 % squareroot those variances to get the standard deviation
 familDiffs_misMatch_caudal_std = sqrt(familDiffs_misMatch_caudal_var_toSqr);
 familDiffs_match_caudal_std = sqrt(familDiffs_match_caudal_var_toSqr);
@@ -821,37 +816,36 @@ familDiffs_match_PRC_err = [familDiffs_match_PRC_mean + familDiffs_match_PRC_sem
 familDiffs_misMatch_PRC_err = [familDiffs_misMatch_PRC_mean + familDiffs_misMatch_PRC_sem; familDiffs_misMatch_PRC_mean - familDiffs_misMatch_PRC_sem];
 
 
-%%
+%% looking at more raw hit and FA rats
 
-syms dp
-dPrime_first_adj_all = zeros(size(hitRate_first_adj_all));
-for i = 1:size(hitRate_first_adj_all,1)
-    for j = 1:size(hitRate_first_adj_all,2)
-        H = hitRate_first_adj_all(i,j);
-        k = sqrt(2).*norminv(FARate_first_adj_all(i,j)/2);
-        eqn = H == normcdf((k+dp)/sqrt(2)) + normcdf((k-dp)/sqrt(2));
-        
-        dPrime_first_adj_all(i,j) = abs(solve(eqn,dp));
-    end
+
+dPrime_first_raw = norminv(hitRate_first) - norminv(FARate_first);
+dPrime_second_raw = norminv(hitRate_second) - norminv(FARate_second);
+
+dPrime_first_raw_mean = mean(dPrime_first_raw);
+dPrime_second_raw_mean= mean(dPrime_second_raw);
+
+first_std = std(dPrime_first_raw);
+first_sem = first_std/sqrt(numRats);
+
+second_std = std(dPrime_second_raw);
+second_sem = second_std/sqrt(numRats);
+
+dPrime_first_err = first_sem;
+dPrime_second_err = second_sem;
+
+if any(isnan(dPrime_first_err))
+    dPrime_first_err(:) = 0;
 end
 
-dPrime_second_adj_all = zeros(size(hitRate_second_adj_all));
-for i = 1:size(hitRate_second_adj_all,1)
-    for j = 1:size(hitRate_second_adj_all,2)
-        H = hitRate_second_adj_all(i,j);
-        k = sqrt(2).*norminv(FARate_second_adj_all(i,j)/2);
-        eqn = H == normcdf((k+dp)/sqrt(2)) + normcdf((k-dp)/sqrt(2));
-        
-        dPrime_second_adj_all(i,j) = abs(solve(eqn,dp));
-        
-    end
+if any(isnan(dPrime_second_err))
+    dPrime_second_err(:) = 0;
 end
 
 
-% 
-% dPrime_first_adj_all = norminv(hitRate_first_adj_all) - norminv(FARate_first_adj_all);
-% dPrime_second_adj_all = norminv(hitRate_second_adj_all) - norminv(FARate_second_adj_all);
-% 
+dPrime_first_adj_all = norminv(hitRate_first_adj_all) - norminv(FARate_first_adj_all);
+dPrime_second_adj_all = norminv(hitRate_second_adj_all) - norminv(FARate_second_adj_all);
+
 dPrime_first_adj_all_mean = mean(dPrime_first_adj_all);
 dPrime_second_adj_all_mean = mean(dPrime_second_adj_all);
 
@@ -865,10 +859,35 @@ dPrime_first_adj_all_err = first_adj_all_sem;
 dPrime_second_adj_all_err = second_adj_all_sem;
 
 
-
 % -----------------------
-
-
+% syms dp
+% dPrime_first_adj_some = zeros(size(hitRate_first_adj_some));
+% for i = 1:size(hitRate_first_adj_some,1)
+%     for j = 1:size(hitRate_first_adj_some,2)
+%         H = hitRate_first_adj_some(i,j);
+%         k = sqrt(2).*norminv(FARate_first_adj_some(i,j)/2);
+%         eqn = H == normcdf((k+dp)/sqrt(2)) + normcdf((k-dp)/sqrt(2));
+%
+%         dPrime_first_adj_some(i,j) = abs(solve(eqn,dp));
+%     end
+% end
+%
+% dPrime_second_adj_some = zeros(size(hitRate_second_adj_some));
+% for i = 1:size(hitRate_second_adj_some,1)
+%     for j = 1:size(hitRate_second_adj_some,2)
+%         H = hitRate_second_adj_some(i,j);
+%         k = sqrt(2).*norminv(FARate_second_adj_some(i,j)/2);
+%         eqn = H == normcdf((k+dp)/sqrt(2)) + normcdf((k-dp)/sqrt(2));
+%
+%         dpri = abs(solve(eqn,dp));
+%
+%         if ~isempty(dpri)
+%             dPrime_second_adj_some(i,j) = dpri;
+%         else
+%             dPrime_second_adj_some(i,j) = 0;
+%         end
+%     end
+% end
 
 dPrime_first_adj_some = norminv(hitRate_first_adj_some) - norminv(FARate_first_adj_some);
 dPrime_second_adj_some = norminv(hitRate_second_adj_some) - norminv(FARate_second_adj_some);
@@ -886,15 +905,16 @@ dPrime_first_adj_some_err = first_adj_some_sem;
 dPrime_second_adj_some_err = second_adj_some_sem;
 
 
-% %% quick test
+
+
+%% quick test
 % familDiffs_match_caudal_mean = abs(familDiffs_match_caudal_mean);
 % familDiffs_misMatch_caudal_mean = abs(familDiffs_misMatch_caudal_mean);
-% 
+%
 % familDiffs_match_PRC_mean = abs(familDiffs_match_PRC_mean);
 % familDiffs_misMatch_PRC_mean = abs(familDiffs_misMatch_PRC_mean);
 
 
-%% Most important graphs!
 close all;
 %% famil difference
 
@@ -990,27 +1010,27 @@ if ~onlyFigure
     %--------------------------------------------------------------------------
     minY_dPrime = 0;
     maxY_dPrime = 5;
-    axisBounds_familDiffs = [0,p.nTrials,minY_dPrime,maxY_dPrime];
-    
+    %     axisBounds_familDiffs = [0,p.nTrials,minY_dPrime,maxY_dPrime];
     %
-    figs(3) = figure;
-    subplot(1,2,1)
-    barweb([dPrime_first_raw_mean(2), dPrime_second_raw_mean(2) ; dPrime_first_raw_mean(1), dPrime_second_raw_mean(1)], [dPrime_first_err(2), dPrime_second_err(2) ; dPrime_first_err(1), dPrime_second_err(1)], [], {'high', 'low'})
-    xlabel('stim ambiguity');
-    ylabel('d''');
-    legend('first Half', 'Second Half','Location','best');
-    title({'dPrime of Lesion'})
-    
-    subplot(1,2,2)
-    barweb([dPrime_first_raw_mean(4), dPrime_second_raw_mean(4) ; dPrime_first_raw_mean(3), dPrime_second_raw_mean(3)], [dPrime_first_err(4), dPrime_second_err(4) ; dPrime_first_err(3), dPrime_second_err(3)], [], {'high', 'low'})
-    xlabel('stim ambiguity');
-    ylabel('d''');
-    legend('first Half', 'Second Half','Location','best');
-    title({'dPrime of Control'})
-    
-    saveas(figs(3),[saveFolder, '/dPrime'], 'fig');
-    saveas(figs(3),[saveFolder, '/dPrime'], 'jpg');
-    
+    %     %
+    %     figs(3) = figure;
+    %     subplot(1,2,1)
+    %     barweb([dPrime_first_raw_mean(2), dPrime_second_raw_mean(2) ; dPrime_first_raw_mean(1), dPrime_second_raw_mean(1)], [dPrime_first_err(2), dPrime_second_err(2) ; dPrime_first_err(1), dPrime_second_err(1)], [], {'high', 'low'})
+    %     xlabel('stim ambiguity');
+    %     ylabel('d''');
+    %     legend('first Half', 'Second Half','Location','best');
+    %     title({'dPrime of Lesion'})
+    %
+    %     subplot(1,2,2)
+    %     barweb([dPrime_first_raw_mean(4), dPrime_second_raw_mean(4) ; dPrime_first_raw_mean(3), dPrime_second_raw_mean(3)], [dPrime_first_err(4), dPrime_second_err(4) ; dPrime_first_err(3), dPrime_second_err(3)], [], {'high', 'low'})
+    %     xlabel('stim ambiguity');
+    %     ylabel('d''');
+    %     legend('first Half', 'Second Half','Location','best');
+    %     title({'dPrime of Control'})
+    %
+    %     saveas(figs(3),[saveFolder, '/dPrime'], 'fig');
+    %     saveas(figs(3),[saveFolder, '/dPrime'], 'jpg');
+    %
     
     %% aboslute famil
     
@@ -1634,7 +1654,7 @@ handles = barweb(barvalues...
 legend('First Half', 'Second Half','Lesion', 'Location', 'NorthWest');
 legend BOXOFF
 set(gca,'fontsize',30)
-figs(22).CurrentAxes.YLim = [0, 6.5];
+figs(22).CurrentAxes.YLim = [0, 6];
 set(findall(gcf,'type','text'),'FontSize',30,'fontWeight','bold')
 
 x1 = handles.bars(1).XOffset;
@@ -1651,40 +1671,6 @@ hand2 = errorbar([2+x1, 2+x2], barvalues(2,:), errors(2,:), '-kx', 'MarkerSize',
 saveas(figs(22),[saveFolder, '/dPrime_adj'], 'fig');
 saveas(figs(22),[saveFolder, '/dPrime_adj'], 'jpg');
 
-
-%------------
-
-barvalues = [dPrime_first_adj_some_mean(4), dPrime_second_adj_some_mean(4) ; dPrime_first_adj_some_mean(3), dPrime_second_adj_some_mean(3)];
-errors = [dPrime_first_adj_some_err(4), dPrime_second_adj_some_err(4) ; dPrime_first_adj_some_err(3), dPrime_second_adj_some_err(3)];
-
-figs(22) = figure;
-handles = barweb(barvalues...
-    , errors...
-    , [] ...
-    , {'High', 'Low'}...
-    , {'Simulation 1'}...
-    , {'Stimulus Ambiguity'}...
-    , {'d'''}...
-    , [rgb('Chocolate') ; rgb('Goldenrod')]);
-legend('First Half', 'Second Half','Lesion', 'Location', 'NorthWest');
-legend BOXOFF
-set(gca,'fontsize',30)
-figs(22).CurrentAxes.YLim = [0, 6.5];
-set(findall(gcf,'type','text'),'FontSize',30,'fontWeight','bold')
-
-x1 = handles.bars(1).XOffset;
-x2 = handles.bars(2).XOffset;
-
-barvalues = [dPrime_first_adj_some_mean(2), dPrime_second_adj_some_mean(2) ; dPrime_first_adj_some_mean(1), dPrime_second_adj_some_mean(1)];
-errors = [dPrime_first_adj_some_err(2), dPrime_second_adj_some_err(2) ; dPrime_first_adj_some_err(1), dPrime_second_adj_some_err(1)];
-
-hold on
-hand1 = errorbar([1+x1, 1+x2], barvalues(1,:), errors(1,:), '-kx', 'MarkerSize', 10,'linewidth', 2);
-hand2 = errorbar([2+x1, 2+x2], barvalues(2,:), errors(2,:), '-kx', 'MarkerSize', 10,'linewidth', 2);
-% legend('High Ambiguity', 'Low Ambiguity', 'Location','NorthWest');
-
-saveas(figs(22),[saveFolder, '/dPrime_adj_some'], 'fig');
-saveas(figs(22),[saveFolder, '/dPrime_adj_some'], 'jpg');
 
 
 % barweb([dPrime_first_adj_all_mean(4), dPrime_second_adj_all_mean(4) ; dPrime_first_adj_all_mean(3), dPrime_second_adj_all_mean(3)], [dPrime_first_adj_all_err(4), dPrime_second_adj_all_err(4) ; dPrime_first_adj_all_err(3), dPrime_second_adj_all_err(3)], [], {'high', 'low'})
@@ -1725,7 +1711,43 @@ saveas(figs(22),[saveFolder, '/dPrime_adj_some'], 'jpg');
 %
 % [squeeze(p.winning(1,1,:,1))-squeeze(p.winning(1,1,1,1)), squeeze(p.winning(1,1,:,2))-squeeze(p.winning(1,1,1,2))];
 
+%% d', CORRECT ADJUSTMENT
+
+barvalues = [dPrime_first_adj_some_mean(4), dPrime_second_adj_some_mean(4) ; dPrime_first_adj_some_mean(3), dPrime_second_adj_some_mean(3)];
+errors = [dPrime_first_adj_some_err(4), dPrime_second_adj_some_err(4) ; dPrime_first_adj_some_err(3), dPrime_second_adj_some_err(3)];
+
+figs(23) = figure;
+handles = barweb(barvalues...
+    , errors...
+    , [] ...
+    , {'High', 'Low'}...
+    , {'Simulation 1'}...
+    , {'Stimulus Ambiguity'}...
+    , {'d'''}...
+    , [rgb('Chocolate') ; rgb('Goldenrod')]);
+legend('First Half', 'Second Half','Lesion', 'Location', 'NorthWest');
+legend BOXOFF
+set(gca,'fontsize',30)
+figs(23).CurrentAxes.YLim = [0, 6];
+set(findall(gcf,'type','text'),'FontSize',30,'fontWeight','bold')
+
+x1 = handles.bars(1).XOffset;
+x2 = handles.bars(2).XOffset;
+
+barvalues = [dPrime_first_adj_some_mean(2), dPrime_second_adj_some_mean(2) ; dPrime_first_adj_some_mean(1), dPrime_second_adj_some_mean(1)];
+errors = [dPrime_first_adj_some_err(2), dPrime_second_adj_some_err(2) ; dPrime_first_adj_some_err(1), dPrime_second_adj_some_err(1)];
+
+hold on
+hand1 = errorbar([1+x1, 1+x2], barvalues(1,:), errors(1,:), '-kx', 'MarkerSize', 10,'linewidth', 2);
+hand2 = errorbar([2+x1, 2+x2], barvalues(2,:), errors(2,:), '-kx', 'MarkerSize', 10,'linewidth', 2);
+
+saveas(figs(23),[saveFolder, '/dPrime_adj_some'], 'fig');
+saveas(figs(23),[saveFolder, '/dPrime_adj_some'], 'jpg');
+
+
 %% output to R
+
+
 
 outPut = table( repmat(firstRat:lastRat,[1,8])' ...
     , repelem(1:2, numRats*4)'...
@@ -1745,4 +1767,69 @@ outPut.Properties.VariableNames{'Var5'} = 'ambiguity';
 % save(['dPrime_', folderName, '.dat'], 'outPut');
 writetable(outPut, 'dPrime.dat');
 
+
+%% comparisons
+
+figs(24) = figure;
+subplot(1,2,1); hold on
+plot(meanComps_match_avg(1,:), 'color', 'g')
+plot(meanComps_match_avg(2,:), 'color', 'r')
+plot(meanComps_misMatch_avg(1,:), 'g', 'LineStyle', '--')
+plot(meanComps_misMatch_avg(2,:), 'color','r', 'LineStyle', '--')
+xlabel('trial');
+ylabel('familiarity difference');
+legend('match,low', 'match,high',...
+    'misMatch,low', 'misMatch,high','Location','best');
+title({'comparisons during LESION sessions'});
+axis([0,72,0,10]);
+
+subplot(1,2,2); hold on
+plot(meanComps_match_avg(3,:), 'color', 'g')
+plot(meanComps_match_avg(4,:), 'color', 'r')
+plot(meanComps_misMatch_avg(3,:), 'g', 'LineStyle', '--')
+plot(meanComps_misMatch_avg(4,:), 'color','r', 'LineStyle', '--')
+xlabel('trial');
+ylabel('familiarity difference');
+legend('match,low', 'match,high',...
+    'misMatch,low', 'misMatch,high','Location','best');
+title({'comparisons during CONTROL sessions'});
+axis([0,72,0,10]);
+
+
+saveas(figs(24),[saveFolder, '/nComparisons'], 'fig');
+saveas(figs(24),[saveFolder, '/nComparisons'], 'jpg');
+
+
+
+figs(25) = figure;
+subplot(1,2,1); hold on
+plot(mnFixComps_match_avg(1,:), 'color', 'g')
+plot(mnFixComps_match_avg(2,:), 'color', 'r')
+plot(mnFixComps_misMatch_avg(1,:), 'g', 'LineStyle', '--')
+plot(mnFixComps_misMatch_avg(2,:), 'color','r', 'LineStyle', '--')
+xlabel('trial');
+ylabel('familiarity difference');
+legend('match,low', 'match,high',...
+    'misMatch,low', 'misMatch,high','Location','best');
+title({'comparisons during LESION sessions'});
+axis([0,72,0,1]);
+
+subplot(1,2,2); hold on
+plot(mnFixComps_match_avg(3,:), 'color', 'g')
+plot(mnFixComps_match_avg(4,:), 'color', 'r')
+plot(mnFixComps_misMatch_avg(3,:), 'g', 'LineStyle', '--')
+plot(mnFixComps_misMatch_avg(4,:), 'color','r', 'LineStyle', '--')
+xlabel('trial');
+ylabel('familiarity difference');
+legend('match,low', 'match,high',...
+    'misMatch,low', 'misMatch,high','Location','best');
+title({'comparisons during CONTROL sessions'});
+axis([0,72,0,1]);
+
+
+saveas(figs(25),[saveFolder, '/nFixComps'], 'fig');
+saveas(figs(25),[saveFolder, '/nFixComps'], 'jpg');
+
+
 end
+
