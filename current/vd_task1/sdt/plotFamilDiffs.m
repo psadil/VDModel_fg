@@ -888,13 +888,16 @@ dPrime_second_adj_all_err = second_adj_all_sem;
 % dPrime_first_adj_some_mean = mean(dPrime_first_adj_some);
 % dPrime_second_adj_some_mean = mean(dPrime_second_adj_some);
 
-dPrime_first_adj_some_mean = norminv(hitRate_first_adj_some) - norminv(FARate_first_adj_some);
-dPrime_second_adj_some_mean = norminv(hitRate_second_adj_some) - norminv(FARate_second_adj_some);
+dPrime_first_adj_some = norminv(hitRate_first_adj_some) - norminv(FARate_first_adj_some);
+dPrime_second_adj_some = norminv(hitRate_second_adj_some) - norminv(FARate_second_adj_some);
 
-first_adj_some_std = std(dPrime_first_adj_some_mean);
+dPrime_first_adj_some_mean = mean(dPrime_first_adj_some);
+dPrime_second_adj_some_mean = mean(dPrime_second_adj_some);
+
+first_adj_some_std = std(dPrime_first_adj_some);
 first_adj_some_sem = first_adj_some_std/sqrt(numRats);
 
-second_adj_some_std = std(dPrime_second_adj_some_mean);
+second_adj_some_std = std(dPrime_second_adj_some);
 second_adj_some_sem = second_adj_some_std/sqrt(numRats);
 
 dPrime_first_adj_some_err = first_adj_some_sem;
@@ -1615,96 +1618,43 @@ if ~onlyFigure
     saveas(figs(20),[saveFolder, '/familDiff_used'], 'fig');
     saveas(figs(20),[saveFolder, '/familDiff_used'], 'jpg');
     
-    %% adjusted dPrime graphs
 end
-%
-% figs(21) = figure;
-% subplot(1,2,1)
-% barweb([dPrime_first_adj_all_mean(2), dPrime_second_adj_all_mean(2) ; dPrime_first_adj_all_mean(1), dPrime_second_adj_all_mean(1)]...
-%     , [dPrime_first_adj_all_err(2), dPrime_second_adj_all_err(2) ; dPrime_first_adj_all_err(1), dPrime_second_adj_all_err(1)]...
+
+
+% barvalues = [dPrime_first_adj_all_mean(4), dPrime_second_adj_all_mean(4) ; dPrime_first_adj_all_mean(3), dPrime_second_adj_all_mean(3)];
+% errors = [dPrime_first_adj_all_err(4), dPrime_second_adj_all_err(4) ; dPrime_first_adj_all_err(3), dPrime_second_adj_all_err(3)];
+% 
+% figs(22) = figure;
+% handles = barweb(barvalues...
+%     , errors...
 %     , [] ...
 %     , {'High', 'Low'}...
-%     , {'Lesion'}...
+%     , {'Simulation 1'}...
 %     , {'Stimulus Ambiguity'}...
-%     , {'d'''});
-% legend('First Half', 'Second Half','Location','NorthWest');
+%     , {'d'''}...
+%     , [rgb('Chocolate') ; rgb('Goldenrod')]);
+% legend('First Half', 'Second Half','Lesion', 'Location', 'NorthWest');
 % legend BOXOFF
 % set(gca,'fontsize',30)
-% figs(21).CurrentAxes.YLim = [0, 5];
+% figs(22).CurrentAxes.YLim = [0, 6];
 % set(findall(gcf,'type','text'),'FontSize',30,'fontWeight','bold')
-
-
-barvalues = [dPrime_first_adj_all_mean(4), dPrime_second_adj_all_mean(4) ; dPrime_first_adj_all_mean(3), dPrime_second_adj_all_mean(3)];
-errors = [dPrime_first_adj_all_err(4), dPrime_second_adj_all_err(4) ; dPrime_first_adj_all_err(3), dPrime_second_adj_all_err(3)];
-
-figs(22) = figure;
-handles = barweb(barvalues...
-    , errors...
-    , [] ...
-    , {'High', 'Low'}...
-    , {'Simulation 1'}...
-    , {'Stimulus Ambiguity'}...
-    , {'d'''}...
-    , [rgb('Chocolate') ; rgb('Goldenrod')]);
-legend('First Half', 'Second Half','Lesion', 'Location', 'NorthWest');
-legend BOXOFF
-set(gca,'fontsize',30)
-figs(22).CurrentAxes.YLim = [0, 6];
-set(findall(gcf,'type','text'),'FontSize',30,'fontWeight','bold')
-
-x1 = handles.bars(1).XOffset;
-x2 = handles.bars(2).XOffset;
-
-barvalues = [dPrime_first_adj_all_mean(2), dPrime_second_adj_all_mean(2) ; dPrime_first_adj_all_mean(1), dPrime_second_adj_all_mean(1)];
-errors = [dPrime_first_adj_all_err(2), dPrime_second_adj_all_err(2) ; dPrime_first_adj_all_err(1), dPrime_second_adj_all_err(1)];
-
-hold on
-errorbar([1+x1, 1+x2], barvalues(1,:), errors(1,:), '-kx', 'MarkerSize', 10,'linewidth', 2);
-errorbar([2+x1, 2+x2], barvalues(2,:), errors(2,:), '-kx', 'MarkerSize', 10,'linewidth', 2);
-% legend('High Ambiguity', 'Low Ambiguity', 'Location','NorthWest');
-
-saveas(figs(22),[saveFolder, '/dPrime_adj'], 'fig');
-saveas(figs(22),[saveFolder, '/dPrime_adj'], 'jpg');
-
-
-
-% barweb([dPrime_first_adj_all_mean(4), dPrime_second_adj_all_mean(4) ; dPrime_first_adj_all_mean(3), dPrime_second_adj_all_mean(3)], [dPrime_first_adj_all_err(4), dPrime_second_adj_all_err(4) ; dPrime_first_adj_all_err(3), dPrime_second_adj_all_err(3)], [], {'high', 'low'})
-% xlabel('stim ambiguity');
-% ylabel('d''');
-% legend('First Half', 'Second Half','Location','best');
-% title({'dPrime of Control'})
-% figs(21).CurrentAxes.YLim = [minY_dPrime, maxY_dPrime];
-
-
+% 
+% x1 = handles.bars(1).XOffset;
+% x2 = handles.bars(2).XOffset;
+% 
+% barvalues = [dPrime_first_adj_all_mean(2), dPrime_second_adj_all_mean(2) ; dPrime_first_adj_all_mean(1), dPrime_second_adj_all_mean(1)];
+% errors = [dPrime_first_adj_all_err(2), dPrime_second_adj_all_err(2) ; dPrime_first_adj_all_err(1), dPrime_second_adj_all_err(1)];
+% 
+% hold on
+% errorbar([1+x1, 1+x2], barvalues(1,:), errors(1,:), '-kx', 'MarkerSize', 10,'linewidth', 2);
+% errorbar([2+x1, 2+x2], barvalues(2,:), errors(2,:), '-kx', 'MarkerSize', 10,'linewidth', 2);
+% % legend('High Ambiguity', 'Low Ambiguity', 'Location','NorthWest');
+% 
 % saveas(figs(22),[saveFolder, '/dPrime_adj'], 'fig');
 % saveas(figs(22),[saveFolder, '/dPrime_adj'], 'jpg');
-%
-%
-% figs(22) = figure;
-% subplot(1,2,1)
-% barweb([dPrime_first_adj_some_mean(2), dPrime_second_adj_some_mean(2) ; dPrime_first_adj_some_mean(1), dPrime_second_adj_some_mean(1)], [dPrime_first_adj_some_err(2), dPrime_second_adj_some_err(2) ; dPrime_first_adj_some_err(1), dPrime_second_adj_some_err(1)], [], {'high', 'low'})
-% xlabel('stim ambiguity');
-% ylabel('d''');
-% legend('first Half', 'Second Half','Location','best');
-% title({'dPrime of Lesion'})
-% figs(22).CurrentAxes.YLim = [minY_dPrime, maxY_dPrime];
-%
-%
-% subplot(1,2,2)
-% barweb([dPrime_first_adj_some_mean(4), dPrime_second_adj_some_mean(4) ; dPrime_first_adj_some_mean(3), dPrime_second_adj_some_mean(3)], [dPrime_first_adj_some_err(4), dPrime_second_adj_some_err(4) ; dPrime_first_adj_some_err(3), dPrime_second_adj_some_err(3)], [], {'high', 'low'})
-% xlabel('stim ambiguity');
-% ylabel('d''');
-% legend('first Half', 'Second Half','Location','best');
-% title({'dPrime of Control'})
-% figs(22).CurrentAxes.YLim = [minY_dPrime, maxY_dPrime];
-%
-%
-% saveas(figs(22),[saveFolder, '/dPrime_adj_some'], 'fig');
-% saveas(figs(22),[saveFolder, '/dPrime_adj_some'], 'jpg');
-%
-%
-%
-% [squeeze(p.winning(1,1,:,1))-squeeze(p.winning(1,1,1,1)), squeeze(p.winning(1,1,:,2))-squeeze(p.winning(1,1,1,2))];
+% 
+
+
 
 %% d', CORRECT ADJUSTMENT
 

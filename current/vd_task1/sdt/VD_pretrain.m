@@ -2,7 +2,7 @@ function [p] = VD_pretrain(p,rat)
 
 global ROOT;
 
-fprintf('\nVD_pretrain being executed...');
+% fprintf('\nVD_pretrain being executed...');
 
 %%%%%%%%%%%%%%%%%%%%% Perform pre-training of network %%%%%%%%%%%%%%%%
 for layer = 1:max(p.numLayers)
@@ -11,7 +11,7 @@ for layer = 1:max(p.numLayers)
     
     
     for grid = 1:p.nGrids(layer),
-        fprintf('\n\nLayer number %d, Grid no. %d...\n(1==Caudal, 2==PRC)', layer, grid);
+%         fprintf('\n\nLayer number %d, Grid no. %d...\n(1==Caudal, 2==PRC)', layer, grid);
         
         
         % initialize random weights for grids in this layer

@@ -37,11 +37,11 @@ for layer_new = 1:p.numLayers
     elseif layer_new == 2 && (all(p.usePRC(:,trial)))
         
         p.meanSelectivity_PRC_new(trial,:) = judging.initial_selec(layer_new,1);
-                
+        
     end
 end
 
-
+noise = p.decision_noise;
 %now, look at prevoius stim
 for layer_prev = 1:p.numLayers
     if layer_prev == 1
@@ -50,6 +50,14 @@ for layer_prev = 1:p.numLayers
         
         %         familDiff_caudal = abs(meanSelectivity_caudal_prev - meanSelectivity_caudal_new);
         familDiff_caudal = meanSelectivity_caudal_prev - meanSelectivity_caudal_new;
+        
+        %         lower_familDiff_caudal = familDiff_caudal - noise;
+        %         upper_familDiff_caudal = familDiff_caudal + noise;
+        %
+        %         familDiff_caudal = lower_familDiff_caudal + ...
+        %             (upper_familDiff_caudal - lower_familDiff_caudal).*rand(1,length(familDiff_caudal));
+        
+        
         
         % determine which grid in caudal layer would be used for judgement
         %         whichCaudal = find(abs(familDiff_caudal)==max(abs(familDiff_caudal)));
@@ -67,8 +75,16 @@ for layer_prev = 1:p.numLayers
         
     elseif (layer_prev == 2) && (all(p.usePRC(:,trial)))
         p.meanSelectivity_PRC_prev(trial) = judging.selectivity_prev(layer_prev,1);
+        familDiff_PRC = p.meanSelectivity_PRC_prev(trial) - p.meanSelectivity_PRC_new(trial);
+        %         lower_familDiff_PRC = familDiff_PRC - noise;
+        %         upper_familDiff_PRC = familDiff_PRC + noise;
+        %
+        %         familDiff_PRC = lower_familDiff_PRC + ...
+        %             (upper_familDiff_PRC - lower_familDiff_PRC).*rand(1,length(familDiff_PRC));
+        
+        
         %         p.familDiff_PRC(trial) = abs(p.meanSelectivity_PRC_prev(trial) - p.meanSelectivity_PRC_new(trial));
-        p.familDiff_PRC(trial) = p.meanSelectivity_PRC_prev(trial) - p.meanSelectivity_PRC_new(trial);
+        p.familDiff_PRC(trial) = familDiff_PRC;
         
     end
 end
@@ -80,7 +96,7 @@ end
 
 
 % going to need a noisy caudal threshold, regardless
-noise = p.decision_noise;
+% noise = p.decision_noise;
 thresh_caudal = mean(p.famil_diff_thresh(1,:));
 
 lower_caudal_thresh = thresh_caudal - noise;
@@ -89,6 +105,7 @@ upper_caudal_thresh = thresh_caudal + noise;
 thresh_caudal = lower_caudal_thresh + (upper_caudal_thresh - lower_caudal_thresh)*rand;
 
 familDiff_caudal = p.familDiff_caudal(trial);
+
 
 
 if p.layer == 2
@@ -101,12 +118,11 @@ if p.layer == 2
     
     
     familDiff_PRC = p.familDiff_PRC(trial);
-
     
     familDiffs_temp = [familDiff_caudal - thresh_caudal, familDiff_PRC - thresh_PRC];
     
     [~, whichFamilDiff] = max(familDiffs_temp);
-        
+    
     if whichFamilDiff == 2
         familDiff = familDiff_PRC;
         thresh = thresh_PRC;
@@ -129,9 +145,9 @@ end
 p.familDiff_withNoise(trial) = familDiff;
 
 
-if p.familDiff_withNoise(trial) > thresh    
+if p.familDiff_withNoise(trial) > thresh
     % we have misMatching feature! So, stop sampling
-    stopSampling = 1;                  
+    stopSampling = 1;
     
 else
     % no evidence for misMatch of stimuli

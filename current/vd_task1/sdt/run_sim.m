@@ -16,18 +16,18 @@ if ~exist(dataDir, 'dir'),
     mkdir(dataDir);
 end
 
-if nargin == 2
-    fprintf('\nScanning file for previous seed.');
-    seed_fid = fopen('seed.txt', 'r');
-    seed = fscanf(seed_fid, '%f');
-else
-    fprintf('\nSetting new seed by clock.');
-    seed = fix(1e6*sum(clock));
-    seed_fid = fopen('seed.txt', 'w');
-    fprintf(seed_fid, '%.0f', seed);
-    fclose(seed_fid);
-end
-rand('state', seed);
+% if nargin == 2
+%     fprintf('\nScanning file for previous seed.');
+%     seed_fid = fopen('seed.txt', 'r');
+%     seed = fscanf(seed_fid, '%f');
+% else
+%     fprintf('\nSetting new seed by clock.');
+%     seed = fix(1e6*sum(clock));
+%     seed_fid = fopen('seed.txt', 'w');
+%     fprintf(seed_fid, '%.0f', seed);
+%     fclose(seed_fid);
+% end
+% rand('state', seed);
 
 %create_sim;
 %% Don't call the function create_sim.m because have already made RUN_SIM array on local machine
@@ -46,7 +46,7 @@ end
 %% begin sessions
 
 p.runningTime = zeros(1,rat);
-fprintf ('\nThere will be %d sessions in total.\n', size(RUN_SIM,1)-1);
+% fprintf ('\nThere will be %d sessions in total.\n', size(RUN_SIM,1)-1);
 p.ratNum = rat;
 
 startTime=GetSecs;
@@ -91,20 +91,20 @@ for sess = 2:size(RUN_SIM, 1),
     p.nEncodCycles = p.numEncodingCycles(p.stimCond);
     
     %% say what about to happen
-    fprintf('\n\nSESSION %d\n', sess-1);
+%     fprintf('\n\nSESSION %d\n', sess-1);
     if RUN_SIM{sess,8} ~= RUN_SIM{sess-1,8} %%If a new network layer
         if p.which_gp_layer == 1 && (p.totalInpDimsConditions == 1 || p.totalInpDimsConditions == 3)
-            fprintf('\nGroup "Lesion", Posterior Layer');
+%             fprintf('\nGroup "Lesion", Posterior Layer');
         elseif p.which_gp_layer == 1 && p.totalInpDimsConditions == 2
-            fprintf('\nGroup "Control", Posterior Layer');
+%             fprintf('\nGroup "Control", Posterior Layer');
         elseif p.which_gp_layer == 2 && p.totalInpDimsConditions == 3
-            fprintf('\nGroup "Control", Posterior Layer');
+%             fprintf('\nGroup "Control", Posterior Layer');
         elseif p.which_gp_layer == 2 && p.totalInpDimsConditions == 2
-            fprintf('\nGroup "Control", Perirhinal Layer');
+%             fprintf('\nGroup "Control", Perirhinal Layer');
         elseif p.which_gp_layer == 3
-            fprintf('\nGroup "Control", Perirhinal Layer');
+%             fprintf('\nGroup "Control", Perirhinal Layer');
         end
-        fprintf('\nExpt: %s; StimCondition: %d; StimSet %d; NumInpDims %d; NumRows %d; rat: %d\n', RUN_SIM{sess,1}, RUN_SIM{sess,2}, RUN_SIM{sess,3}, RUN_SIM{sess,7}, RUN_SIM{sess,4}, rat);
+%         fprintf('\nExpt: %s; StimCondition: %d; StimSet %d; NumInpDims %d; NumRows %d; rat: %d\n', RUN_SIM{sess,1}, RUN_SIM{sess,2}, RUN_SIM{sess,3}, RUN_SIM{sess,7}, RUN_SIM{sess,4}, rat);
     end
     
     %% execute model code
@@ -132,4 +132,4 @@ end
 
 p.runningTime = GetSecs-startTime;
 
-fprintf ('\n\nFinished. \r');
+% fprintf ('\n\nFinished. \r');
